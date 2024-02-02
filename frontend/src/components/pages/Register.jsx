@@ -25,12 +25,18 @@ function Register() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await dispatch(register(email, name, password, password2));
       console.log(response.user_id, response.otp_id);
-
-      navigate(`/verify-otp?user_id=${response.user_id}&otp_id=${response.otp_id}`);
+  
+      // Check if registration was successful before navigating
+      if (response && response.user_id && response.otp_id) {
+        navigate(`/verify-otp?user_id=${response.user_id}&otp_id=${response.otp_id}`);
+      } else {
+        // Handle unsuccessful registration
+        // Display an error message or take appropriate action
+      }
     } catch (error) {
       console.error('Error during registration:', error.message);
       // Handle error, e.g., display an error message to the user

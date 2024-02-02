@@ -57,42 +57,48 @@ export const login = (email, password) => async (dispatch) => {
     }
 };
 
-export const register = (email, name,password, password2) => async (dispatch) => {
+export const register = (email, name, password, password2) => async (dispatch) => {
     try {
-        dispatch({
-            type: USER_REGISTER_REQUEST
-        });
-
-        const config = {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        };
-
-        const { data } = await instance.post(
-            'api/user/register/',
-            { 'email': email, 'name': name, 'password': password, 'password2': password2 },
-            config
-        );
-
-        dispatch({
-            type: USER_REGISTER_SUCCESS,
-            payload: data
-        });
-
-        // localStorage.setItem('userInfo', JSON.stringify(data));
-
+      dispatch({
+        type: USER_REGISTER_REQUEST,
+      });
+  
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+  
+      const { data } = await axios.post(
+        '/api/user/register/',
+        { email, name, password, password2 },
+        config
+      );
+  
+      const { user_id, otp_id } = data.data;
+  
+      dispatch({
+        type: USER_REGISTER_SUCCESS,
+        payload: {
+          user_id,
+          otp_id,
+          token: data.token,
+        },
+      });
+  
+      localStorage.setItem('userInfo', JSON.stringify(data));
+  
+    //   navigate(`/verify-otp?user_id=${user_id}&otp_id=${otp_id}`);
     } catch (error) {
-        dispatch({
-            type: USER_REGISTER_FAIL,
-            payload:
-                error.response && error.response.data.message ?
-                    error.response.data.message :
-                    error.message
-        });
+      dispatch({
+        type: USER_REGISTER_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
     }
-};
-
+  };
 export const sendrequestChangePassword = (email) => async (dispatch) => {
     try {
         dispatch({
@@ -162,7 +168,7 @@ export const userConfirmChangePasswordReducer = (password, password2) => async (
     }
 }
 
-export const verifyOTP = (user_id, otp_id, otp) => async (dispatch) => {
+export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
     try {
       dispatch({
         type: USER_VERIFY_OTP_REQUEST,
@@ -175,8 +181,8 @@ export const verifyOTP = (user_id, otp_id, otp) => async (dispatch) => {
       };
   
       const { data } = await instance.post(
-        'verify-otp/', // Updated to match your API endpoint
-        { user_id, otp_id, otp },
+        'api/user/verify-otp/', // Updated to match your API endpoint
+        { user_id, otp_id, otp_code },
         config
       );
   

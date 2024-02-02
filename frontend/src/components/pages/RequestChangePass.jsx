@@ -2,20 +2,19 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Card, Form, Button } from 'react-bootstrap'; // Import Form and Button from react-bootstrap
 
 function RequestChangePass() {
   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-//   const [requestpass, setRequestpass] = useState('');
 
-  const handleRequestPass = async () => {
+  const handleRequestPass = async (e) => {
+    e.preventDefault(); // Prevent the default form submission behavior
+
     try {
       const response = await axios.post(
         'http://127.0.0.1:8000/api/user/send-reset-password-email/',
         {
           email,
-        //   password,
-        //   requestpass,
         },
         {
           headers: {
@@ -33,37 +32,33 @@ function RequestChangePass() {
   };
 
   return (
-    <div>
-      <h2>Request Password Change</h2>
-      <form>
-        <label>Email:</label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <br />
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+      <Card style={{ width: '400px', padding: '20px', border: '2px solid white', borderRadius: '10px'}}>
+        <Form onSubmit={handleRequestPass}>
+          <h1 style={{ textAlign: 'center', color: 'white' }}>Request Change Password</h1>
 
-        {/* <label>Password:</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br />
+          <Form.Label style={{ color: 'white' }}>Email</Form.Label>
+          <Form.Group controlId='email'>
+            <Form.Control
+              className='form-control'
+              type='email'
+              placeholder='Enter email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </Form.Group>
 
-        <label>Request Password:</label>
-        <input
-          type="text"
-          value={requestpass}
-          onChange={(e) => setRequestpass(e.target.value)}
-        />
-        <br /> */}
+          <Button className='login-button glow-button' type='submit' variant='primary'>
+            Request Change Password
+          </Button>
+        </Form>
 
-        <button type="button" onClick={handleRequestPass}>
-          Request Password Submit
-        </button>
-      </form>
+        <div className="background">
+                <div className="logo-image">
+                    <img src="Jlogo.png" alt="background" width={200} />
+                </div>
+            </div>
+      </Card>
     </div>
   );
 }
