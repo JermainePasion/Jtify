@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework', # new
     'rest_framework_simplejwt', # new
     'corsheaders', # new
+    'songs',
 ]
 
 REST_FRAMEWORK = {
@@ -170,3 +171,7 @@ EMAIL_USE_TLS = True
 
 
 AUTH_USER_MODEL = 'account.User' # new
+
+
+#for songs
+MEDIA_URL = '/media/'

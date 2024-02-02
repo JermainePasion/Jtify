@@ -3,10 +3,10 @@ import { Form, Button, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../../actions/userActions';
 import FormContainer from '../FormContainer';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import Footer from '../Footer';
 
-function Register(props) {
+function Register() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -89,8 +89,8 @@ function Register(props) {
                             </Button>
                         </Form>
                 </FormContainer>
-                <div style={{ marginTop: '10px' }}>
-                    <button className="link-btn" onClick={() => props.onFormSwitch('register')}>Already have an account? Login here.</button>
+                <div style={{ color: 'white', marginTop: '10px', textAlign: 'center' }}>
+                    Already have an Account? <Link to="/login">Sign In here</Link>.
                 </div>
             </Card>
             <Footer/>

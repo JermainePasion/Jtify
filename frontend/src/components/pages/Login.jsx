@@ -3,12 +3,13 @@ import { Form, Button, Card} from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { login } from '../../actions/userActions';
 import FormContainer from '../FormContainer';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+
 import Footer from '../Footer';
 
-function Login(props) {
+function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const userLogin = useSelector((state) => state.userLogin);
@@ -62,8 +63,8 @@ function Login(props) {
                         </Button>
                     </Form>
                 </FormContainer>
-                <div style={{ marginTop: '10px' }}>
-                    <button className="link-btn" onClick={() => props.onFormSwitch('register')}>Don't have an Account? Sign up here.</button>
+                <div style={{ color: 'white', marginTop: '10px', textAlign: 'center' }}>
+                    Don't have an account? <Link to="/register">Sign up here</Link>.
                 </div>
             </Card>
             <Footer />
