@@ -5,6 +5,9 @@
     justify-content: center;
     color: rgb(255, 255, 255);
   }
+ 
+ /* Login/Register design */
+
   .background{
     position: absolute;
     top: 0;
@@ -89,6 +92,8 @@
     height: 100;
     width: 220;
  }
+
+  /* Login/Register design */
   
 
  /* Homepage design */
@@ -103,10 +108,5 @@
   z-index: -1;
 }
 
-.centered-card {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 100px); /* Adjust height as needed */
-}
-/* Homepage design */
+ /* Homepage design */
+

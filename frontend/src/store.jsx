@@ -6,6 +6,7 @@ import {userRegisterReducer} from './reducers/userReducers'; // Correct the impo
 import {userConfirmChangePasswordReducer} from './reducers/userReducers'; // Correct the import statement
 import {userVerifyOtpReducer} from './reducers/userReducers'; // Correct the import statement
 
+
 const reducer = combineReducers({
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
@@ -30,5 +31,9 @@ const store = configureStore({
     preloadedState: initialState, // Correct the property name to preloadedState
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(middleware),
 });
+
+
+
+
 
 export default store;

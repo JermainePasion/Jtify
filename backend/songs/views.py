@@ -7,9 +7,7 @@ from .models import Song
 from .serializers import SongSerializer
 
 class SongListView(APIView):
-    """
-    List all songs or create a new song.
-    """
+
     def get(self, request):
         songs = Song.objects.all()
         serializer = SongSerializer(songs, many=True)
@@ -24,9 +22,6 @@ class SongListView(APIView):
 
 
 class SongDetailView(APIView):
-    """
-    Retrieve, update or delete a song instance.
-    """
     def get_object(self, pk):
         return get_object_or_404(Song, pk=pk)
 

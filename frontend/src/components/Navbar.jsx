@@ -17,16 +17,17 @@ const Navbar = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', alignItems: 'center', justifyContent: 'center' }}>
-      {/* First Card */}
+    
+      {/* Top Card*/}
       <Card style={{ width: '300px', padding: '10px', borderRadius: '5px', backgroundColor: 'rgb(24,24,24)', margin: '5px', opacity: 0.9, height: '100px' }}>
         <div style={{ color: 'white' }}>
-          {/* Home button */}
+        
           <h3>
             <button onClick={goToHome} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '17px', padding: '5px', marginLeft: '10px' }}>
               <FaHome /> Home
             </button>
           </h3>
-          {/* Search button */}
+          
           <h3>
             <button onClick={goToSearch} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '17px', padding: '5px', marginLeft: '10px' }}>
               <FaSearch /> Search
@@ -35,7 +36,7 @@ const Navbar = () => {
         </div>
       </Card>
 
-      {/* Second Card */}
+      {/* Bottom Card*/}
       <Card style={{ height: '640px', width: '280px', padding: '20px', borderRadius: '10px', backgroundColor: 'rgb(24,24,24)', margin: '5px', opacity: 0.9 }}>
         <h1 style={{ color: 'white' }}>content</h1>
         <h1 style={{ color: 'white' }}>content</h1>
