@@ -1,15 +1,17 @@
-// ConfirmChangePass.js
-
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Card, Form, Button } from 'react-bootstrap'; // Add missing imports
 
 function ConfirmChangePass() {
   const { uid, token } = useParams();
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
+  const navigate = useNavigate(); // Use useNavigate instead of useHistory
 
-  const handleConfirmResetPassword = async () => {
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
     try {
       const response = await axios.post(
         `http://127.0.0.1:8000/api/user/reset-password/${uid}/${token}/`,
@@ -26,8 +28,9 @@ function ConfirmChangePass() {
 
       // Handle the response as needed
       console.log('Confirm Reset Password Response:', response.data);
-      // You can redirect the user after successful confirmation if needed
-      // Example: history.push('/login');
+
+      // Redirect to the login page after successful confirmation
+      navigate('/');
     } catch (error) {
       // Handle errors
       console.error('Error confirming reset password:', error.message);
@@ -38,34 +41,48 @@ function ConfirmChangePass() {
     // Optional: You can add additional logic here if needed when the component mounts
     // For example, check if uid and token are present in the URL
     // and take appropriate actions
-  }, []);
+  }, [navigate]);
 
   return (
-    <div>
-      <h2>Confirm Reset Password</h2>
-      <form>
-        <label>New Password:</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br />
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+      <Card style={{ width: '400px', padding: '20px', border: '2px solid white', borderRadius: '10px'}}>
+        <Form onSubmit={submitHandler}>
+          <h1 style={{ textAlign: 'center', color: 'white' }}>Confirm Change Password</h1>
 
-        <label>Confirm New Password:</label>
-        <input
-          type="password"
-          value={password2}
-          onChange={(e) => setPassword2(e.target.value)}
-        />
-        <br />
+          <Form.Label style={{ color: 'white' }}>New Password</Form.Label>
+          <Form.Group controlId='password'>
+            <Form.Control
+              className='form-control'
+              type="password"
+              placeholder='Enter new password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </Form.Group>
 
-        <button type="button" onClick={handleConfirmResetPassword}>
-          Confirm Reset Password
-        </button>
-      </form>
+          <Form.Label style={{ color: 'white' }}>Confirm Password</Form.Label>
+          <Form.Group controlId='password2'>
+            <Form.Control
+              type='password'
+              placeholder='Confirm password'
+              value={password2}
+              onChange={(e) => setPassword2(e.target.value)}
+            />
+          </Form.Group>
+
+          <Button className='login-button glow-button' type='submit' variant='primary'>
+            Confirm
+          </Button>
+        </Form>
+
+        <div className="background">
+          <div className="logo-image">
+            <img src="Jlogo.png" alt="background" width={200} />
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
 
-export default ConfirmChangePass
+export default ConfirmChangePass;
