@@ -96,7 +96,7 @@ function Register() {
                         </Form>
                 </FormContainer>
                 <div style={{ color: 'white', marginTop: '10px', textAlign: 'center' }}>
-                    Already have an Account? <Link to="/login">Sign In here</Link>.
+                    Already have an Account? <Link to="/">Sign In here</Link>.
                 </div>
             </Card>
             <Footer/>
