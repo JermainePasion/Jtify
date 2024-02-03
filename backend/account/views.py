@@ -10,6 +10,8 @@ from rest_framework.permissions import IsAuthenticated
 import pyotp
 from account.models import OTP
 from rest_framework.decorators import api_view
+from django.contrib.auth import logout
+from django.http import JsonResponse
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
     return {
@@ -137,4 +139,14 @@ class UserPasswordResetView(APIView):
             return Response({'message': 'Password reset successfully'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-
+@api_view(['POST'])
+def resend_otp(request):
+    data = request.data
+    user_id = data['user_id']
+    user = User.objects.get(id=user_id)
+    otp = OTP.objects.get(user=user)
+    otp_key = otp.otp_secret
+    otp_instance = pyotp.TOTP(otp_key, digits =6)
+    otp_code = otp_instance.now()
+    send_otp_email(user.email, otp_code)
+    return Response({'message': 'OTP has been sent to your email'}, status=status.HTTP_200_OK)
