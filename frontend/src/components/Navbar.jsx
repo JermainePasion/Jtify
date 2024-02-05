@@ -1,9 +1,18 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
 import { FaHome, FaSearch } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../actions/userActions';
 
 const Navbar = () => {
   // Function to handle navigation to the home page
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login'); // Redirect to the login page after logout
+  };
   const goToHome = () => {
     // Navigate to the home page
     window.location.href = '/home';
@@ -43,6 +52,9 @@ const Navbar = () => {
         <h1 style={{ color: 'white' }}>content</h1>
         <h1 style={{ color: 'white' }}>content</h1>
         <h1 style={{ color: 'white' }}>content</h1>
+        <Button variant="danger" onClick={handleLogout} style={{ marginTop: '10px' }}>
+              Logout
+            </Button>
       </Card>
     </div>
   );

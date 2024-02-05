@@ -23,25 +23,28 @@ function Register() {
     }
   }, [navigate, userInfo]);
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
-  
-    try {
-      const response = await dispatch(register(email, name, password, password2));
-      console.log(response.user_id, response.otp_id);
-  
-      // Check if registration was successful before navigating
-      if (response && response.user_id && response.otp_id) {
-        navigate(`/verify-otp?user_id=${response.user_id}&otp_id=${response.otp_id}`);
-      } else {
-        // Handle unsuccessful registration
-        // Display an error message or take appropriate action
-      }
-    } catch (error) {
-      console.error('Error during registration:', error.message);
-      // Handle error, e.g., display an error message to the user
+const submitHandler = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await dispatch(register(email, name, password, password2));
+    console.log('Register Response:', response);
+
+    // Check if there is an error message in the response
+    if (response && response.message && response.message !== 'User created successfully') {
+      console.error('Registration failed:', response.message);
+      // Handle unsuccessful registration, e.g., display an error message
+    } else {
+      // Registration was successful
+      console.log('Registration successful');
+      const { user_id, otp_id } = response;
+      navigate(`/verify-otp?user_id=${user_id}&otp_id=${otp_id}`);
     }
-  };
+  } catch (error) {
+    console.error('Error during registration:', error.message);
+    // Handle other errors, e.g., display a generic error message
+  }
+};
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>

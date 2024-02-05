@@ -3,10 +3,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgb(255, 255, 255);
+    color: rgb(10, 10, 10);
   }
  
  /* Login/Register design */
+
+
 
   .background{
     position: absolute;
@@ -106,6 +108,8 @@
   background: url('./components/img/HomeBg.png') no-repeat center;
   background-size: cover; 
   z-index: -1;
+
+  
 }
 
  /* Homepage design */
