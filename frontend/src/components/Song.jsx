@@ -21,7 +21,7 @@ function Song({ song, playSong }) {
             <strong>{name}</strong>
           </Card.Title>
         </div>
-        <Card.Text as="div" style={{ fontSize: '14px'}}>
+        <Card.Text as="div" style={{ fontSize: '14px', color: '#d8d4d9'}}>
           <div style={{ fontFamily: 'Arial' }}>{artist}</div>
         </Card.Text>
       </Card.Body>
