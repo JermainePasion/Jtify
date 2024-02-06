@@ -108,9 +108,20 @@
   background: url('./components/img/HomeBg.png') no-repeat center;
   background-size: cover; 
   z-index: -1;
-
+/* Homepage design */
   
 }
 
+/* Navbar design */
+
+.Navbar-items{
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 5px;
+  margin-left: 10px;
+}
  /* Homepage design */
 

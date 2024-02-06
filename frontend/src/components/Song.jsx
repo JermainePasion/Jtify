@@ -1,29 +1,28 @@
+// Song.jsx
 import React from 'react';
 import { Card } from 'react-bootstrap';
 
-function Song({ song, playSong, /* isPlaying */ }) {
-  const {/*  id,  */picture, name, artist } = song;
+function Song({ song, playSong }) {
+  const { picture, name, artist } = song;
 
   return (
-    <Card className="my-3 p-3 rounded" style={{ color: '#fff', height: '100%' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingLeft: '25px' }}>
+    <Card className="my-3 p-3 rounded" style={{ color: '#fff', width: '250px', marginRight: '10px', padding: '10px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Card.Img
           src={picture}
           alt={name}
-          style={{ maxWidth: '150px', cursor: 'pointer', borderRadius: '10px' }}
+          style={{ maxWidth: '230px', cursor: 'pointer', borderRadius: '15px' }}
           onClick={() => playSong(song)}
         />
       </div>
-
-      <Card.Body style={{ paddingLeft: '35px', textAlign: 'left' }}>
+      <Card.Body style={{ textAlign: 'left' }}>
         <div style={{ display: 'flex', justifyContent: 'left' }}>
-          <Card.Title as="div" style={{ marginBottom: '5px', fontSize: '15px', maxHeight: '3em', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '75%', font: 'Helvetica World'}}>
+          <Card.Title as="div" style={{ marginBottom: '5px', fontSize: '15px', maxHeight: '3em', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '75%', fontFamily: 'Verdana' }}>
             <strong>{name}</strong>
           </Card.Title>
         </div>
-
-        <Card.Text as="div" style={{ fontSize: '14px' }}>
-          <div>{artist}</div>
+        <Card.Text as="div" style={{ fontSize: '14px'}}>
+          <div style={{ fontFamily: 'Arial' }}>{artist}</div>
         </Card.Text>
       </Card.Body>
     </Card>
