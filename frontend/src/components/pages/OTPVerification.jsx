@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 import { verifyOTP, resendOTP } from '../../actions/userActions';
 import { Card, Form } from 'react-bootstrap';
 import FormContainer from '../FormContainer';
+import { Modal, Button } from 'react-bootstrap'; //new import statement
+
 
 function OTPVerification() {
   const navigate = useNavigate();
@@ -12,6 +14,13 @@ function OTPVerification() {
   const [otp_code, setOtp] = useState('');
   const [error, setError] = useState('');
   const [resendSuccess, setResendSuccess] = useState(false); // New state variable
+  const [showSuccessModal, setShowSuccessModal] = useState(false); // New state variable
+
+  const handleCloseSuccessModal = () => { // New function
+    setShowSuccessModal(false);
+    navigate('/'); // Redirect to login page after closing the modal
+  };
+
 
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
@@ -25,7 +34,7 @@ function OTPVerification() {
 
       if (response) {
         console.log('Redirecting to login');
-        navigate('/');
+        setShowSuccessModal(true); // Show the success modal
       } else {
         setError('Invalid OTP');
       }
@@ -66,7 +75,7 @@ function OTPVerification() {
       <Card style={{ width: '400px', padding: '20px', border: '2px solid white', borderRadius: '10px' }}>
         <FormContainer>
           <h1 style={{ textAlign: 'center', color: 'white' }}>Verify OTP</h1>
-
+  
           <Form.Label style={{ color: 'white' }}>OTP</Form.Label>
           <Form onSubmit={handleVerifyOTP}>
             <Form.Group controlId='otp'>
@@ -78,30 +87,41 @@ function OTPVerification() {
                 onChange={(e) => setOtp(e.target.value)}
               />
             </Form.Group>
-
+  
             <button className='login-button glow-button' type="submit">
               Verify OTP
             </button>
-
+  
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
               <button className='login-button glow-button' type="button" onClick={handleResendOTP}>
                 Resend OTP
               </button>
             </div>
-
+  
             {resendSuccess && <p style={{ color: 'green', textAlign: 'center' }}>Resent successfully!</p>}
             {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
           </Form>
         </FormContainer>
-
+  
         <div className="background">
           <div className="logo-image">
             <img src="Jlogo.png" alt="background" width={200} />
           </div>
         </div>
       </Card>
+      
+      {/* //for pop up message */}
+      {showSuccessModal && (
+      <div className="popup-message">
+      <div className="popup-content">
+      <p>You are verified and can now proceed to login.</p>
+      <button className='popup-button' onClick={handleCloseSuccessModal}>Proceed to Login</button>
+      </div>
+      </div>
+     )}
     </div>
   );
+  
 }
 
 export default OTPVerification;
