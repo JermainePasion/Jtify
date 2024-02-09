@@ -5,7 +5,7 @@ import {userSendChangePasswordReducer} from './reducers/userReducers'; // Correc
 import {userRegisterReducer} from './reducers/userReducers'; // Correct the import statement
 import {userConfirmChangePasswordReducer} from './reducers/userReducers'; // Correct the import statement
 import {userVerifyOtpReducer} from './reducers/userReducers'; // Correct the import statement
-
+import songListReducer from './reducers/songReducer'; 
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -13,6 +13,8 @@ const reducer = combineReducers({
     userSendChangePassword: userSendChangePasswordReducer,
     userConfirmChangePassword: userConfirmChangePasswordReducer,
     userVerifyOtp: userVerifyOtpReducer,
+    songList: songListReducer,
+
 });
 
 const initialState = {

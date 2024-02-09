@@ -1,22 +1,22 @@
-import { FETCH_SONGS_REQUEST, FETCH_SONGS_SUCCESS, FETCH_SONGS_FAILURE } from '../actions/songActions';
+import { SONG_LIST_REQUEST, SONG_LIST_SUCCESS, SONG_LIST_FAILURE } from '../constants/songConstants';
 
-const initialState = {
+/* const initialState = {
   songs: [],
   loading: false,
   error: null
-};
+}; */
 
-const songReducer = (state = initialState, action) => {
+const songListReducer = (state = { songs: [] }, action) => {
   switch (action.type) {
-    case FETCH_SONGS_REQUEST:
-      return { ...state, loading: true };
-    case FETCH_SONGS_SUCCESS:
-      return { ...state, loading: false, songs: action.payload, error: null };
-    case FETCH_SONGS_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+    case SONG_LIST_REQUEST:
+      return { loading: true, songs:[] };
+    case SONG_LIST_SUCCESS:
+      return { loading: false, songs: action.payload };
+    case SONG_LIST_FAILURE:
+      return { loading: false, error: action.payload };
     default:
       return state;
   }
 };
 
-export default songReducer;
+export default songListReducer;

@@ -1,9 +1,19 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
 import { FaHome, FaSearch } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../actions/userActions';
+import { BsDoorOpenFill, BsFire, BsPersonSquare, BsFillHeartFill  } from "react-icons/bs";
 
 const Navbar = () => {
   // Function to handle navigation to the home page
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login'); // Redirect to the login page after logout
+  };
   const goToHome = () => {
     // Navigate to the home page
     window.location.href = '/home';
@@ -19,30 +29,45 @@ const Navbar = () => {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', alignItems: 'center', justifyContent: 'center' }}>
     
       {/* Top Card*/}
-      <Card style={{ width: '300px', padding: '10px', borderRadius: '5px', backgroundColor: 'rgb(24,24,24)', margin: '5px', opacity: 0.9, height: '100px' }}>
-        <div style={{ color: 'white' }}>
-        
-          <h3>
-            <button onClick={goToHome} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '17px', padding: '5px', marginLeft: '10px' }}>
-              <FaHome /> Home
-            </button>
-          </h3>
+      <Card style={{ height: '600px', width: '280px', padding: '20px', borderRadius: '10px', backgroundColor: 'rgb(24,24,24)', margin: '5px', opacity: 0.9 }}>
+
+        <h1>
+          <button className='Navbar-items' onClick={goToHome}>
+            <FaHome /> Home
+          </button>
+        </h1>
           
-          <h3>
-            <button onClick={goToSearch} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', fontSize: '17px', padding: '5px', marginLeft: '10px' }}>
-              <FaSearch /> Search
-            </button>
-          </h3>
-        </div>
+        <h1>
+          <button className='Navbar-items' onClick={goToSearch}>
+            <FaSearch /> Search
+          </button>
+        </h1>
+
+        <h1 >
+          <button className='Navbar-items' onClick={goToHome}>
+            <BsFire /> Trending
+          </button>
+        </h1>
+        <h1>
+          <button className='Navbar-items' onClick={goToHome}>
+            <BsFillHeartFill /> Favorites
+          </button>
+        </h1>
       </Card>
 
+      
+
       {/* Bottom Card*/}
-      <Card style={{ height: '640px', width: '280px', padding: '20px', borderRadius: '10px', backgroundColor: 'rgb(24,24,24)', margin: '5px', opacity: 0.9 }}>
-        <h1 style={{ color: 'white' }}>content</h1>
-        <h1 style={{ color: 'white' }}>content</h1>
-        <h1 style={{ color: 'white' }}>content</h1>
-        <h1 style={{ color: 'white' }}>content</h1>
-        <h1 style={{ color: 'white' }}>content</h1>
+      <Card style={{ width: '300px', padding: '10px', borderRadius: '5px', backgroundColor: 'rgb(24,24,24)', margin: '5px', opacity: 0.9, height: '250px' }}>
+
+        <h1>
+          <button className='Navbar-items' onClick={goToHome}>
+            <BsPersonSquare /> Profile
+          </button>
+        </h1>
+        <Button className='Navbar-items' onClick={handleLogout}>
+          <BsDoorOpenFill /> Logout 
+        </Button>
       </Card>
     </div>
   );

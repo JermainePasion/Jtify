@@ -1,14 +1,23 @@
-export const FETCH_SONGS_REQUEST = 'FETCH_SONGS_REQUEST';
-export const FETCH_SONGS_SUCCESS = 'FETCH_SONGS_SUCCESS';
-export const FETCH_SONGS_FAILURE = 'FETCH_SONGS_FAILURE';
+import axios from 'axios';
+import {
+  SONG_LIST_REQUEST,
+  SONG_LIST_SUCCESS,
+  SONG_LIST_FAILURE
+} from '../constants/songConstants'; 
 
-export const fetchSongs = () => {
-  return dispatch => {
-    dispatch({ type: FETCH_SONGS_REQUEST });
+/* const instance = axios.create({
+  baseURL: 'http://127.0.0.1:8000'
+}); */
 
-    fetch('/api/songs/')
-      .then(response => response.json())
-      .then(data => dispatch({ type: FETCH_SONGS_SUCCESS, payload: data }))
-      .catch(error => dispatch({ type: FETCH_SONGS_FAILURE, payload: error }));
-  };
+export const listSongs = () => async (dispatch) => {
+  try {
+    dispatch({ type: SONG_LIST_REQUEST })
+    const { data } = await axios.get('/api/songs/'); 
+    dispatch({ type: SONG_LIST_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({ type: SONG_LIST_FAILURE, payload: error.message
+      && error.response.data.message 
+      ? error.response.data.message 
+      : error.message });
+  }
 };
