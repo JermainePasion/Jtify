@@ -19,7 +19,14 @@ import {
     USER_LOGOUT,
     USER_RESEND_OTP_REQUEST,
     USER_RESEND_OTP_SUCCESS,
-    USER_RESEND_OTP_FAIL
+    USER_RESEND_OTP_FAIL,
+    USER_DETAILS_REQUEST,
+    USER_DETAILS_SUCCESS,
+    USER_DETAILS_FAIL,
+    USER_UPDATE_PROFILE_REQUEST,
+    USER_UPDATE_PROFILE_SUCCESS,
+    USER_UPDATE_PROFILE_FAIL,
+    USER_UPDATE_PROFILE_RESET
 } from '../constants/userConstants';
 
 const instance = axios.create({
@@ -70,40 +77,39 @@ export const logout = () => (dispatch) => {
 
 export const register = (email, name, password, password2) => async (dispatch) => {
   try {
-      dispatch({
-          type: USER_REGISTER_REQUEST
-      });
+    dispatch({
+      type: USER_REGISTER_REQUEST
+    });
 
-      const config = {
-          headers: {
-              'Content-Type': 'application/json'
-          }
-      };
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
 
-      const response = await instance.post(
-          'api/user/register/',
-          { 'email': email, 'name': name, 'password': password, 'password2': password2 },
-          config
-      );
+    const response = await instance.post(
+      'api/user/register/',
+      { 'email': email, 'name': name, 'password': password, 'password2': password2,  },
+      config
+    );
 
-      console.log('Register API Response:', response);
+    console.log('Register API Response:', response);
 
-      dispatch({
-          type: USER_REGISTER_SUCCESS,
-          payload: response.data.data
-      });
+    dispatch({
+      type: USER_REGISTER_SUCCESS,
+      payload: response.data.data
+    });
 
-      // localStorage.setItem('userInfo', JSON.stringify(response.data.data));
-      return response.data.data; // Return only the relevant data
+    return response.data.data; // Return only the relevant data
 
   } catch (error) {
-      console.error('Register API Error:', error);
+    console.error('Register API Error:', error);
 
-      dispatch({
-          type: USER_REGISTER_FAIL,
-          payload: error.response ? error.response.data : 'Registration failed'
-      });
-      throw error;
+    dispatch({
+      type: USER_REGISTER_FAIL,
+      payload: error.response ? error.response.data : 'Registration failed'
+    });
+    throw error;
   }
 };
 export const sendrequestChangePassword = (email) => async (dispatch) => {
@@ -241,6 +247,95 @@ export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
           error.response && error.response.data.message
             ? error.response.data.message
             : error.message,
+      });
+    }
+  };
+
+  
+  export const getUserDetails = () => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: USER_DETAILS_REQUEST,
+      });
+  
+      const {
+        userLogin: { userInfo },
+      } = getState();
+  
+      if (!userInfo?.data?.token?.access) {
+        // If userInfo or its properties are undefined, handle it accordingly
+        throw new Error('User information is missing or incomplete');
+      }
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.data.token.access}`,
+        },
+      };
+  
+      const { data } = await instance.get(`api/user/profile/`, config);
+  
+      dispatch({
+        type: USER_DETAILS_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: USER_DETAILS_FAIL,
+        payload: error.response
+          ? error.response.data.message
+          : error.message || 'Error fetching user details',
+      });
+    }
+  };
+  
+  export const resetUpdateProfile = () => (dispatch) => {
+    dispatch({ type: USER_UPDATE_PROFILE_RESET });
+  };
+  
+  export const updateUserProfile = (updatedUser) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: USER_UPDATE_PROFILE_REQUEST,
+      });
+  
+      const { userLogin: { userInfo } } = getState();
+  
+      if (!userInfo?.data?.token?.access) {
+        throw new Error('User information is missing or incomplete');
+      }
+  
+      const formData = new FormData();
+  
+      formData.append('name', updatedUser.name);
+      formData.append('email', updatedUser.email);
+  
+      if (updatedUser.profile?.image) {
+        formData.append('profile_picture', updatedUser.profile.image);
+      }
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.data.token.access}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+  
+      const { data } = await instance.put('api/user/profile/update', formData, config);
+  
+      dispatch({
+        type: USER_UPDATE_PROFILE_SUCCESS,
+        payload: data,
+      });
+  
+      // Reset the state after a successful update
+      dispatch(resetUpdateProfile());
+    } catch (error) {
+      dispatch({
+        type: USER_UPDATE_PROFILE_FAIL,
+        payload: error.response
+          ? error.response.data.message
+          : error.message || 'Error updating user profile',
       });
     }
   };

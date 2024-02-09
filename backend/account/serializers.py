@@ -9,6 +9,7 @@ from django.utils.encoding import smart_str
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import DjangoUnicodeDecodeError
 from . import utils
+from .models import Profile
 
 User = get_user_model()
 
@@ -120,3 +121,10 @@ class UserPasswordResetSerializer(serializers.Serializer):
         except DjangoUnicodeDecodeError as identifier:
             PasswordResetTokenGenerator().check_token(user, token)
             raise ValidationError({'token': 'Token is not valid or expired'})
+        
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = '__all__'
+
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())

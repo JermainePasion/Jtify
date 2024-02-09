@@ -7,11 +7,14 @@ from account.serializers import *
 from account.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated 
+from rest_framework.decorators import permission_classes
 import pyotp
 from account.models import OTP
 from rest_framework.decorators import api_view
 from django.contrib.auth import logout
 from django.http import JsonResponse
+from django.core.files.base import ContentFile
+
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
     return {
@@ -26,6 +29,7 @@ class UserRegistrationView(APIView):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
+            profile = user.profile
             otp_key = pyotp.random_base32()
             otp_instance = pyotp.TOTP(otp_key, digits =6)
             otp_code = otp_instance.now()
@@ -35,7 +39,13 @@ class UserRegistrationView(APIView):
             
             send_otp_email(user.email, otp_code)
 
-            return Response({'user_id':user.id, 'otp_id':otp.id, 'token':token, 'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
+            return Response({
+                'user_id':user.id, 
+                'otp_id':otp.id, 
+                'token':token, 
+                'profile': {'image': profile.image.url}, 
+                'message': 'User created successfully'}, 
+                status=status.HTTP_201_CREATED)
         print(serializer.errors)
         return Response({'msg': 'Registration failed'}, status=status.HTTP_400_BAD_REQUEST)
     
@@ -100,10 +110,36 @@ class UserProfileView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
-        email = request.user.email
-        is_email_verified = request.user.is_email_verified
-        serializer = UserProfileSerializer(request.user)  # Pass user instance as data
-        return Response({'email': email, 'is_email_verified': is_email_verified, 'data': serializer.data}, status=status.HTTP_200_OK)
+        try:
+            user = request.user
+            profile = user.profile  # Access the profile associated with the user
+            serializer = ProfileSerializer(profile)
+            user_data = UserProfileSerializer(user).data
+            profile_data = serializer.data  # Serialize the profile instance
+            return Response({'user_data': user_data, 'profile_data': profile_data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateUserProfile(request):
+    try:
+        user = request.user
+        data = request.data
+
+        if 'profile_picture' in request.FILES:
+            user.profile.image = request.FILES['profile_picture']
+
+        user.name = data.get('name')
+        user.email = data.get('email')
+        user.save()
+
+        serializer = UserProfileSerializer(user)
+        return Response({'message': 'Profile updated successfully', 'user': serializer.data}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        print("Internal Server Error:", e)
+        return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 # class UserEmailVerificationView(APIView):
 #     permission_classes = (IsAuthenticated,)

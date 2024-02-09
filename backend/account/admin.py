@@ -1,5 +1,5 @@
 from django.contrib import admin
-from account.models import User,OTP
+from account.models import User,OTP, Profile
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 # from account.models import EmailConfirmationToken
 
@@ -31,3 +31,4 @@ class UserModelAdmin(BaseUserAdmin):
 admin.site.register(User, UserModelAdmin)
 # admin.site.register(EmailConfirmationToken)
 admin.site.register(OTP)
+admin.site.register(Profile)

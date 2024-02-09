@@ -12,5 +12,6 @@ urlpatterns = [
   path('reset-password/<uid>/<token>/', UserPasswordResetView.as_view(), name='reset-password'),
   # path('email-verification/', UserEmailVerificationView.as_view(), name='email-verification'),
   path('verify-otp/', verify_otp, name='verify_otp'),
-  path('resend-otp/', resend_otp, name='resend_otp')
+  path('resend-otp/', resend_otp, name='resend_otp'),
+  path('profile/update', updateUserProfile, name='update-profile'),
 ]
