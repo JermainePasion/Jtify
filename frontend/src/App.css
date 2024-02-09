@@ -154,4 +154,20 @@
   cursor: pointer;
 }
 
+ /* background template */
+.template-background{
+  
+  flex: 1;
+  margin-left: 10px; 
+  position: relative;
+  background-color: black; 
+  overflow-x: auto; 
+  padding: 10px 0; 
+  background-image: url('./components/img/HomeBg.png');
+  background-size: cover;
+}
+
+
+  /* background template */
+
 

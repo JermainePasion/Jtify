@@ -178,7 +178,7 @@ function Home() {
                 onMouseDown={handleTimeBarMouseDown}
                 onMouseUp={handleTimeBarMouseUp}
               >
-                <div style={{ height: '100%', width: calculateTimeBarWidth(), backgroundColor: '#1DB954' }} />
+                <div style={{ height: '100%', width: calculateTimeBarWidth(), backgroundColor: '#A257D2' }} />
               </div>
             )}
             <div style={{ color: '#b3b3b3', fontSize: '14px', minWidth: '50px', marginLeft: '5px', textAlign: 'center' }}>

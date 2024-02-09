@@ -8,7 +8,9 @@ import Register from "./components/pages/Register";
 import RequestChangePass from "./components/pages/RequestChangePass";
 import OTPVerification from "./components/pages/OTPVerification";
 import ConfirmChangePass from "./components/pages/ConfirmChangePass";
+import Profile from "./components/pages/Profile";
 import './App.css';
+
 
 // Example: replace this with your actual authentication check logic
 const isAuthenticated = () => {
@@ -23,6 +25,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/" element={<Login />} />
+        <Route path="/profile" element={<Profile />} />
         <Route
           path="/register"
           element={isAuthenticated() ? <Navigate to="/" replace /> : <Register />}

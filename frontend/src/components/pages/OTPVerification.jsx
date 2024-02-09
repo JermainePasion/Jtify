@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { verifyOTP, resendOTP } from '../../actions/userActions';
 import { Card, Form } from 'react-bootstrap';
 import FormContainer from '../FormContainer';
-import { Modal, Button } from 'react-bootstrap'; //new import statement
+
 
 
 function OTPVerification() {

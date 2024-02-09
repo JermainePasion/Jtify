@@ -4,7 +4,7 @@ import { FaHome, FaSearch } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../actions/userActions';
-import { BsDoorOpenFill, BsFire, BsPersonSquare, BsFillHeartFill  } from "react-icons/bs";
+import { BsDoorOpenFill, BsFire, BsPersonSquare, BsFillHeartFill, BsFillTelephoneFill  } from "react-icons/bs";
 
 const Navbar = () => {
   // Function to handle navigation to the home page
@@ -25,6 +25,16 @@ const Navbar = () => {
     window.location.href = '/search';
   };
 
+  const goToProfile = () => {
+    // Navigate to the home page
+    window.location.href = '/profile';
+  };
+
+  const goToContact = () => {
+    // Navigate to the home page
+    window.location.href = '/contact';
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', alignItems: 'center', justifyContent: 'center' }}>
     
@@ -38,7 +48,7 @@ const Navbar = () => {
         </h1>
           
         <h1>
-          <button className='Navbar-items' onClick={goToSearch}>
+          <button className='Navbar-items' onClick={goToHome}>
             <FaSearch /> Search
           </button>
         </h1>
@@ -57,10 +67,15 @@ const Navbar = () => {
 
       {/* Bottom Card*/}
       <Card style={{ width: '300px', padding: '10px', borderRadius: '5px', backgroundColor: 'rgba(255, 255, 255, 0.18)', margin: '5px', opacity: 0.9, height: '250px' }}>
-
         <h1>
-          <button className='Navbar-items' onClick={goToHome}>
+          <button className='Navbar-items' onClick={goToProfile}>
             <BsPersonSquare /> Profile
+          </button>
+        </h1>
+
+        <h1 >
+          <button className='Navbar-items' onClick={goToContact}>
+          <BsFillTelephoneFill /> Contact Us
           </button>
         </h1>
         <Button className='Navbar-items' onClick={handleLogout}>
