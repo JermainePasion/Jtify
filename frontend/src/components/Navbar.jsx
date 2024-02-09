@@ -29,7 +29,7 @@ const Navbar = () => {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', alignItems: 'center', justifyContent: 'center' }}>
     
       {/* Top Card*/}
-      <Card style={{ height: '600px', width: '280px', padding: '20px', borderRadius: '10px', backgroundColor: 'rgb(24,24,24)', margin: '5px', opacity: 0.9 }}>
+      <Card style={{ height: '600px', width: '280px', padding: '20px', borderRadius: '10px', backgroundColor: 'rgba(255, 255, 255, 0.18)', margin: '5px', opacity: 0.9 }}>
 
         <h1>
           <button className='Navbar-items' onClick={goToHome}>
@@ -55,10 +55,8 @@ const Navbar = () => {
         </h1>
       </Card>
 
-      
-
       {/* Bottom Card*/}
-      <Card style={{ width: '300px', padding: '10px', borderRadius: '5px', backgroundColor: 'rgb(24,24,24)', margin: '5px', opacity: 0.9, height: '250px' }}>
+      <Card style={{ width: '300px', padding: '10px', borderRadius: '5px', backgroundColor: 'rgba(255, 255, 255, 0.18)', margin: '5px', opacity: 0.9, height: '250px' }}>
 
         <h1>
           <button className='Navbar-items' onClick={goToHome}>
