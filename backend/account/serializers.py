@@ -11,6 +11,7 @@ from django.utils.encoding import DjangoUnicodeDecodeError
 from . import utils
 from .models import Profile
 
+
 User = get_user_model()
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -128,3 +129,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+
+# class ColorSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Color
+#         fields = ['color']

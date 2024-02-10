@@ -309,6 +309,7 @@ export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
   
       formData.append('name', updatedUser.name);
       formData.append('email', updatedUser.email);
+      formData.append('color', updatedUser.color);
   
       if (updatedUser.profile?.image) {
         formData.append('profile_picture', updatedUser.profile.image);

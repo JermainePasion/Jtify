@@ -125,6 +125,7 @@ class UserProfileView(APIView):
 def updateUserProfile(request):
     try:
         user = request.user
+        profile = request.user.profile
         data = request.data
 
         if 'profile_picture' in request.FILES:
@@ -133,6 +134,8 @@ def updateUserProfile(request):
         user.name = data.get('name')
         user.email = data.get('email')
         user.save()
+        profile.color = data.get('color')
+        profile.save()
 
         serializer = UserProfileSerializer(user)
         return Response({'message': 'Profile updated successfully', 'user': serializer.data}, status=status.HTTP_200_OK)

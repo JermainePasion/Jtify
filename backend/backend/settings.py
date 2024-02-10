@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt', # new
     'corsheaders', # new
     'songs',
+    'colorfield',
 ]
 
 REST_FRAMEWORK = {

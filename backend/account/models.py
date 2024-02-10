@@ -5,6 +5,7 @@ import pyotp
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework_simplejwt.tokens import RefreshToken
+from colorfield.fields import ColorField
 
 #  Custom User Manager
 class UserManager(BaseUserManager):
@@ -104,6 +105,7 @@ class Profile(models.Model):
   image = models.ImageField(default='default.jpg', upload_to='profile_pics')
 #   name = models.CharField(User.name, max_length=200, null=True, blank=True)
 #  email = models.EmailField(User.email, max_length=255, null=True, blank=True)
+  color = ColorField(default='#FF0000')
   
 
   def __str__(self):
@@ -117,3 +119,7 @@ def create_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+# class Color(models.Model):
+#   user = models.ForeignKey(User, on_delete=models.CASCADE)
+#   color = ColorField(default='#FF0000')
