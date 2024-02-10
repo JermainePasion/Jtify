@@ -35,6 +35,11 @@ const Navbar = () => {
     window.location.href = '/contact';
   };
 
+  const goToFavorites = () => {
+    // Navigate to the home page
+    window.location.href = '/favorites';
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', alignItems: 'center', justifyContent: 'center' }}>
     
@@ -59,7 +64,7 @@ const Navbar = () => {
           </button>
         </h1>
         <h1>
-          <button className='Navbar-items' onClick={goToHome}>
+          <button className='Navbar-items' onClick={goToFavorites}>
             <BsFillHeartFill /> Favorites
           </button>
         </h1>

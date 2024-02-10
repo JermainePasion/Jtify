@@ -116,18 +116,17 @@ function Home() {
   return (
     <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: 'black' }}>
       <Navbar />
-      <div style={{ 
+      <div className='template-background' style={{ 
         flex: 1, 
         marginLeft: '10px', 
         position: 'relative', 
-        backgroundColor: 'black', 
         overflowX: 'auto', 
         padding: '10px 0',
-        backgroundImage: `url(${process.env.PUBLIC_URL}/HomeBg.png)`,
+        /* backgroundImage: `url(${process.env.PUBLIC_URL}/HomeBg.png)`, */
         backgroundSize: 'cover',
       }}>
         <h1 style={{ color: 'white', fontFamily: 'Verdana', paddingLeft: '15px', fontSize: '30px', }}>Today's hits</h1>
-        <div className="homepage-background" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}></div>
+       
         <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'auto' }}>
           {loading ? (
             <div>Loading...</div>

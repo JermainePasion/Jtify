@@ -10,6 +10,7 @@ import OTPVerification from "./components/pages/OTPVerification";
 import ConfirmChangePass from "./components/pages/ConfirmChangePass";
 import Profile from "./components/pages/Profile";
 import './App.css';
+import Favorites from "./components/pages/Favorites";
 
 
 // Example: replace this with your actual authentication check logic
@@ -26,6 +27,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/favorites" element={<Favorites />} />
         <Route
           path="/register"
           element={isAuthenticated() ? <Navigate to="/" replace /> : <Register />}

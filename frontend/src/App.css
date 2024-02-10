@@ -99,18 +99,7 @@
   
 
  /* Homepage design */
- .homepage-background{
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: url('./components/img/HomeBg.png') no-repeat center;
-  background-size: cover; 
-  z-index: -1;
-/* Homepage design */
-  
-}
+
 
 /* Navbar design */
 
@@ -123,7 +112,7 @@
   padding: 5px;
   margin-left: 10px;
 }
- /* Homepage design */
+/* Navbar design */
 
 
  /* for pop-up message */
@@ -154,16 +143,18 @@
   cursor: pointer;
 }
 
+ /* for pop-up message */
+
  /* background template */
 .template-background{
   
   flex: 1;
   margin-left: 10px; 
   position: relative;
-  background-color: black; 
+  background-color: rgba(29, 143, 143, 0.8); 
   overflow-x: auto; 
   padding: 10px 0; 
-  background-image: url('./components/img/HomeBg.png');
+  background-image: url('./components/img/transparentBackground.png');
   background-size: cover;
 }
 
