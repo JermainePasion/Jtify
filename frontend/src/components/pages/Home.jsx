@@ -4,8 +4,11 @@ import Navbar from '../Navbar';
 import { listSongs } from '../../actions/songActions';
 import Song from '../Song';
 import { FaPlay, FaPause, FaStepForward, FaStepBackward } from 'react-icons/fa';
+import { getUserDetails } from '../../actions/userActions';
+
 
 function Home() {
+  
   const dispatch = useDispatch();
   const { loading, error, songs } = useSelector(state => state.songList);
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
@@ -15,6 +18,12 @@ function Home() {
   const [resumePlay, setResumePlay] = useState(false);
   const audioRef = useRef(new Audio());
   const progressBarRef = useRef(null);
+  const user = useSelector(state => state.userDetails.user);
+  const color = user?.data?.profile_data?.color || '#defaultColor';
+
+  useEffect(() => {
+    dispatch(getUserDetails());
+  }, [dispatch]);
   
   useEffect(() => {
     dispatch(listSongs());
@@ -114,7 +123,7 @@ function Home() {
   };
 
   return (
-    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: 'black' }}>
+    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color }}>
       <Navbar />
       <div className='template-background' style={{ 
         flex: 1, 
