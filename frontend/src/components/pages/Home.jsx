@@ -114,7 +114,7 @@ function Home() {
   };
 
   return (
-    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color }}>
+    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: 'black' }}>
       <Navbar />
       <div className='template-background' style={{ 
         flex: 1, 

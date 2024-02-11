@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Song
-from .serializers import SongSerializer
+from .serializers import *
 
 class SongListView(APIView):
 
@@ -42,3 +42,31 @@ class SongDetailView(APIView):
         song = self.get_object(pk)
         song.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class SongLikesView(APIView):
+    def get(self, request, pk):
+        song = get_object_or_404(Song, pk=pk)
+        likes = song.likes.all()
+        serializer = LikeSerializer(likes, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class LikeSongView(APIView):
+    def post(self, request, pk):
+        song = get_object_or_404(Song, pk=pk)
+        user = request.user
+        if user.is_authenticated:
+            song.likes.add(user)
+            return Response({'message': 'Song liked successfully'})
+        else:
+            return Response({'message': 'You need to be logged in to like a song'}, status=status.HTTP_403_FORBIDDEN)
+
+class UnlikeSongView(APIView):
+    def post(self, request, pk):
+        song = get_object_or_404(Song, pk=pk)
+        user = request.user
+        if user.is_authenticated:
+            song.likes.remove(user)
+            return Response({'message': 'Song unliked successfully'})
+        else:
+            return Response({'message': 'You need to be logged in to unlike a song'}, status=status.HTTP_403_FORBIDDEN)
