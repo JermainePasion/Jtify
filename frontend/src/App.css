@@ -151,7 +151,7 @@
   flex: 1;
   margin-left: 10px; 
   position: relative;
-  background-color: rgba(29, 143, 143, 0.8); 
+  background-color: rgba(8, 8, 8, 0.8); 
   overflow-x: auto; 
   padding: 10px 0; 
   background-image: url('./components/img/transparentBackground.png');

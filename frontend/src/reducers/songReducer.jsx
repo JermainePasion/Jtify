@@ -1,31 +1,28 @@
-import { SONG_LIST_REQUEST, SONG_LIST_SUCCESS, SONG_LIST_FAILURE,
-  SONG_LIKE_REQUEST, SONG_LIKE_SUCCESS, SONG_LIKE_FAILURE,
-  SONG_UNLIKE_REQUEST, SONG_UNLIKE_SUCCESS,SONG_UNLIKE_FAILURE } from '../constants/songConstants';
+// songReducer.jsx
 
-/* const initialState = {
-  songs: [],
+import {
+  SONG_LIST_REQUEST,
+  SONG_LIST_SUCCESS,
+  SONG_LIST_FAILURE
+} from '../constants/songConstants'; 
+
+const initialState = {
+  songs: [], // Initialize songs state as an empty array
   loading: false,
   error: null
-}; */
+};
 
-const songListReducer = (state = { songs: [] }, action) => {
+const songReducer = (state = initialState, action) => {
   switch (action.type) {
     case SONG_LIST_REQUEST:
-    case SONG_LIKE_REQUEST:
-    case SONG_UNLIKE_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, loading: true, error: null };
     case SONG_LIST_SUCCESS:
-      return { ...state, loading: false, songs: action.payload };
-    case SONG_LIKE_SUCCESS:
-    case SONG_UNLIKE_SUCCESS:
-      return { ...state, loading: false };
+      return { ...state, loading: false, songs: action.payload, error: null };
     case SONG_LIST_FAILURE:
-    case SONG_LIKE_FAILURE:
-    case SONG_UNLIKE_FAILURE:
       return { ...state, loading: false, error: action.payload };
     default:
       return state;
   }
 };
 
-export default songListReducer;
+export default songReducer;

@@ -1,81 +1,90 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { listSongs } from '../../actions/songActions'; // Import the action to fetch songs
+import { useDispatch, useSelector } from 'react-redux';
 import Navbar from '../Navbar';
-import axios from 'axios';
+import { getUserDetails } from '../../actions/userActions';
+import { listSongs } from '../../actions/songActions'; 
+import { likeSong } from '../../actions/userActions'; 
+import axios from 'axios'; 
 
 function Favorites() {
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.songList); // Assuming songList reducer contains loading and error state
-  const { userInfo } = useSelector((state) => state.userLogin); // Assuming you store user info in Redux state
-  const [likedSongs, setLikedSongs] = useState([]);
+  const userDetails = useSelector(state => state.userDetails);
+  const user = userDetails.user;
+  const [userId, setUserId] = useState(null); // State to store the user ID
+  const songs = useSelector(state => state.songs); // Select songs from the Redux store
+  const [likedSongs, setLikedSongs] = useState([]); // State to store liked songs
+  const color = user?.data?.profile_data?.color || '#defaultColor';
 
   useEffect(() => {
-    console.log('Fetching all songs...');
-    dispatch(listSongs()); // Fetch all songs when the component mounts
+    dispatch(getUserDetails());
+    dispatch(listSongs()); // Fetch the list of songs
   }, [dispatch]);
 
   useEffect(() => {
-    // Fetch liked songs when userInfo is available
-    if (userInfo) {
-      console.log('User info available. Fetching liked songs...');
-      fetchLikedSongsForAllSongs();
+    // Once user details are available, set the user ID
+    if (user && user.id) {
+      setUserId(user.id); // Set the user ID based on the user's ID property
     }
-  }, [userInfo]);
+  }, [user]);
 
-  // Function to fetch liked songs for all songs
-  const fetchLikedSongsForAllSongs = async () => {
-    try {
-      // Fetch all songs first
-      const allSongsResponse = await axios.get('/api/songs/');
-      const allSongs = allSongsResponse.data;
-      console.log('All songs:', allSongs);
-
-      // Fetch liked songs for each song
-      const likedSongsForAllSongs = [];
-      for (const song of allSongs) {
-        const likedSongsResponse = await axios.get(`/api/songs/${song.id}/likes/`);
-        const likedSongs = likedSongsResponse.data;
-        console.log(`Liked songs for song with ID ${song.id}:`, likedSongs);
-        if (likedSongs.includes(userInfo.id)) {
-          // Dispatch the listSongs action for the current song
-          dispatch(listSongs(song.id));
-          likedSongsForAllSongs.push({ songId: song.id, likedSongs });
+  useEffect(() => {
+    // Fetch liked songs only when the user ID and songs are available
+    const fetchLikedSongs = async () => {
+      if (userId && songs.length > 0) {
+        try {
+          // Fetch liked song IDs for the user
+          const response = await axios.get(`/api/user/${userId}/liked-songs/`);
+          const likedSongIds = response.data;
+  
+          // Filter the songs that match the liked song IDs
+          const filteredSongs = songs.filter(song => likedSongIds.includes(song.id));
+          setLikedSongs(filteredSongs);
+        } catch (error) {
+          console.error('Error fetching liked songs:', error);
         }
       }
+    };
 
-      // Update the likedSongs state
-      console.log('Liked songs for all songs:', likedSongsForAllSongs);
-      setLikedSongs(likedSongsForAllSongs);
-    } catch (error) {
-      console.error('Error fetching liked songs for all songs:', error);
-      // Handle error as needed
+    fetchLikedSongs();
+  }, [userId, songs]); 
+
+  useEffect(() => {
+    if (user) {
+      dispatch(likeSong(user.id)); 
     }
-  };
+  }, [dispatch, user]);
 
   return (
-    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: 'black' }}>
+    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color }}>
       <Navbar />
-      <div className='template-background'>
-        <h1 style={{ color: 'white' }}>Favorites Page</h1>
-        {loading ? (
-          <p>Loading...</p>
-        ) : error ? (
-          <p>Error: {error}</p>
-        ) : (
-          <div className="card-container">
+      <div className='template-background' style={{ 
+        flex: 1, 
+        marginLeft: '10px', 
+        position: 'relative', 
+        overflowX: 'auto', 
+        padding: '10px 0',
+        backgroundSize: 'cover',
+      }}>
+        <h1 style={{ color: 'white', fontFamily: 'Verdana', paddingLeft: '15px', fontSize: '30px' }}>Favorites Page</h1>
+       
+        <div>
+          <h2 style={{ color: 'black', fontFamily: 'Verdana', paddingLeft: '15px', fontSize: '20px' }}>Liked Songs:</h2>
+          <ul>
             {likedSongs.map((song, index) => (
-              <div key={index} className="card">
-                <h2>{song.name}</h2>
-                <p>Artist: {song.artist}</p>
-                <img src={song.picture} alt={`${song.name} by ${song.artist}`} />
-              </div>
+              <li key={index}>
+                <div>
+                  <h3>Song: {song.name}</h3>
+                  <p>Artist: {song.artist}</p>
+                  <img src={song.picture} alt={song.name} style={{ width: '100px', height: '100px' }} />
+                </div>
+              </li>
             ))}
-          </div>
-        )}
+          </ul>
+        </div>
       </div>
     </div>
   );
 }
 
 export default Favorites;
+

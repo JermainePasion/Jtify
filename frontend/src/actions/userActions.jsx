@@ -26,7 +26,10 @@ import {
     USER_UPDATE_PROFILE_REQUEST,
     USER_UPDATE_PROFILE_SUCCESS,
     USER_UPDATE_PROFILE_FAIL,
-    USER_UPDATE_PROFILE_RESET
+    USER_UPDATE_PROFILE_RESET,
+    LIKE_SONG_REQUEST,
+    LIKE_SONG_SUCCESS,
+    LIKE_SONG_FAIL
 } from '../constants/userConstants';
 
 const instance = axios.create({
@@ -340,3 +343,42 @@ export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
       });
     }
   };
+
+  export const likeSong = (userId) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: LIKE_SONG_REQUEST
+        });
+
+        const {
+            userLogin: { userInfo },
+        } = getState();
+
+        if (!userInfo?.data?.token?.access) {
+            throw new Error('User information is missing or incomplete');
+        }
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.data.token.access}`,
+            },
+        };
+
+        const { data } = await instance.get(`api/user/${userId}/liked-songs/`, config);
+
+        dispatch({
+            type: LIKE_SONG_SUCCESS,
+            payload: data, // Assuming data is an array of liked song IDs
+        });
+
+        return data;
+
+    } catch (error) {
+        dispatch({
+            type: LIKE_SONG_FAIL,
+            payload: error.response
+                ? error.response.data.message
+                : error.message || 'Error fetching liked songs',
+        });
+    }
+};

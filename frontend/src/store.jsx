@@ -8,6 +8,7 @@ import {userVerifyOtpReducer} from './reducers/userReducers'; // Correct the imp
 import {userDetailsReducer} from './reducers/userReducers';
 import {userUpdateProfileReducer} from './reducers/userReducers'; // Import the new reducer
 import songListReducer from './reducers/songReducer'; 
+import likeSongReducer from './reducers/userReducers';
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -17,7 +18,8 @@ const reducer = combineReducers({
     userVerifyOtp: userVerifyOtpReducer,
     songList: songListReducer,
     userDetails: userDetailsReducer,
-    userUpdateProfile: userUpdateProfileReducer, // Add the new reducer
+    userUpdateProfile: userUpdateProfileReducer,
+    likeSong: likeSongReducer
 
 });
 

@@ -6,6 +6,11 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework_simplejwt.tokens import RefreshToken
 from colorfield.fields import ColorField
+from songs.models import Song
+
+# User Liked Songs
+
+
 
 #  Custom User Manager
 class UserManager(BaseUserManager):
@@ -123,3 +128,18 @@ def save_profile(sender, instance, **kwargs):
 # class Color(models.Model):
 #   user = models.ForeignKey(User, on_delete=models.CASCADE)
 #   color = ColorField(default='#FF0000')
+    
+class LikedSong(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    songs = models.ManyToManyField(Song, related_name='liked_by_users')
+
+    def __str__(self):
+        return f"{self.user.email}'s liked songs"
+
+    def remove_song(self, song_id):
+        try:
+            song_to_remove = self.songs.get(id=song_id)
+            self.songs.remove(song_to_remove)
+            return True
+        except Song.DoesNotExist:
+            return False

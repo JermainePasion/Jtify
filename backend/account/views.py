@@ -14,6 +14,7 @@ from rest_framework.decorators import api_view
 from django.contrib.auth import logout
 from django.http import JsonResponse
 from django.core.files.base import ContentFile
+from rest_framework import generics
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -189,3 +190,16 @@ def resend_otp(request):
     otp_code = otp_instance.now()
     send_otp_email(user.email, otp_code)
     return Response({'message': 'OTP has been sent to your email'}, status=status.HTTP_200_OK)
+
+
+class LikedSongListView(generics.ListCreateAPIView):
+    serializer_class = LikedSongSerializer
+
+    def get_queryset(self):
+        user_pk = self.kwargs.get('pk')
+        queryset = LikedSong.objects.filter(user_id=user_pk)
+        return queryset
+
+    def perform_create(self, serializer):
+        user_pk = self.kwargs.get('pk')
+        serializer.save(user_id=user_pk)

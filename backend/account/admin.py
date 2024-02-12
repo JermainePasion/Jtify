@@ -1,5 +1,5 @@
 from django.contrib import admin
-from account.models import User,OTP, Profile
+from account.models import *
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 # from account.models import EmailConfirmationToken
 
@@ -33,3 +33,7 @@ admin.site.register(User, UserModelAdmin)
 admin.site.register(OTP)
 admin.site.register(Profile)
 # admin.site.register(Color)
+class LikedSongAdmin(admin.ModelAdmin):
+    filter_horizontal = ('songs',)
+
+admin.site.register(LikedSong, LikedSongAdmin)
