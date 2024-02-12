@@ -106,14 +106,27 @@ class OTP(models.Model):
      return totp.verify(entered_otp)
 
 class Profile(models.Model):
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
-  image = models.ImageField(default='default.jpg', upload_to='profile_pics')
-#   name = models.CharField(User.name, max_length=200, null=True, blank=True)
-#  email = models.EmailField(User.email, max_length=255, null=True, blank=True)
-  color = ColorField(default='#FF0000')
-  
+    FontChoices = [
+        ('Default', 'Default'),
+        ('Open Sans', 'Open Sans'),
+        ('Young Serif', 'Young Serif'),
+        ('Roboto Slab', 'Roboto Slab'),
+        ('Roboto Mono', 'Roboto Mono'),
+        ('Noto Sans JP', 'Noto Sans JP'),
+        ('Yuji Hentaigana Akari', 'Yuji Hentaigana Akari'),
+        ('Agbalumo', 'Agbalumo'),
+        ('Alegreya Sans', 'Alegreya Sans'),
+        ('Montserrat', 'Montserrat'),
+        ('Edu TAS Begginer', 'Edu TAS Begginer'),
+        ('Playpen Sans', 'Playpen Sans'),
+    ]
 
-  def __str__(self):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    color = ColorField(default='#FF0000')
+    font = models.CharField(max_length=255, choices=FontChoices, default='Default')
+  
+    def __str__(self):
       return f'{self.user.name} Profile'
   
 @receiver(post_save, sender=User)

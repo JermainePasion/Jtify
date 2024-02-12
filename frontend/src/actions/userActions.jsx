@@ -73,9 +73,17 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 
-export const logout = () => (dispatch) => {
-  localStorage.removeItem('userInfo');
-  dispatch({ type: USER_LOGOUT });
+export const logout = (navigate) => async (dispatch) => {
+  try {
+    localStorage.removeItem('userInfo');
+    // Assuming `instance` is your axios instance
+    const response = await instance.post('api/user/logout/');
+
+    dispatch({ type: USER_LOGOUT });
+    navigate('/'); // Redirect to login page
+  } catch (error) {
+    // Handle other errors
+  }
 };
 
 export const register = (email, name, password, password2) => async (dispatch) => {
@@ -313,6 +321,7 @@ export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
       formData.append('name', updatedUser.name);
       formData.append('email', updatedUser.email);
       formData.append('color', updatedUser.color);
+      formData.append('font', updatedUser.font);
   
       if (updatedUser.profile?.image) {
         formData.append('profile_picture', updatedUser.profile.image);

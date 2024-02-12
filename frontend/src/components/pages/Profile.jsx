@@ -1,10 +1,25 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import Navbar from '../Navbar';
 import { getUserDetails, updateUserProfile } from '../../actions/userActions';
 import { resetUpdateProfile } from '../../actions/userActions';
 import { SketchPicker } from 'react-color';
 
+const FontChoices = [
+  ['Default', 'Default'],
+  ['Open Sans', 'Open Sans'],
+  ['Young Serif', 'Young Serif'],
+  ['Roboto Slab', 'Roboto Slab'],
+  ['Roboto Mono', 'Roboto Mono'],
+  ['Noto Sans JP', 'Noto Sans JP'],
+  ['Yuji Hentaigana Akari', 'Yuji Hentaigana Akari'],
+  ['Agbalumo', 'Agbalumo'],
+  ['Alegreya Sans', 'Alegreya Sans'],
+  ['Montserrat', 'Montserrat'],
+  ['Edu TAS Begginer', 'Edu TAS Begginer'],
+  ['Playpen Sans', 'Playpen Sans'],
+];
 
 function Profile() {
   const dispatch = useDispatch();
@@ -18,13 +33,9 @@ function Profile() {
   const [profilePicture, setProfilePicture] = useState(null);
   const [fileName, setFileName] = useState('');
   const [color, setColor] = useState('');
+  const [selectedFont, setSelectedFont] = useState(user?.data?.profile_data?.font);
 
   const [showColorPicker, setShowColorPicker] = useState(false);
-
-  const fontOptions = [
-    { value: 'Trirong', label: 'Trirong' },
-    // Add other font options as needed
-  ];
 
   useEffect(() => {
     dispatch(getUserDetails());
@@ -45,7 +56,21 @@ function Profile() {
     if (user?.data?.profile_data) {
       setColor(user.data.profile_data.color);
     }
+
+    if (user?.data?.profile_data) {
+      setSelectedFont(user.data.profile_data.font);
+    }
   }, [user]);
+
+  useEffect(() => {
+    const head = document.head || document.getElementsByTagName('head')[0];
+    const link = document.createElement('link');
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.href = `https://fonts.googleapis.com/css?family=${selectedFont}`;
+    head.appendChild(link);
+  }, [selectedFont]);
+  
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -63,6 +88,10 @@ function Profile() {
     setColor(newColor.hex);
   };
 
+  const handleFontChange = (e) => {
+    setSelectedFont(e.target.value);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -70,7 +99,7 @@ function Profile() {
       name,
       email,
       color,
-      selected_font: fontOptions.value,
+      font: selectedFont,
       ...(profilePicture && { profile: { image: profilePicture } }),
     };
 
@@ -79,11 +108,10 @@ function Profile() {
   };
 
   return (
-
-    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color }}>
+    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
-      <div className='template-background' style={{ flex: 1, padding: '20px', textAlign: 'center', backgroundImage: `url('')`, backgroundSize: 'cover' }}>
-        <h1 style={{ color: 'white', fontSize: '30px', marginBottom: '20px' }}>Profile Page</h1>
+      <div className='template-background' >
+      <h1 style={{ color: 'white', fontSize: '30px', marginBottom: '20px', position: 'relative', textAlign: 'center' }}>Profile Page</h1>
 
         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
@@ -129,6 +157,16 @@ function Profile() {
                       </div>
                     )}
                   </div>
+                  <div style={{ marginBottom: '15px' }}>
+                    <label htmlFor="font" style={{ color: 'white', display: 'block', marginBottom: '5px' }}>Select Font:</label>
+                    <select id="font" value={selectedFont} onChange={handleFontChange} style={{ width: '100%', padding: '8px' }}>
+                      {FontChoices.map(([key, value]) => (
+                        <option key={key} value={value}>
+                          {value}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                   <button type="submit" style={{ padding: '10px', backgroundColor: '#61dafb', color: 'white', border: 'none', cursor: 'pointer', width: '100%' }}>Update Profile</button>
                 </form>
               </>
@@ -137,7 +175,6 @@ function Profile() {
         </div>
       </div>
     </div>
-
   );
 }
 

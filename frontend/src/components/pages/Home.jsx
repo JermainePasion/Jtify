@@ -20,10 +20,12 @@ function Home() {
   const progressBarRef = useRef(null);
   const user = useSelector(state => state.userDetails.user);
   const color = user?.data?.profile_data?.color || '#defaultColor';
+  const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
 
   useEffect(() => {
     dispatch(getUserDetails());
   }, [dispatch]);
+  
   
   useEffect(() => {
     dispatch(listSongs());
@@ -123,37 +125,35 @@ function Home() {
   };
 
   return (
-    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color }}>
-      <Navbar />
-      <div className='template-background' style={{ 
-        flex: 1, 
-        marginLeft: '10px', 
-        position: 'relative', 
-        overflowX: 'auto', 
-        padding: '10px 0',
-        /* backgroundImage: `url(${process.env.PUBLIC_URL}/HomeBg.png)`, */
-        backgroundSize: 'cover',
-      }}>
-        <h1 style={{ color: 'white', fontFamily: 'Verdana', paddingLeft: '15px', fontSize: '30px', }}>Today's hits</h1>
-       
-        <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'auto' }}>
-          {loading ? (
-            <div>Loading...</div>
-          ) : error ? (
-            <div>Error: {error}</div>
-          ) : (
-            songs && songs.map(song => (
-              <Song key={song.id} song={song} playSong={playSong} isPlaying={currentlyPlaying === song} />
-            ))
-          )}
-        </div>
+    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
+    <Navbar />
+    <div className='template-background' style={{ 
+      flex: 1, 
+      marginLeft: '10px', 
+      position: 'relative', 
+      overflowX: 'auto', 
+      padding: '10px 0',
+      backgroundSize: 'cover',
+    }}>
+      <h1 style={{ color: 'white', fontFamily: selectedFont, fontSize: '30px' }}>Today's hits</h1>
+      <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'auto' }}>
+        {loading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div>Error: {error}</div>
+        ) : (
+          songs && songs.map(song => (
+            <Song key={song.id} song={song} playSong={playSong} isPlaying={currentlyPlaying === song} selectedFont={selectedFont} />
+          ))
+        )}
+      </div>
         <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', backgroundColor: '#282828', color: '#fff', boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px', borderTop: '1px solid #535353' }}>
             {currentlyPlaying && (
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img src={currentlyPlaying.picture} alt="Album Art" style={{ width: '64px', height: '64px', marginRight: '20px', borderRadius: '4px' }} />
                 <div>
-                  <p style={{ margin: 0, fontWeight: 'bold', fontFamily: 'Helvetica Neue', fontSize: '16px' }}>{currentlyPlaying.name}</p>
+                  <p style={{ margin: 0, fontWeight: 'bold', fontFamily: selectedFont, fontSize: '16px' }}>{currentlyPlaying.name}</p>
                   <p style={{ margin: 0, fontSize: '14px', color: '#b3b3b3' }}>{currentlyPlaying.artist}</p>
                 </div>
               </div>

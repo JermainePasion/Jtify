@@ -136,6 +136,7 @@ def updateUserProfile(request):
         user.email = data.get('email')
         user.save()
         profile.color = data.get('color')
+        profile.font = data.get('font')
         profile.save()
 
         serializer = UserProfileSerializer(user)
@@ -203,3 +204,8 @@ class LikedSongListView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         user_pk = self.kwargs.get('pk')
         serializer.save(user_id=user_pk)
+
+@api_view(['POST'])
+def logout_view(request):
+    logout(request)
+    return JsonResponse({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)

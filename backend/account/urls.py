@@ -15,4 +15,5 @@ urlpatterns = [
   path('resend-otp/', resend_otp, name='resend_otp'),
   path('profile/update', updateUserProfile, name='update-profile'),
   path('<int:pk>/liked-songs/', LikedSongListView.as_view(), name='liked-songs'),
+  path('logout/', logout_view, name='logout'),
 ]

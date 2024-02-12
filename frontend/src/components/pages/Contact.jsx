@@ -1,39 +1,21 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import Navbar from '../Navbar';
-import { getUserDetails } from '../../actions/userActions';
+import React from 'react'
+import Navbar from '../Navbar'
+import { useSelector } from 'react-redux'
 
-
-function Home() {
-  
-  const dispatch = useDispatch();
+const Contact = () => {
   const user = useSelector(state => state.userDetails.user);
   const color = user?.data?.profile_data?.color || '#defaultColor';
-
-  useEffect(() => {
-    dispatch(getUserDetails());
-  }, [dispatch]);
-
-
+  const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
   return (
-    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color }}>
-      <Navbar />
-      <div className='template-background' style={{ 
-        flex: 1, 
-        marginLeft: '10px', 
-        position: 'relative', 
-        overflowX: 'auto', 
-        padding: '10px 0',
-        /* backgroundImage: `url(${process.env.PUBLIC_URL}/HomeBg.png)`, */
-        backgroundSize: 'cover',
-      }}>
-        <h1 style={{ color: 'white', fontFamily: 'Verdana', paddingLeft: '15px', fontSize: '30px', }}>Contact Page</h1>
-       
-       
-
+    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily:selectedFont }}>
+    <Navbar />
+    <div className='template-background'>
+        <h1 style={{ color: 'white' }}>Contact Page</h1>
       </div>
+
     </div>
-  );
+
+  )
 }
 
-export default Home;
+export default Contact

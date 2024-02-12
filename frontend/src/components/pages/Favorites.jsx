@@ -14,6 +14,7 @@ function Favorites() {
   const songs = useSelector(state => state.songs); // Select songs from the Redux store
   const [likedSongs, setLikedSongs] = useState([]); // State to store liked songs
   const color = user?.data?.profile_data?.color || '#defaultColor';
+  const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
 
   useEffect(() => {
     dispatch(getUserDetails());
@@ -55,7 +56,7 @@ function Favorites() {
   }, [dispatch, user]);
 
   return (
-    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color }}>
+    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont  }}>
       <Navbar />
       <div className='template-background' style={{ 
         flex: 1, 
@@ -65,10 +66,10 @@ function Favorites() {
         padding: '10px 0',
         backgroundSize: 'cover',
       }}>
-        <h1 style={{ color: 'white', fontFamily: 'Verdana', paddingLeft: '15px', fontSize: '30px' }}>Favorites Page</h1>
+        <h1 style={{ color: 'white', fontFamily: selectedFont, paddingLeft: '15px', fontSize: '30px', }}>Favorites Page</h1>
        
         <div>
-          <h2 style={{ color: 'black', fontFamily: 'Verdana', paddingLeft: '15px', fontSize: '20px' }}>Liked Songs:</h2>
+          <h2 style={{ color: 'white', fontFamily: selectedFont, paddingLeft: '15px', fontSize: '20px' }}>Liked Songs:</h2>
           <ul>
             {likedSongs.map((song, index) => (
               <li key={index}>
