@@ -1,4 +1,3 @@
-// Import statements
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,16 +15,18 @@ function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (userInfo) {
-      navigate('/home');
-    }
-  }, [navigate, userInfo]);
-
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    dispatch(login(email, password));
+    await dispatch(login(email, password));
+    handleNavigation();
   };
+
+  const handleNavigation = () => {
+    if (userInfo) {
+      navigate('/home', { replace: true });
+    }
+  };
+
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>

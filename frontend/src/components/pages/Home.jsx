@@ -5,6 +5,7 @@ import { listSongs } from '../../actions/songActions';
 import Song from '../Song';
 import { FaPlay, FaPause, FaStepForward, FaStepBackward } from 'react-icons/fa';
 import { getUserDetails } from '../../actions/userActions';
+import { Link } from 'react-router-dom';
 
 
 function Home() {
@@ -143,7 +144,9 @@ function Home() {
           <div>Error: {error}</div>
         ) : (
           songs && songs.map(song => (
+          // <Link key={song.id} to={`/songs/${song.id}`}>
             <Song key={song.id} song={song} playSong={playSong} isPlaying={currentlyPlaying === song} selectedFont={selectedFont} />
+          // </Link>
           ))
         )}
       </div>

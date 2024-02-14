@@ -26,6 +26,7 @@ function Favorites() {
     if (user && user.id) {
       setUserId(user.id); // Set the user ID based on the user's ID property
     }
+    console.log('user:', userId);
   }, [user]);
 
   useEffect(() => {

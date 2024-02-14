@@ -73,18 +73,24 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 
-export const logout = (navigate) => async (dispatch) => {
-  try {
-    localStorage.removeItem('userInfo');
-    // Assuming `instance` is your axios instance
-    const response = await instance.post('api/user/logout/');
+export const logout = (navigate) => async (dispatch, getState) => {
+  const {
+    userLogin: { userInfo },
+  } = getState();
 
+  try {
+    if (userInfo?.data?.token?.access) {
+      await instance.post('api/user/logout/');
+    }
+
+    localStorage.removeItem('userInfo');
     dispatch({ type: USER_LOGOUT });
-    navigate('/'); // Redirect to login page
+    navigate('/');
   } catch (error) {
-    // Handle other errors
+    console.error('Error logging out:', error);
   }
 };
+
 
 export const register = (email, name, password, password2) => async (dispatch) => {
   try {
@@ -353,41 +359,43 @@ export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
     }
   };
 
-  export const likeSong = (userId) => async (dispatch, getState) => {
+  export const likeSong = (userId, songId) => async (dispatch, getState) => {
     try {
-        dispatch({
-            type: LIKE_SONG_REQUEST
-        });
-
-        const {
-            userLogin: { userInfo },
-        } = getState();
-
-        if (!userInfo?.data?.token?.access) {
-            throw new Error('User information is missing or incomplete');
-        }
-
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.data.token.access}`,
-            },
-        };
-
-        const { data } = await instance.get(`api/user/${userId}/liked-songs/`, config);
-
-        dispatch({
-            type: LIKE_SONG_SUCCESS,
-            payload: data, // Assuming data is an array of liked song IDs
-        });
-
-        return data;
-
+      dispatch({
+        type: LIKE_SONG_REQUEST,
+      });
+  
+      const {
+        userLogin: { userInfo },
+      } = getState();
+  
+      if (!userInfo?.data?.token?.access) {
+        throw new Error('User information is missing or incomplete');
+      }
+  
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.data.token.access}`,
+          
+        },
+      };
+  
+      // Assuming you have an API endpoint to like a song
+      await instance.get(`/api/user/${userId}/like-song/${songId}/`, config);
+  
+      dispatch({
+        type: LIKE_SONG_SUCCESS,
+        payload: songId, // Assuming payload is the ID of the liked song
+      });
+  
+      // After liking a song, fetch updated liked songs
+      // dispatch(getLikedSongs(userId));
     } catch (error) {
-        dispatch({
-            type: LIKE_SONG_FAIL,
-            payload: error.response
-                ? error.response.data.message
-                : error.message || 'Error fetching liked songs',
-        });
+      dispatch({
+        type: LIKE_SONG_FAIL,
+        payload: error.response
+          ? error.response.data.message
+          : error.message || 'Error liking the song',
+      });
     }
-};
+  };
