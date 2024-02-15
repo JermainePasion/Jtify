@@ -24,11 +24,30 @@ import { USER_LOGIN_REQUEST,
     USER_UPDATE_PROFILE_SUCCESS,
     USER_UPDATE_PROFILE_FAIL,
     USER_UPDATE_PROFILE_RESET,
-    LIKE_SONG_REQUEST,
-    LIKE_SONG_SUCCESS,
-    LIKE_SONG_FAIL
+    FETCH_LIKED_SONGS_REQUEST,
+    FETCH_LIKED_SONGS_FAIL,
+    FETCH_LIKED_SONGS_SUCCESS,
+    ADD_LIKED_SONG_REQUEST,
+    ADD_LIKED_SONG_SUCCESS,
+    ADD_LIKED_SONG_FAILURE,
+    MATCHED_SONGS_REQUEST,
+    MATCHED_SONGS_SUCCESS,
+    MATCHED_SONGS_FAIL
+    
  } 
 from '../constants/userConstants';
+
+import {
+  SONG_LIST_REQUEST,
+  SONG_LIST_SUCCESS,
+  SONG_LIST_FAILURE,
+  SONG_DETAILS_REQUEST,
+  SONG_DETAILS_SUCCESS,
+  SONG_DETAILS_FAILURE,
+  SONG_EDIT_REQUEST,
+  SONG_EDIT_SUCCESS,
+  SONG_EDIT_FAILURE
+} from '../constants/songConstants';
 
 export const userLoginReducer = (state = {}, action) => {
     switch(action.type){
@@ -140,23 +159,37 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
     }
   };
 
-  const initialState = {
-    likedSongs: [], // Initialize likedSongs state as an empty array
-    loading: false,
-    error: null
-  };
+
   
-  const likeSongReducer = (state = initialState, action) => {
+
+  
+  export const likedSongsListReducer = (state = {}, action) => {
     switch (action.type) {
-      case LIKE_SONG_REQUEST:
-        return { ...state, loading: true, error: null };
-      case LIKE_SONG_SUCCESS:
-        return { ...state, loading: false, likedSongs: action.payload, error: null };
-      case LIKE_SONG_FAIL:
-        return { ...state, loading: false, error: action.payload };
+      case FETCH_LIKED_SONGS_REQUEST:
+        return {
+          ...state,
+          loading: true
+        };
+      case FETCH_LIKED_SONGS_SUCCESS:
+        const { likedSongsData } = action.payload;
+        // Assuming likedSongsData is an array of song IDs
+        const matchedLikedSongs = likedSongsData.map(likedSongId => {
+          return state.songs.find(song => song.id === likedSongId);
+        });
+        return {
+          ...state,
+          loading: false,
+          likedSongs: matchedLikedSongs,
+          error: ''
+        };
+      case FETCH_LIKED_SONGS_FAIL:
+        return {
+          ...state,
+          loading: false,
+          error: action.payload
+        };
+      // Other cases remain unchanged
       default:
         return state;
     }
   };
-  
-  export default likeSongReducer;

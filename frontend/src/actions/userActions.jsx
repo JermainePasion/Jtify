@@ -1,5 +1,5 @@
 import axios from 'axios'; // Correct the import statement
-
+import { SONG_LIST_REQUEST, SONG_LIST_SUCCESS } from '../constants/songConstants';
 import {
     USER_CONFIRM_CHANGE_PASSWORD_FAIL,
     USER_CONFIRM_CHANGE_PASSWORD_REQUEST,
@@ -27,10 +27,17 @@ import {
     USER_UPDATE_PROFILE_SUCCESS,
     USER_UPDATE_PROFILE_FAIL,
     USER_UPDATE_PROFILE_RESET,
-    LIKE_SONG_REQUEST,
-    LIKE_SONG_SUCCESS,
-    LIKE_SONG_FAIL
+    FETCH_LIKED_SONGS_REQUEST,
+    FETCH_LIKED_SONGS_FAIL,
+    FETCH_LIKED_SONGS_SUCCESS,
+    ADD_LIKED_SONG,
+    ADD_LIKED_SONG_SUCCESS,
+    ADD_LIKED_SONG_FAILURE,
+    MATCHED_SONGS_REQUEST,
+    MATCHED_SONGS_SUCCESS,
+    MATCHED_SONGS_FAIL
 } from '../constants/userConstants';
+import { listSongs } from './songActions';
 
 const instance = axios.create({
   baseURL: 'http://127.0.0.1:8000/',
@@ -359,43 +366,45 @@ export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
     }
   };
 
-  export const likeSong = (userId, songId) => async (dispatch, getState) => {
+
+  export const likedSongsList = () => async (dispatch, getState) => {
     try {
-      dispatch({
-        type: LIKE_SONG_REQUEST,
-      });
+      dispatch({ type: FETCH_LIKED_SONGS_REQUEST });
   
-      const {
-        userLogin: { userInfo },
-      } = getState();
+      const { userLogin: { userInfo } } = getState();
   
       if (!userInfo?.data?.token?.access) {
         throw new Error('User information is missing or incomplete');
       }
   
-      const config = {
+      const userId = userInfo.data.id;
+  
+      const response = await fetch(`http://127.0.0.1:8000/api/user/${userId}/liked-songs/`, {
         headers: {
-          Authorization: `Bearer ${userInfo.data.token.access}`,
-          
-        },
-      };
-  
-      // Assuming you have an API endpoint to like a song
-      await instance.get(`/api/user/${userId}/like-song/${songId}/`, config);
-  
-      dispatch({
-        type: LIKE_SONG_SUCCESS,
-        payload: songId, // Assuming payload is the ID of the liked song
+          Authorization: `Bearer ${userInfo.data.token.access}`
+        }
       });
   
-      // After liking a song, fetch updated liked songs
-      // dispatch(getLikedSongs(userId));
+      if (!response.ok) {
+        throw new Error('Failed to fetch liked songs');
+      }
+  
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const likedSongsData = await response.json();
+        dispatch({ type: FETCH_LIKED_SONGS_SUCCESS, payload: likedSongsData });
+  
+        // No need to dispatch listSongs() here as it's dispatched in the reducer
+  
+      } else {
+        throw new Error('Unexpected response format: not JSON');
+      }
     } catch (error) {
-      dispatch({
-        type: LIKE_SONG_FAIL,
-        payload: error.response
-          ? error.response.data.message
-          : error.message || 'Error liking the song',
-      });
+      console.error('Error fetching liked songs:', error);
+      dispatch({ type: FETCH_LIKED_SONGS_FAIL, payload: error.message });
     }
   };
+
+  
+
+

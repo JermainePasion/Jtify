@@ -9,7 +9,7 @@ import {userDetailsReducer} from './reducers/userReducers';
 import {userUpdateProfileReducer} from './reducers/userReducers'; // Import the new reducer
 import songListReducer, { songAddReducer } from './reducers/songReducer'; 
 import songDetailReducer from './reducers/songReducer'; // Import the new reducer
-import likeSongReducer from './reducers/userReducers';
+import {likedSongsListReducer} from './reducers/userReducers';
 import songEditReducer from './reducers/songReducer'; // Import the new reducer
 
 
@@ -22,7 +22,7 @@ const reducer = combineReducers({
     songList: songListReducer,
     userDetails: userDetailsReducer,
     userUpdateProfile: userUpdateProfileReducer,
-    likeSong: likeSongReducer,
+    likedSongsList: likedSongsListReducer,
     songDetail: songDetailReducer,
     songEdit: songEditReducer,
     songAdd: songAddReducer
