@@ -24,6 +24,8 @@ class SongListView(APIView):
     def post(self, request):
         serializer = SongSerializer(data=request.data)
         if serializer.is_valid():
+            # Associate the song with the authenticated user
+            serializer.validated_data['user'] = request.user
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -96,8 +98,10 @@ def upload_songs(request):
 
         if name is None or artist is None or picture is None or file is None:
             return Response({"error": "Missing required fields in the request."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        user = request.user
 
-        song = Song(name=name, artist=artist, picture=picture, file=file, genre=genre)
+        song = Song(name=name, artist=artist, picture=picture, file=file, genre=genre, user=user)
         song.save()
         return Response(status=status.HTTP_201_CREATED)
 

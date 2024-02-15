@@ -10,6 +10,8 @@ const AddForm = () => {
   const color = user?.data?.profile_data?.color || '#defaultColor';
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
 
+  const [successPromptVisible, setSuccessPromptVisible] = useState(false); // State to manage the visibility of the success prompt
+
   useEffect(() => {
     dispatch(getUserDetails());
   }, [dispatch]);
@@ -67,6 +69,11 @@ const AddForm = () => {
         await dispatch(AddSong(formData));
         // Fetch songs again after adding a new one
         await dispatch(listSongs());
+        setSuccessPromptVisible(true); // Show the success prompt
+        // Hide the success prompt after a delay
+        setTimeout(() => {
+          setSuccessPromptVisible(false);
+        }, 3000); // Adjust the delay as needed
       } catch (error) {
         console.error('Error in handleSongUpload:', error);
         // Handle the error (e.g., display a message to the user)
@@ -102,6 +109,11 @@ const AddForm = () => {
           <h1 style={{ color: 'white', fontSize: '30px', marginBottom: '20px', position: 'relative', textAlign: 'center' }}>
             Add Song
           </h1>
+          {successPromptVisible && ( // Conditionally render the success prompt
+            <div style={{ color: 'white', textAlign: 'center', marginBottom: '20px' }}>
+              Song uploaded successfully!
+            </div>
+          )}
           <form onSubmit={handleSongUpload} style={{ margin: '10px 0', textAlign: 'center' }}>
             <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <label htmlFor="name" style={{ color: 'white', width: '100px', marginRight: '10px' }}>Song Name:</label>
