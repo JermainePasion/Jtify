@@ -161,4 +161,78 @@
 
   /* background template */
 
+  
+  /* Contact Page design */
+
+.contact-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+
+}
+
+.contact-form {
+  border: 1px solid #ccc;
+  width: 70%;
+  max-width: 500px;
+  background-color: rgba(255, 255, 255, 0.163);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(167, 20, 20, 0.1);
+  color : white;
+}
+
+.contact-form label {
+  text-align: left;
+  padding: 10px 0;
+  color: white;
+}
+
+.contact-form input,.contact-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.contact-form button {
+  background-color: #61dafb;
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.contact-form button:hover {
+  background-color: #61dafb;
+}
+
+
+/* CompanyContact design */
+.company-contact-container {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 8px;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.163);
+  max-width: 500px; /* Adjust the maximum width as needed */
+  margin: 0 auto; /* Center the container horizontally */
+  margin-right: 10px; /* Add space to the right */
+  margin-left: 10px; /* Add space to the left */
+}
+
+.company-contact-container h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+/* Contact Page design */
+
+
 
