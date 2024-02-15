@@ -13,6 +13,7 @@ import ConfirmChangePass from './components/pages/ConfirmChangePass';
 import Profile from './components/pages/Profile';
 import './App.css';
 import Favorites from './components/pages/Favorites';
+import AddSong from './components/pages/AddSong';
 
 const isAuthenticated = () => {
   return localStorage.getItem('userInfo') !== null;
@@ -45,6 +46,7 @@ function App() {
         <Route path="/reset/:uid/:token" element={<ConfirmChangePass />} />
         <Route path="*" element={<Navigate to="/" replace />} />
         <Route path="/songs/:id" element={<SongDetailView />} />
+        <Route path="/add-songs" element={<AddSong />} />
       </Routes>
     </Router>
   );

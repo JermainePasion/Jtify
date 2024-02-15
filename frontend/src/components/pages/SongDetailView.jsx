@@ -1,14 +1,16 @@
 // SongDetail.jsx
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { DetailViewSong, EditSong } from '../../actions/songActions';
+import { DetailViewSong, DeleteSong, EditSong } from '../../actions/songActions'; // Import DeleteSong action
 import { Container, Row, Col, Button, Form, Spinner } from 'react-bootstrap';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom'; // Import useHistory hook
 import Navbar from '../Navbar';
 import { getUserDetails } from '../../actions/userActions';
 
+
 const SongDetail = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Initialize useHistory hook
   const { id } = useParams();
   const user = useSelector(state => state.userDetails.user);
   const color = user?.data?.profile_data?.color || '#defaultColor';
@@ -27,6 +29,36 @@ const SongDetail = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [fileNames, setFileNames] = useState({});
 
+  const genres = [
+    ['Hip-Hop', 'Hip-Hop'],
+    ['R&B', 'R&B'],
+    ['Pop', 'Pop'],
+    ['Rock', 'Rock'],
+    ['Country', 'Country'],
+    ['Jazz', 'Jazz'],
+    ['Classical', 'Classical'],
+    ['Blues', 'Blues'],
+    ['Electronic', 'Electronic'],
+    ['Reggae', 'Reggae'],
+    ['Folk', 'Folk'],
+    ['Punk', 'Punk'],
+    ['Metal', 'Metal'],
+    ['Soul', 'Soul'],
+    ['Funk', 'Funk'],
+    ['Disco', 'Disco'],
+    ['Gospel', 'Gospel'],
+    ['House', 'House'],
+    ['Techno', 'Techno'],
+    ['Dubstep', 'Dubstep'],
+    ['Trap', 'Trap'],
+    ['Drum & Bass', 'Drum & Bass'],
+    ['Grime', 'Grime'],
+    ['Garage', 'Garage'],
+    ['Salsa', 'Salsa'],
+    ['Afrobeat', 'Afrobeat'],
+    ['Highlife', 'Highlife'],
+  ];
+
   const handleEditClick = () => {
     setIsEditing(true);
 
@@ -34,6 +66,7 @@ const SongDetail = () => {
     setEditedSong({
       name: song.name,
       artist: song.artist,
+      genre: song.genre,
     });
   };
 
@@ -63,6 +96,24 @@ const SongDetail = () => {
     }));
   };
 
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete this song?')) {
+      dispatch(DeleteSong(id))
+        .then(() => {
+          // Redirect to home page after successful deletion
+          navigate('/home');
+        })
+        .catch((error) => {
+          // Handle error if deletion fails
+          console.error('Error deleting song:', error);
+        });
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+  };
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', fontFamily: selectedFont, backgroundColor: color }}>
       <div style={{ flex: '0 0 250px', backgroundColor: color, padding: '20px' }}>
@@ -82,6 +133,7 @@ const SongDetail = () => {
               Back to Home
             </Button>
           </Link>
+      
           {loading ? (
             <Spinner animation="border" role="status">
               <span className="sr-only">Loading...</span>
@@ -98,7 +150,7 @@ const SongDetail = () => {
                   {isEditing && (
                     <Form>
                       <Form.Group controlId="formSongName">
-                        <Form.Label>Edit Name:</Form.Label>
+                        <Form.Label style = {{color: 'white', margin: '10px'}}>Edit Name:</Form.Label>
                         <Form.Control 
                           type="text" 
                           placeholder="Enter new name" 
@@ -107,7 +159,7 @@ const SongDetail = () => {
                         />
                       </Form.Group>
                       <Form.Group controlId="formSongArtist">
-                        <Form.Label>Edit Artist:</Form.Label>
+                        <Form.Label style = {{color: 'white', margin: '10px'}}>Edit Artist:</Form.Label>
                         <Form.Control 
                           type="text" 
                           placeholder="Enter new artist" 
@@ -115,6 +167,22 @@ const SongDetail = () => {
                           onChange={(e) => setEditedSong({ ...editedSong, artist: e.target.value })}
                         />
                       </Form.Group>
+                      <Form.Group controlId="formSongGenre">
+                      <Form.Label style = {{color: 'white', margin: '10px'}}>Edit Genre:</Form.Label>
+                      <select
+                        id="genre"
+                        name='genre'
+                        value={editedSong.genre || ''} // Set the value of the select to editedSong.genre
+                        onChange={(e) => setEditedSong({ ...editedSong, genre: e.target.value })} // Update genre in state
+                        required
+                        style={{ width: '75%', padding: '8px' }} // Adjust width and padding
+                      >
+                        <option value='' disabled>Select Genre</option>
+                        {genres && genres.map(([value, label], index) => (
+                          <option key={index} value={value}>{label}</option>
+                        ))}
+                      </select>
+                    </Form.Group>
                       <Form.Group controlId="formPicture">
                         <Form.Label style={{ color: '#fff' }}>Edit Album Cover:</Form.Label>
                         <Form.Control
@@ -148,13 +216,17 @@ const SongDetail = () => {
                       <Button variant="primary" onClick={handleEdit}>
                         Save Changes
                       </Button>
+                      <Button variant="secondary" onClick={handleCancelEdit} style={{ marginLeft: '10px' }}>Cancel</Button>
                     </Form>
                   )}
-                  {!isEditing && (
-                    <Button variant="primary" onClick={handleEditClick}>
-                      Edit
-                    </Button>
-                  )}
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    {!isEditing && (
+                      <Button variant="primary" onClick={handleEditClick} style={{ marginRight: '10px' }}>
+                        Edit
+                      </Button>
+                    )}
+                    <Button variant="danger" onClick={handleDelete}>Delete</Button>
+                  </div>
                 </div>
               </Col>
             </Row>

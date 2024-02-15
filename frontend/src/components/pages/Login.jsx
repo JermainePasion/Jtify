@@ -23,7 +23,7 @@ function Login() {
 
   const handleNavigation = () => {
     if (userInfo) {
-      navigate('/home', { replace: true });
+      navigate('/home');
     }
   };
 

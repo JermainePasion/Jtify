@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Navigate, useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar';
 import { listSongs } from '../../actions/songActions';
 import Song from '../Song';
@@ -8,9 +9,12 @@ import { getUserDetails } from '../../actions/userActions';
 import { Link } from 'react-router-dom';
 
 
+
+
 function Home() {
   
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { loading, error, songs } = useSelector(state => state.songList);
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
   const [duration, setDuration] = useState(0);
@@ -22,6 +26,7 @@ function Home() {
   const user = useSelector(state => state.userDetails.user);
   const color = user?.data?.profile_data?.color || '#defaultColor';
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
+  
 
   useEffect(() => {
     dispatch(getUserDetails());
@@ -137,6 +142,7 @@ function Home() {
       backgroundSize: 'cover',
     }}>
       <h1 style={{ color: 'white', fontFamily: selectedFont, fontSize: '30px' }}>Today's hits</h1>
+      <button onClick={() => navigate('/add-songs')} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '16px', color: '#fff', cursor: 'pointer' }}>Add Song</button>
       <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'auto' }}>
         {loading ? (
           <div>Loading...</div>

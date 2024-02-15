@@ -8,7 +8,14 @@ import {
   SONG_DETAILS_FAILURE,
   SONG_EDIT_REQUEST,
   SONG_EDIT_SUCCESS,
-  SONG_EDIT_FAILURE
+  SONG_EDIT_FAILURE,
+  SONG_ADD_REQUEST,
+  SONG_ADD_SUCCESS,
+  SONG_ADD_FAILURE,
+  SONG_DELETE_REQUEST,
+  SONG_DELETE_SUCCESS,
+  SONG_DELETE_FAILURE,
+
 } from '../constants/songConstants';
 // songReducer.jsx
 
@@ -75,3 +82,29 @@ export const songEditReducer = (state = {}, action) => {
       return state;
   }
 };
+
+export const songAddReducer = (state = {}, action) => {
+  switch (action.type) {
+    case SONG_ADD_REQUEST:
+      return { loading: true };
+    case SONG_ADD_SUCCESS:
+      return { loading: false, success: true, song: action.payload };
+    case SONG_ADD_FAILURE:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+}
+
+export const songDeleteReducer = (state = {}, action) => {
+  switch (action.type) {
+    case SONG_DELETE_REQUEST:
+      return { loading: true };
+    case SONG_DELETE_SUCCESS:
+      return { loading: false, success: true };
+    case SONG_DELETE_FAILURE:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+}

@@ -7,10 +7,11 @@ import {userConfirmChangePasswordReducer} from './reducers/userReducers'; // Cor
 import {userVerifyOtpReducer} from './reducers/userReducers'; // Correct the import statement
 import {userDetailsReducer} from './reducers/userReducers';
 import {userUpdateProfileReducer} from './reducers/userReducers'; // Import the new reducer
-import songListReducer from './reducers/songReducer'; 
+import songListReducer, { songAddReducer } from './reducers/songReducer'; 
 import songDetailReducer from './reducers/songReducer'; // Import the new reducer
 import likeSongReducer from './reducers/userReducers';
 import songEditReducer from './reducers/songReducer'; // Import the new reducer
+
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -24,6 +25,7 @@ const reducer = combineReducers({
     likeSong: likeSongReducer,
     songDetail: songDetailReducer,
     songEdit: songEditReducer,
+    songAdd: songAddReducer
 });
 
 const initialState = {
