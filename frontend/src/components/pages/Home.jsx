@@ -1,18 +1,14 @@
+// Home.jsx
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar';
 import { listSongs } from '../../actions/songActions';
 import Song from '../Song';
-import { FaPlay, FaPause, FaStepForward, FaStepBackward } from 'react-icons/fa';
+import MusicPlayer from '../MusicPlayer';
 import { getUserDetails } from '../../actions/userActions';
-import { Link } from 'react-router-dom';
-
-
-
 
 function Home() {
-  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error, songs } = useSelector(state => state.songList);
@@ -20,18 +16,16 @@ function Home() {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [resumePlay, setResumePlay] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(new Audio());
   const progressBarRef = useRef(null);
   const user = useSelector(state => state.userDetails.user);
   const color = user?.data?.profile_data?.color || '#defaultColor';
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
-  
 
   useEffect(() => {
     dispatch(getUserDetails());
   }, [dispatch]);
-  
   
   useEffect(() => {
     dispatch(listSongs());
@@ -58,29 +52,40 @@ function Home() {
     };
   }, [isDragging]);
 
+  useEffect(() => {
+    return () => {
+      pauseSong();
+      setCurrentlyPlaying(null);
+      setIsPlaying(false);
+    };
+  }, []);
+
   const playSong = (song) => {
     if (currentlyPlaying === song && !audioRef.current.paused) {
       pauseSong();
     } else {
-      audioRef.current.src = song.file;
-      if (resumePlay) {
+      if (currentlyPlaying !== song) {
+        audioRef.current.src = song.file;
+        setCurrentTime(0); // Reset currentTime when switching to a new song
+        setCurrentlyPlaying(song);
+        setIsPlaying(true);
+      } else {
         audioRef.current.currentTime = currentTime;
       }
       audioRef.current.play();
-      setCurrentlyPlaying(song);
-      setResumePlay(false);
     }
   };
 
   const pauseSong = () => {
     audioRef.current.pause();
-    setResumePlay(true);
+    setIsPlaying(false);
+    // Do not set currentTime when pausing
   };
 
   const togglePlayPause = () => {
     if (!currentlyPlaying || audioRef.current.paused) {
       if (!currentlyPlaying) {
-        playSong(songs[0]); // Start playing the first song if none is currently playing
+        playSong(songs[0]);
       } else {
         playSong(currentlyPlaying);
       }
@@ -132,77 +137,49 @@ function Home() {
 
   return (
     <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
-    <Navbar />
-    <div className='template-background' style={{ 
-      flex: 1, 
-      marginLeft: '10px', 
-      position: 'relative', 
-      overflowX: 'auto', 
-      padding: '10px 0',
-      backgroundSize: 'cover',
-    }}>
-      <h1 style={{ color: 'white', fontFamily: selectedFont, fontSize: '30px' }}>Today's hits</h1>
-      <button onClick={() => navigate('/add-songs')} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '16px', color: '#fff', cursor: 'pointer' }}>Add Song</button>
-      <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'auto' }}>
-        {loading ? (
-          <div>Loading...</div>
-        ) : error ? (
-          <div>Error: {error}</div>
-        ) : (
-          songs && songs.map(song => (
-          // <Link key={song.id} to={`/songs/${song.id}`}>
-            <Song key={song.id} song={song} playSong={playSong} isPlaying={currentlyPlaying === song} selectedFont={selectedFont} />
-          // </Link>
-          ))
-        )}
-      </div>
-        <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', backgroundColor: '#282828', color: '#fff', boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px', borderTop: '1px solid #535353' }}>
-            {currentlyPlaying && (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img src={currentlyPlaying.picture} alt="Album Art" style={{ width: '64px', height: '64px', marginRight: '20px', borderRadius: '4px' }} />
-                <div>
-                  <p style={{ margin: 0, fontWeight: 'bold', fontFamily: selectedFont, fontSize: '16px' }}>{currentlyPlaying.name}</p>
-                  <p style={{ margin: 0, fontSize: '14px', color: '#b3b3b3' }}>{currentlyPlaying.artist}</p>
-                </div>
-              </div>
-            )}
-            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-              <button onClick={() => skipTrack(false)} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '24px', color: '#fff', marginRight: '20px' }}>
-                <FaStepBackward />
-              </button>
-              <button onClick={togglePlayPause} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '32px', color: '#fff', marginRight: '20px' }}>
-                {currentlyPlaying && !audioRef.current.paused ? <FaPause /> : <FaPlay />}
-              </button>
-              <button onClick={() => skipTrack()} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '24px', color: '#fff', marginRight: '20px' }}>
-                <FaStepForward />
-              </button>
-            </div>
-            {duration > 0 && (
-              <div 
-                ref={progressBarRef} 
-                style={{ 
-                  position: 'absolute', 
-                  bottom: '10px',
-                  left: 0, 
-                  height: '4px', 
-                  backgroundColor: '#535353', 
-                  width: '100%',
-                  cursor: 'pointer',
-                  margin: 'auto'
-                }}
-                onClick={handleTimeBarClick}
-                onMouseDown={handleTimeBarMouseDown}
-                onMouseUp={handleTimeBarMouseUp}
-              >
-                <div style={{ height: '100%', width: calculateTimeBarWidth(), backgroundColor: '#A257D2' }} />
-              </div>
-            )}
-            <div style={{ color: '#b3b3b3', fontSize: '14px', minWidth: '50px', marginLeft: '5px', textAlign: 'center' }}>
-              {formatTime(currentTime)} / {formatTime(duration)}
-            </div>
-          </div>
+      <Navbar />
+      <div className='template-background' style={{ 
+        flex: 1, 
+        marginLeft: '10px', 
+        position: 'relative', 
+        overflowX: 'auto', 
+        padding: '10px 0',
+        backgroundSize: 'cover',
+      }}>
+        <h1 style={{ color: 'white', fontFamily: selectedFont, fontSize: '30px' }}>Today's hits</h1>
+        <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'auto' }}>
+          {loading ? (
+            <div>Loading...</div>
+          ) : error ? (
+            <div>Error: {error}</div>
+          ) : (
+            songs && songs.map(song => (
+              <Song key={song.id} song={song} playSong={playSong} isPlaying={currentlyPlaying === song} selectedFont={selectedFont} />
+            ))
+          )}
         </div>
+        {currentlyPlaying && (
+          <MusicPlayer
+            currentlyPlaying={currentlyPlaying}
+            duration={duration}
+            currentTime={currentTime}
+            isDragging={isDragging}
+            audioRef={audioRef}
+            progressBarRef={progressBarRef}
+            color={color}
+            selectedFont={selectedFont}
+            playSong={playSong}
+            pauseSong={pauseSong}
+            togglePlayPause={togglePlayPause}
+            skipTrack={skipTrack}
+            formatTime={formatTime}
+            handleTimeBarClick={handleTimeBarClick}
+            handleTimeBarMouseDown={handleTimeBarMouseDown}
+            handleTimeBarMouseUp={handleTimeBarMouseUp}
+            calculateTimeBarWidth={calculateTimeBarWidth}
+            isPlaying={isPlaying}
+          />
+        )}
       </div>
     </div>
   );
