@@ -193,17 +193,6 @@ def resend_otp(request):
     return Response({'message': 'OTP has been sent to your email'}, status=status.HTTP_200_OK)
 
 
-class LikedSongListView(generics.ListCreateAPIView):
-    serializer_class = LikedSongSerializer
-
-    def get_queryset(self):
-        user_pk = self.kwargs.get('pk')
-        queryset = LikedSong.objects.filter(user_id=user_pk)
-        return queryset
-
-    def perform_create(self, serializer):
-        user_pk = self.kwargs.get('pk')
-        serializer.save(user_id=user_pk)
 
 @api_view(['POST'])
 def logout_view(request):

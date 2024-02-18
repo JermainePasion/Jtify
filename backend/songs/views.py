@@ -2,19 +2,20 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import generics
 
-from .models import Song
-from .serializers import SongSerializer
+from .models import Song, Like
+from .serializers import *
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from django.utils.datastructures import MultiValueDictKeyError
 import json
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.permissions import AllowAny
 
 
 class SongListView(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         songs = Song.objects.all()
@@ -32,7 +33,7 @@ class SongListView(APIView):
 
 
 class SongDetailView(APIView):
-    permission_classes = [IsAuthenticated]
+
 
     def get_object(self, pk):
         return get_object_or_404(Song, pk=pk)
@@ -118,3 +119,42 @@ def delete_songs(request, pk):
 
     song.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+class LikeSong(APIView):
+    def post(self, request, pk, format=None):
+        # Check if the user is authenticated
+        if not request.user.is_authenticated:
+            return Response({"error": "Authentication required"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Get the song object
+        try:
+            song = Song.objects.get(pk=pk)  # Corrected line
+        except Song.DoesNotExist:
+            return Response({"error": "Song not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Create a new like for the song and the authenticated user
+        like_data = {'user': request.user.id, 'song': song.id}
+        serializer = LikeSerializer(data=like_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    def get(self, request, pk, format=None):
+        # Retrieve liked songs for the given song_id
+        liked_songs = Like.objects.filter(song_id=pk)  # Corrected line
+        serializer = LikeSerializer(liked_songs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class LikeSongList(APIView):
+    permission_classes = [AllowAny]  # Set permission_classes to AllowAny
+
+    def get(self, request, user_id, format=None):
+        # Retrieve liked songs for the specified user_id
+        liked_songs = Like.objects.filter(user_id=user_id)
+        
+        # Serialize the liked songs using the modified LikeSerializer
+        serializer = LikeSerializer(liked_songs, many=True)
+        
+        # Return the serialized data in the response
+        return Response(serializer.data, status=status.HTTP_200_OK)

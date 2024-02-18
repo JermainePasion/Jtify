@@ -7,6 +7,7 @@ import { listSongs } from '../../actions/songActions';
 import Song from '../Song';
 import MusicPlayer from '../MusicPlayer';
 import { getUserDetails } from '../../actions/userActions';
+import { likeSong } from '../../actions/songActions';
 
 function Home() {
   const dispatch = useDispatch();
@@ -134,6 +135,7 @@ function Home() {
       return '0%';
     }
   };
+
 
   return (
     <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>

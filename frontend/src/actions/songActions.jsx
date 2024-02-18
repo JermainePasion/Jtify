@@ -15,11 +15,18 @@ import {
   SONG_DELETE_REQUEST,
   SONG_DELETE_SUCCESS,
   SONG_DELETE_FAILURE,
+  LIKE_SONG_REQUEST,
+  LIKE_SONG_SUCCESS,
+  LIKE_SONG_FAILURE,
+  FETCH_LIKED_SONGS_REQUEST,
+  FETCH_LIKED_SONGS_SUCCESS,
+  FETCH_LIKED_SONGS_FAILURE
+
 } from '../constants/songConstants'; 
 
-/* const instance = axios.create({
+ const instance = axios.create({
   baseURL: 'http://127.0.0.1:8000'
-}); */
+});
 
 export const listSongs = () => async (dispatch, getState) => {
   try {
@@ -39,13 +46,16 @@ export const listSongs = () => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get('/api/songs/', config);
+    const { data } = await instance.get('/api/songs/', config);
     dispatch({ type: SONG_LIST_SUCCESS, payload: data });
 
   } catch (error) {
     dispatch({ type: SONG_LIST_FAILURE, payload: error.message });
   }
 };
+
+
+
 
 
 export const DetailViewSong = (id) => async (dispatch, getState) => {
@@ -197,3 +207,77 @@ export const DeleteSong = (id) => async (dispatch, getState) => {
     });
   }
 };
+
+
+export const likeSong = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: LIKE_SONG_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    if (!userInfo?.data?.token?.access) {
+      throw new Error('User information is missing or incomplete');
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.data.token.access}`,
+      },
+    };
+
+    // Make a POST request to like the song
+    await instance.post(`/api/songs/${id}/like/`, {}, config); // Send an empty object as the request body
+
+    dispatch({ type: LIKE_SONG_SUCCESS });
+  } catch (error) {
+    dispatch({
+      type: LIKE_SONG_FAILURE,
+      payload: error.message && error.response.data.message
+        ? error.response.data.message
+        : error.message,
+    });
+  }
+};
+
+
+export const fetchLikedSongs = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: FETCH_LIKED_SONGS_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    if (!userInfo?.data?.token?.access) {
+      throw new Error('User information is missing or incomplete');
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.data.token.access}`,
+      },
+    };
+
+    // Use the userId variable to construct the URL
+    const response = await instance.get(`/api/songs/liked/${id}/`, config);
+    const likedSongs = response.data;
+
+    // Extract song IDs from liked songs
+    const songIds = likedSongs.map((likedSong) => likedSong.song);
+
+    // Fetch details of each song from the general songs list
+    const songDetails = await Promise.all(
+      songIds.map(async (songId) => {
+        const songResponse = await instance.get(`/api/songs/${songId}/`, config);
+        return songResponse.data;
+      })
+    );
+
+    dispatch({ type: FETCH_LIKED_SONGS_SUCCESS, payload: songDetails });
+  } catch (error) {
+    dispatch({ type: FETCH_LIKED_SONGS_FAILURE, payload: error.message });
+  }
+};
+

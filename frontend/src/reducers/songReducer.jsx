@@ -15,16 +15,24 @@ import {
   SONG_DELETE_REQUEST,
   SONG_DELETE_SUCCESS,
   SONG_DELETE_FAILURE,
+  LIKE_SONG_REQUEST,
+  LIKE_SONG_SUCCESS,
+  LIKE_SONG_FAILURE,
+  FETCH_LIKED_SONGS_REQUEST,
+  FETCH_LIKED_SONGS_SUCCESS,
+  FETCH_LIKED_SONGS_FAILURE
 
 } from '../constants/songConstants';
 // songReducer.jsx
 
+import axios from 'axios';
+
 
 const initialState = {
-  songs: [], // Assuming this is for a list of songs
+  songs: [],
   loading: false,
   error: null,
-  song: {}, // This property holds the details of a single song
+  song: null, 
 };
 
 const songReducer = (state = initialState, action) => {
@@ -35,13 +43,6 @@ const songReducer = (state = initialState, action) => {
       return { ...state, loading: false, songs: action.payload, error: null };
     case SONG_LIST_FAILURE:
       return { ...state, loading: false, error: action.payload, songs: [] };
-    case SONG_DETAILS_REQUEST:
-      return { ...state, loading: true, error: null, song: {} };
-    case SONG_DETAILS_SUCCESS:
-      console.log('Reducer received payload:', action.payload);
-      return { ...state, loading: false, song: action.payload, error: null };
-    case SONG_DETAILS_FAILURE:
-      return { ...state, loading: false, error: action.payload, song: {} };
     default:
       return state;
   }
@@ -108,3 +109,29 @@ export const songDeleteReducer = (state = {}, action) => {
       return state;
   }
 }
+
+export const likeSongReducer = (state = {}, action) => {
+  switch (action.type) {
+    case LIKE_SONG_REQUEST:
+      return { loading: true };
+    case LIKE_SONG_SUCCESS:
+      return { loading: false, success: true };
+    case LIKE_SONG_FAILURE:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const fetchLikedSongsReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case FETCH_LIKED_SONGS_REQUEST:
+      return { ...state, loading: true, error: null };
+    case FETCH_LIKED_SONGS_SUCCESS:
+      return { ...state, loading: false, songs: action.payload, error: null };
+    case FETCH_LIKED_SONGS_FAILURE:
+      return { ...state, loading: false, error: action.payload, songs: [] };
+    default:
+      return state;
+  }
+};

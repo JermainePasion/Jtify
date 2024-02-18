@@ -113,7 +113,7 @@ function Profile() {
       <Navbar />
       <div className='template-background' >
       <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '100vh', width: '100vw', padding: '20px', 
-        borderRadius: '10px', backgroundColor: color , margin: '5px', opacity: 0.9, marginTop: '-5px'}}>
+        borderRadius: '10px',  margin: '5px', opacity: 0.9, marginTop: '-5px'}}>
 
           <div>
             {loading ? (
@@ -131,11 +131,11 @@ function Profile() {
                   <img
                     src={user.data.profile_data.image}
                     alt='Profile'
-                    style={{ width: '200px', height: '200px', borderRadius: '50%', marginBottom: '20px', marginLeft: '50px', marginTop: '100px' }}
+                    style={{ width: '200px', height: '200px', borderRadius: '50%', marginBottom: '20px', marginLeft: '50px', marginTop: '50px' }}
                   />
                   <div style={{ marginRight: '20px' }}>
-                  <h1 style={{ color: 'white', fontSize: '20px', marginBottom: '-30px', textAlign: 'left' }}>Profile</h1>
-                  <h1 style={{ color: 'white', fontSize: '35px', marginBottom: '20px', textAlign: 'left' }}>{name}</h1>
+                  <h1 style={{ color: 'white', fontSize: '20px', marginBottom: '-30px', textAlign: 'left', marginLeft: '20px' }}>Profile : </h1>
+                  <h1 style={{ color: 'white', fontSize: '35px', marginBottom: '20px', textAlign: 'left',  marginLeft: '20px' }}>{name}</h1>
                   </div>
                   </Card>
                 )}
@@ -160,7 +160,7 @@ function Profile() {
                   </Card>
                   {/* Profile, Color, and Fonts Card */}
                   <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '500px', width: '725px', padding: '15px', 
-                  borderRadius: '10px', backgroundColor: 'rgba(255, 255, 255, 0.18)', opacity: 0.9, marginTop: '10px', marginLeft: '-7px'}}>
+                  borderRadius: '10px', backgroundColor: color, opacity: 0.9, marginTop: '10px', marginLeft: '-7px'}}>
                   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1, alignItems: 'left', position: 'relative'}}>
                   <div style={{ marginBottom: '15px', marginLeft: '20px'}}>
                     <label htmlFor="profilePicture" style={{ color: 'white', display: 'block', marginBottom: '5px' }}>Profile Picture:</label>
@@ -192,7 +192,8 @@ function Profile() {
                   </div>
                   </Card>
                   </div>
-                  <button type="submit" style={{ padding: '10px', backgroundColor: '#61dafb', color: 'white', border: 'none', cursor: 'pointer', width: '100%', marginTop: '20px' }}>Update Profile</button>
+                  <button type="submit" style={{ alignContent: 'center', padding: '10px', backgroundColor: 'rgb(130,50,139)', color: 'white', border: 'none', 
+                  cursor: 'pointer', width: '50%', marginTop: '20px' }}>Update Profile</button>
                 </div>
                 </form>
               </>

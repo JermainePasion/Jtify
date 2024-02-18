@@ -10,8 +10,6 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import DjangoUnicodeDecodeError
 from . import utils
 from .models import Profile
-from .models import LikedSong
-from songs.models import Song
 
 
 User = get_user_model()
@@ -137,17 +135,3 @@ class ProfileSerializer(serializers.ModelSerializer):
 #         model = Color
 #         fields = ['color']
     
-class LikedSongSerializer(serializers.ModelSerializer):
-    # Assuming you have a 'songs' field in your LikedSong model representing the many-to-many relationship
-    songs = serializers.PrimaryKeyRelatedField(many=True, queryset=Song.objects.all())
-
-    class Meta:
-        model = LikedSong
-        fields = ['songs']
-
-    def create(self, validated_data):
-        # Assuming 'songs' is a list of song instances
-        songs = validated_data.pop('songs')
-        liked_song = LikedSong.objects.create(**validated_data)
-        liked_song.songs.set(songs)
-        return liked_song

@@ -9,8 +9,9 @@ import {userDetailsReducer} from './reducers/userReducers';
 import {userUpdateProfileReducer} from './reducers/userReducers'; // Import the new reducer
 import songListReducer, { songAddReducer } from './reducers/songReducer'; 
 import songDetailReducer from './reducers/songReducer'; // Import the new reducer
-import {likedSongsListReducer} from './reducers/userReducers';
 import songEditReducer from './reducers/songReducer'; // Import the new reducer
+import { likeSongReducer } from './reducers/songReducer';
+import { fetchLikedSongsReducer } from './reducers/songReducer';
 
 
 const reducer = combineReducers({
@@ -22,10 +23,11 @@ const reducer = combineReducers({
     songList: songListReducer,
     userDetails: userDetailsReducer,
     userUpdateProfile: userUpdateProfileReducer,
-    likedSongsList: likedSongsListReducer,
     songDetail: songDetailReducer,
     songEdit: songEditReducer,
-    songAdd: songAddReducer
+    songAdd: songAddReducer,
+    likeSong: likeSongReducer,
+    fetchLikedSongs: fetchLikedSongsReducer
 });
 
 const initialState = {

@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
+from account.models import User
 
 class Song(models.Model):
     genreChoices = [
@@ -42,3 +42,11 @@ class Song(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)  
+    song = models.ForeignKey(Song, on_delete=models.CASCADE)  
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = ['user', 'song']

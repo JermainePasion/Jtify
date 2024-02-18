@@ -1,58 +1,57 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import Navbar from '../Navbar';
-import { likedSongsList } from '../../actions/userActions'; // Update the path to your actions
+import { fetchLikedSongs } from '../../actions/songActions';
 
 const Favorites = () => {
-  const dispatch = useDispatch();
-  const user = useSelector(state => state.userDetails.user);
+   const dispatch = useDispatch();
+  const user = useSelector((state) => state.userDetails.user);
   const color = user?.data?.profile_data?.color || '#defaultColor';
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
-  const likedSongs = useSelector(state => state.likedSongsList); // Assuming you have a reducer for liked songs
-
-   // Assuming likedSongs is initially undefined
-  const likedSongsData = likedSongs && likedSongs.likedSongs; // Check if likedSongs is not undefined before accessing likedSongs.likedSongs
-
+  const likedSongs = useSelector((state) => state.fetchLikedSongs.songs); // Access the songs array
   useEffect(() => {
-    if (user) {
-      const userId = user?.data?.id;
-      dispatch(likedSongsList(userId));
-    }
-  }, [dispatch, user]);
+    dispatch(fetchLikedSongs());
+  }, [dispatch]);
 
-  useEffect(() => {
-    console.log('userInfo:', user); // Log userInfo here
-  }, [user]); 
+  // Ensure likedSongs is not null or undefined before rendering
+  if (!likedSongs) {
+    return (
+      <div>Loading...</div>
+    );
+}
 
+console.log('Liked Songs State:', likedSongs);
+console.log('Liked Songs Type:', typeof likedSongs);
 
-
-return (
-  <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily:selectedFont }}>
+  return (
+    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
     <Navbar />
     <div className='template-background'>
-      <h1 style={{ color: 'white' }}>Favorites page</h1>
-      <div>
-        {likedSongs.loading ? (
-          <p>Loading...</p>
-        ) : likedSongs.error ? (
-          <p>Error: {likedSongs.error}</p>
-        ) : likedSongsData ? ( // Check if likedSongsData is not undefined
-          <ul>
-            {likedSongsData.map(song => (
-              <li key={song.id}>
-                <h3>{song.name}</h3>
-                <p>Artist: {song.artist}</p>
-                <img src={song.picture} alt={song.name} />
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No liked songs found.</p>
-        )}
-      </div>
+      <Container fluid>
+        <h2 className="mt-3 mb-3">Liked Songs</h2>
+        <Row>
+          {likedSongs && likedSongs.songs && likedSongs.songs.map((likedSong) => (
+            <Col key={likedSong} md={3} className="mb-3">
+              <Card>
+                <Card.Img variant="top" src={likedSong.picture} />
+                <Card.Body>
+                  <Card.Title>{likedSong.name}</Card.Title>
+                  <Card.Text>
+                    Artist: {likedSong.artist}
+                  </Card.Text>
+                  <Card.Text>
+                    Genre: {likedSong.genre}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      </Container>
     </div>
   </div>
-);
-        };
+  );
+};
 
 export default Favorites;

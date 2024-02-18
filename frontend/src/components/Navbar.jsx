@@ -55,7 +55,7 @@ const Navbar = () => {
           </button>
         </h1>
         <h1>
-          <button className='Navbar-items' onClick={goToSearch} style={{ fontFamily: selectedFont }}>
+          <button className='Navbar-items' onClick={goToHome} style={{ fontFamily: selectedFont }}>
             <FaSearch /> Search
           </button>
         </h1>

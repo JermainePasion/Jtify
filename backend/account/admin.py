@@ -33,7 +33,3 @@ admin.site.register(User, UserModelAdmin)
 admin.site.register(OTP)
 admin.site.register(Profile)
 # admin.site.register(Color)
-class LikedSongAdmin(admin.ModelAdmin):
-    filter_horizontal = ('songs',)
-
-admin.site.register(LikedSong, LikedSongAdmin)
