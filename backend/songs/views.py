@@ -158,3 +158,21 @@ class LikeSongList(APIView):
         
         # Return the serialized data in the response
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class unlikeSong(APIView):
+    permission_classes = [IsAuthenticated]  # Require authentication to access this endpoint
+
+    def delete(self, request, pk, format=None):
+        try:
+            song = Song.objects.get(pk=pk)
+        except Song.DoesNotExist:
+            return Response({"error": "Song not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            like = Like.objects.get(user=request.user.id, song=song.id)
+        except Like.DoesNotExist:
+            print("Like not found.")
+            return Response({"error": "Like not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        like.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

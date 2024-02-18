@@ -71,6 +71,13 @@ def verify_otp(request):
         otp = OTP.objects.get(id=otp_id, user=user)
         print(otp_code)
         print(otp.otp_secret)
+
+        if user.is_active:
+            return Response({'message': 'User is already verified'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if otp.is_verified:
+            return Response({'message': 'OTP is already verified'}, status=status.HTTP_400_BAD_REQUEST)
+        
         totp = pyotp.TOTP(otp.otp_secret)
 
         if totp.verify(otp_code, valid_window=7):

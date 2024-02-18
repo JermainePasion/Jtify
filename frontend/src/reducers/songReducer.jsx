@@ -1,4 +1,3 @@
-// songReducer.jsx
 import {
   SONG_LIST_REQUEST,
   SONG_LIST_SUCCESS,
@@ -20,7 +19,10 @@ import {
   LIKE_SONG_FAILURE,
   FETCH_LIKED_SONGS_REQUEST,
   FETCH_LIKED_SONGS_SUCCESS,
-  FETCH_LIKED_SONGS_FAILURE
+  FETCH_LIKED_SONGS_FAILURE,
+  UNLIKE_SONG_REQUEST,
+  UNLIKE_SONG_SUCCESS,
+  UNLIKE_SONG_FAILURE,
 
 } from '../constants/songConstants';
 // songReducer.jsx
@@ -135,3 +137,16 @@ export const fetchLikedSongsReducer = (state = initialState, action) => {
       return state;
   }
 };
+
+export const unlikeSongReducer = (state = {}, action) => {
+  switch (action.type) {
+    case UNLIKE_SONG_REQUEST:
+      return { loading: true };
+    case UNLIKE_SONG_SUCCESS:
+      return { loading: false, success: true };
+    case UNLIKE_SONG_FAILURE:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+}

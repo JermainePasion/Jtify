@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import Navbar from '../Navbar';
 import { useSelector } from 'react-redux';
 import { Container, Row, Col, Form, Button, } from 'react-bootstrap';
+import { getUserDetails } from '../../actions/userActions'; // Import getUserDetails action
 
-// CompanyContact component
 const CompanyContact = () => {
   return (
     <Row className='mb-5 mt-3'>
@@ -28,7 +29,6 @@ const CompanyContact = () => {
 
 
 
-// Contact component
 const Contact = () => {
   const user = useSelector((state) => state.userDetails.user);
   const color = user?.data?.profile_data?.color || '#defaultColor';
@@ -54,6 +54,13 @@ const Contact = () => {
     console.log('Form data submitted:', formData);
     // You can add your logic for sending the data to a server or performing any other actions.
   };
+
+  const dispatch = useDispatch();
+
+  // Fetch user data when the component mounts
+  useEffect(() => {
+    dispatch(getUserDetails());
+  }, [dispatch]);
 
   return (
     <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>

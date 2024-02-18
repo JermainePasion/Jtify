@@ -20,7 +20,10 @@ import {
   LIKE_SONG_FAILURE,
   FETCH_LIKED_SONGS_REQUEST,
   FETCH_LIKED_SONGS_SUCCESS,
-  FETCH_LIKED_SONGS_FAILURE
+  FETCH_LIKED_SONGS_FAILURE,
+  UNLIKE_SONG_REQUEST,
+  UNLIKE_SONG_SUCCESS,
+  UNLIKE_SONG_FAILURE,
 
 } from '../constants/songConstants'; 
 
@@ -281,3 +284,38 @@ export const fetchLikedSongs = (id) => async (dispatch, getState) => {
   }
 };
 
+export const unlikeSong = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: UNLIKE_SONG_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    if (!userInfo?.data?.token?.access) {
+      throw new Error('User information is missing or incomplete');
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.data.token.access}`,
+      },
+    };
+
+    // Make a DELETE request to unlike the song
+    await instance.request({
+      method: 'DELETE',
+      url: `/api/songs/${id}/deleteLike/`,
+      headers: config.headers,
+    });
+
+    dispatch({ type: UNLIKE_SONG_SUCCESS });
+  } catch (error) {
+    dispatch({
+      type: UNLIKE_SONG_FAILURE,
+      payload: error.message && error.response.data.message
+        ? error.response.data.message
+        : error.message,
+    });
+  }
+}

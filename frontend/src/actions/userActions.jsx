@@ -322,14 +322,10 @@ export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
   
       const formData = new FormData();
   
-      formData.append('name', updatedUser.name);
-      formData.append('email', updatedUser.email);
-      formData.append('color', updatedUser.color);
-      formData.append('font', updatedUser.font);
-  
-      if (updatedUser.profile?.image) {
-        formData.append('profile_picture', updatedUser.profile.image);
-      }
+      formData.append('name', updatedUser.name || '');
+      formData.append('email', updatedUser.email || '');
+      formData.append('color', updatedUser.color || '#defaultColor');
+      formData.append('font', updatedUser.font || 'defaultFont');
   
       const config = {
         headers: {
@@ -338,21 +334,19 @@ export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
         },
       };
   
-      const { data } = await instance.put('api/user/profile/update', formData, config);
+      const { data } = await axios.put(`/api/user/profile/update`, formData, config);
   
       dispatch({
         type: USER_UPDATE_PROFILE_SUCCESS,
         payload: data,
       });
   
-      // Reset the state after a successful update
-      dispatch(resetUpdateProfile());
     } catch (error) {
       dispatch({
         type: USER_UPDATE_PROFILE_FAIL,
-        payload: error.response
+        payload: error.message && error.response.data.message
           ? error.response.data.message
-          : error.message || 'Error updating user profile',
+          : error.message,
       });
     }
   };
