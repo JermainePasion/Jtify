@@ -1,17 +1,14 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar';
 import { listSongs } from '../../actions/songActions';
 import Song from '../Song';
 import MusicPlayer from '../MusicPlayer';
 import { getUserDetails } from '../../actions/userActions';
-import { likeSong } from '../../actions/songActions';
 
 function Home() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { loading, error, songs } = useSelector(state => state.songList);
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
   const [duration, setDuration] = useState(0);

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import Navbar from '../Navbar';
 import { getUserDetails, updateUserProfile } from '../../actions/userActions';

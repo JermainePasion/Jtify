@@ -15,6 +15,7 @@ import Favorites from './components/pages/Favorites';
 import AddSong from './components/pages/AddSong';
 import ContactLoggedOut from './components/pages/ContactLoggedOut';
 import ContactLoggedIn from './components/pages/ContactLoggedIn'; // Import ContactLoggedIn component
+import Discovery from './components/pages/Discovery';
 
 
 const isAuthenticated = () => {
@@ -35,6 +36,8 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/favorites" element={<Favorites />} />
+        <Route path="/discovery" element={<Discovery />} />
+        
         <Route
           path="/register"
           element={isAuthenticated() ? <Navigate to="/" replace /> : <Register />}

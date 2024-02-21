@@ -24,6 +24,9 @@ import {
   UNLIKE_SONG_REQUEST,
   UNLIKE_SONG_SUCCESS,
   UNLIKE_SONG_FAILURE,
+  FETCH_SONGS_BY_GENRE_REQUEST,
+  FETCH_SONGS_BY_GENRE_SUCCESS,
+  FETCH_SONGS_BY_GENRE_FAILURE,
 
 } from '../constants/songConstants'; 
 
@@ -319,3 +322,36 @@ export const unlikeSong = (id) => async (dispatch, getState) => {
     });
   }
 }
+
+
+export const fetchSongsByGenre = (genre) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: FETCH_SONGS_BY_GENRE_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    if (!userInfo?.data?.token?.access) {
+      throw new Error('User information is missing or incomplete');
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.data.token.access}`,
+      },
+    };
+
+    // Update the URL to include the genre
+    const { data } = await axios.get(`/api/songs/genres/${genre}`, config);
+    
+    dispatch({ type: FETCH_SONGS_BY_GENRE_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: FETCH_SONGS_BY_GENRE_FAILURE,
+      payload: error.message && error.response.data.message
+        ? error.response.data.message
+        : error.message,
+    });
+  }
+};

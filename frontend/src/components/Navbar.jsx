@@ -52,6 +52,11 @@ const Navbar = () => {
     navigate('/favorites');
   };
 
+  const goToDiscovery = () => {
+    // Navigate to the contact page
+    navigate('/discovery');
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', alignItems: 'center', justifyContent: 'center', fontFamily: selectedFont }}>
       {/* Top Card*/}
@@ -69,6 +74,11 @@ const Navbar = () => {
         <h1>
           <button className='Navbar-items' onClick={goToFavorites} style={{ fontFamily: selectedFont }}>
             <BsFillHeartFill /> Favorites
+          </button>
+        </h1>
+        <h1>
+          <button className='Navbar-items' onClick={goToDiscovery} style={{ fontFamily: selectedFont }}>
+            <BsFillTelephoneFill /> Discovery
           </button>
         </h1>
         <h1>

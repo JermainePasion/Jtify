@@ -23,15 +23,18 @@ import {
   UNLIKE_SONG_REQUEST,
   UNLIKE_SONG_SUCCESS,
   UNLIKE_SONG_FAILURE,
+  FETCH_SONGS_BY_GENRE_REQUEST,
+  FETCH_SONGS_BY_GENRE_SUCCESS,
+  FETCH_SONGS_BY_GENRE_FAILURE,
 
 } from '../constants/songConstants';
 // songReducer.jsx
 
-import axios from 'axios';
 
 
 const initialState = {
   songs: [],
+  genreSongs: [],
   loading: false,
   error: null,
   song: null, 
@@ -152,4 +155,29 @@ export const unlikeSongReducer = (state = {}, action) => {
     default:
       return state;
   }
-}
+};
+
+export const songGenreReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case FETCH_SONGS_BY_GENRE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case FETCH_SONGS_BY_GENRE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        genreSongs: action.payload,
+      };
+    case FETCH_SONGS_BY_GENRE_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};

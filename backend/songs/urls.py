@@ -10,5 +10,5 @@ urlpatterns = [
     path('<int:pk>/edit/', edit_songs, name='edit-song'),
     path('upload/', upload_songs, name='upload-song'),
     path('<int:pk>/delete/', delete_songs, name='delete-song'),
-    
+    path('genres/<str:genre>/', GenreSongListView.as_view(), name='genre-song-list'),
 ]

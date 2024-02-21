@@ -176,3 +176,9 @@ class unlikeSong(APIView):
 
         like.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class GenreSongListView(APIView):
+    def get(self, request, genre):
+        songs = Song.objects.filter(genre=genre)
+        serializer = SongSerializer(songs, many=True)
+        return Response(serializer.data)
