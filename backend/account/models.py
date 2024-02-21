@@ -141,4 +141,13 @@ def save_profile(sender, instance, **kwargs):
 # class Color(models.Model):
 #   user = models.ForeignKey(User, on_delete=models.CASCADE)
 #   color = ColorField(default='#FF0000')
-    
+
+class Contact(models.Model):
+#   user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
+  name = models.CharField(max_length=255)
+  email = models.EmailField(max_length=255)
+  message = models.TextField()
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+      return self.name

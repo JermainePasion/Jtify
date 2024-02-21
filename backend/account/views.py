@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate
 from account.serializers import *
 from account.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated 
+from rest_framework.permissions import IsAuthenticated , AllowAny
 from rest_framework.decorators import permission_classes
 import pyotp
 from account.models import OTP
@@ -15,6 +15,10 @@ from django.contrib.auth import logout
 from django.http import JsonResponse
 from django.core.files.base import ContentFile
 from rest_framework import generics
+from account.models import Contact
+from account.serializers import ContactSerializer
+from django.core.mail import send_mail
+from django.conf import settings
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -189,15 +193,24 @@ class UserPasswordResetView(APIView):
     
 @api_view(['POST'])
 def resend_otp(request):
-    data = request.data
-    user_id = data['user_id']
-    user = User.objects.get(id=user_id)
-    otp = OTP.objects.get(user=user)
-    otp_key = otp.otp_secret
-    otp_instance = pyotp.TOTP(otp_key, digits =6)
-    otp_code = otp_instance.now()
-    send_otp_email(user.email, otp_code)
-    return Response({'message': 'OTP has been sent to your email'}, status=status.HTTP_200_OK)
+    try:
+        data = request.data
+        user_id = data['user_id']
+        user = User.objects.get(id=user_id)
+        
+        if user.is_active:
+            return Response({'message': 'Account is already active. Cannot resend OTP.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        otp = OTP.objects.get(user=user)
+        otp_key = otp.otp_secret
+        otp_instance = pyotp.TOTP(otp_key, digits=6)
+        otp_code = otp_instance.now()
+        send_otp_email(user.email, otp_code)
+        return Response({'message': 'OTP has been sent to your email'}, status=status.HTTP_200_OK)
+    
+    except User.DoesNotExist:
+        return Response({'message': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 
@@ -205,3 +218,39 @@ def resend_otp(request):
 def logout_view(request):
     logout(request)
     return JsonResponse({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)
+
+class ContactView(APIView):
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+    permission_classes = [AllowAny]
+
+    def perform_create(self, serializer):
+        serializer.save()
+
+        # Send email to user
+        user_email_subject = 'Contact Confirmation'
+        user_email_body = f'Thank you for contacting us. We will get back to you soon. \n\nMessage: {serializer.instance.message}'
+
+        # Check if user is active
+        if self.request.user.is_active:
+            user_email = self.request.user.email
+        else:
+            # If user is anonymous, use the email provided in the form
+            user_email = serializer.instance.email
+
+        send_mail(user_email_subject, user_email_body, settings.EMAIL_HOST_USER, [user_email], fail_silently=False)
+
+        # Send email to yourself
+        admin_email_subject = 'New Contact Form Submission'
+        admin_email_body = f'You have received a new contact form submission from {user_email}.\n\nMessage: {serializer.instance.message}'
+        send_mail(admin_email_subject, admin_email_body, settings.EMAIL_HOST_USER, [settings.EMAIL_HOST_USER], fail_silently=False)
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+    
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            self.perform_create(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

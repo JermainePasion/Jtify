@@ -45,12 +45,15 @@ const songReducer = (state = initialState, action) => {
       return { ...state, loading: false, songs: action.payload, error: null };
     case SONG_LIST_FAILURE:
       return { ...state, loading: false, error: action.payload, songs: [] };
+    case SONG_DETAILS_SUCCESS: // Add case for SONG_DETAILS_SUCCESS
+      return { ...state, loading: false, song: action.payload, error: null }; // Update state with song details
     default:
       return state;
   }
 };
 
 export default songReducer;
+
 
 
 

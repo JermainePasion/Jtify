@@ -26,7 +26,9 @@ import {
     USER_UPDATE_PROFILE_SUCCESS,
     USER_UPDATE_PROFILE_FAIL,
     USER_UPDATE_PROFILE_RESET,
-
+    USER_CONTACT_US_REQUEST,
+    USER_CONTACT_US_SUCCESS,
+    USER_CONTACT_US_FAIL
 } from '../constants/userConstants';
 
 
@@ -351,9 +353,37 @@ export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
     }
   };
 
+export const contactUs = (name, email, message) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: USER_CONTACT_US_REQUEST
+    });
 
+    // const {
+    //   userLogin: { userInfo },
+    // } = getState();
 
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+        // Authorization: `Bearer ${userInfo?.data?.token?.access}` // Include the access token
+      }
+    };
 
-  
+    const response = await instance.post(
+      'api/user/contact-us/',
+      { name, email, message },
+      config
+    );
 
-
+    dispatch({
+      type: USER_CONTACT_US_SUCCESS,
+      payload: response.data
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_CONTACT_US_FAIL,
+      payload: error.response ? error.response.data : 'Contact us failed'
+    });
+  }
+};

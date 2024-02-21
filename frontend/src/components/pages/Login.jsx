@@ -71,11 +71,15 @@ function Login() {
         </FormContainer>
 
         <div style={{ color: 'white', marginTop: '10px', textAlign: 'center' }}>
-          Don't have an account? <Link to="/register">Sign up here</Link>.
+          Don't have an account? <Link style={{ color: 'white', marginTop: '10px', textAlign: 'center' }} to="/register">Sign up here</Link>
         </div>
 
         <div style={{ color: 'white', marginTop: '10px', textAlign: 'center' }}>
-          <Link to="/requestPassword">Forgot Password</Link>.
+          <Link  style={{ color: 'white', marginTop: '10px', textAlign: 'center' }} to="/requestPassword">Forgot Password</Link>
+        </div>
+
+        <div style={{ color: 'white', marginTop: '10px', textAlign: 'center' }}>
+                 <Link style={{ color: 'white', marginTop: '10px', textAlign: 'center' }} to="/contact">Contact Us</Link>
         </div>
       </Card>
       <Footer />

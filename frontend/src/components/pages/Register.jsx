@@ -99,7 +99,10 @@ const submitHandler = async (e) => {
                         </Form>
                 </FormContainer>
                 <div style={{ color: 'white', marginTop: '10px', textAlign: 'center' }}>
-                    Already have an Account? <Link to="/">Sign In here</Link>.
+                    Already have an Account? <Link style={{ color: 'white', marginTop: '10px', textAlign: 'center' }} to="/">Sign In here</Link>
+                </div>
+                <div style={{ color: 'white', marginTop: '10px', textAlign: 'center' }}>
+                  <Link  style={{ color: 'white', marginTop: '10px', textAlign: 'center' }}to="/contact">  Contact Us </Link>
                 </div>
             </Card>
             <Footer/>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // Import Link
 import { likeSong } from '../actions/songActions';
 
 function Song({ song, playSong }) {
@@ -42,6 +42,7 @@ function Song({ song, playSong }) {
   const handleLike = () => {
     dispatch(likeSong(id)); // Dispatch the likeSong action with the song ID
   };
+  
   return (
     <Card className="my-3 p-3 rounded" style={{ color: '#fff', width: '250px', marginRight: '10px', padding: '10px', fontFamily: selectedFont }}>
       <Card.Img
@@ -52,12 +53,14 @@ function Song({ song, playSong }) {
       />
       <div style={cardStyle}>
         <Card.Body>
-          <Card.Title as="div" style={titleStyle}>
-            <strong>{name}</strong>
-          </Card.Title>
-          <Card.Text as="div" style={artistStyle}>
-            {artist}
-          </Card.Text>
+          <Link to={`/songs/${id}`} style={{ textDecoration: 'none', color: 'inherit' }}> {/* Wrap the name and artist with Link */}
+            <Card.Title as="div" style={titleStyle}>
+              <strong>{name}</strong>
+            </Card.Title>
+            <Card.Text as="div" style={artistStyle}>
+              {artist}
+            </Card.Text>
+          </Link>
           <Button onClick={handleLike} variant="primary">Like</Button> {/* Add the Like Button */}
         </Card.Body>
       </div>

@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import SongDetailView from './components/pages/SongDetailView';
 
 import Home from './components/pages/Home';
-import Contact from './components/pages/Contact';
 import Login from './components/pages/Login';
 import Register from './components/pages/Register';
 import RequestChangePass from './components/pages/RequestChangePass';
@@ -14,6 +13,9 @@ import Profile from './components/pages/Profile';
 import './App.css';
 import Favorites from './components/pages/Favorites';
 import AddSong from './components/pages/AddSong';
+import ContactLoggedOut from './components/pages/ContactLoggedOut';
+import ContactLoggedIn from './components/pages/ContactLoggedIn'; // Import ContactLoggedIn component
+
 
 const isAuthenticated = () => {
   return localStorage.getItem('userInfo') !== null;
@@ -30,7 +32,6 @@ function App() {
           path="/home"
           element={isAuthenticated() ? <Home /> : <Navigate to="/" replace />}
         />
-        <Route path="/contact" element={<Contact />} />
         <Route path="/" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/favorites" element={<Favorites />} />
@@ -47,6 +48,10 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
         <Route path="/songs/:id" element={<SongDetailView />} />
         <Route path="/add-songs" element={<AddSong />} />
+        <Route
+          path="/contact"
+          element={isAuthenticated() ? <ContactLoggedIn /> : <ContactLoggedOut />}
+        />
       </Routes>
     </Router>
   );

@@ -7,6 +7,8 @@ import { logout } from '../actions/userActions';
 import { BsDoorOpenFill, BsFire, BsPersonSquare, BsFillHeartFill, BsFillTelephoneFill } from "react-icons/bs";
 import { useSelector } from 'react-redux';
 
+
+
 const Navbar = () => {
   // Function to handle navigation to the home page
   const dispatch = useDispatch();
@@ -40,6 +42,11 @@ const Navbar = () => {
     navigate('/contact');
   };
 
+  const goToAddSong = () => {
+    // Navigate to the add song page
+    navigate('/add-songs');
+  };
+
   const goToFavorites = () => {
     // Navigate to the favorites page
     navigate('/favorites');
@@ -62,6 +69,11 @@ const Navbar = () => {
         <h1>
           <button className='Navbar-items' onClick={goToFavorites} style={{ fontFamily: selectedFont }}>
             <BsFillHeartFill /> Favorites
+          </button>
+        </h1>
+        <h1>
+          <button className='Navbar-items' onClick={goToAddSong} style={{ fontFamily: selectedFont }}>
+            <BsFire /> Add Song
           </button>
         </h1>
       </Card>

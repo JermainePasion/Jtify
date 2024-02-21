@@ -10,6 +10,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import DjangoUnicodeDecodeError
 from . import utils
 from .models import Profile
+from .models import Contact
 
 
 User = get_user_model()
@@ -135,3 +136,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 #         model = Color
 #         fields = ['color']
     
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        fields = '__all__'

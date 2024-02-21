@@ -15,4 +15,5 @@ urlpatterns = [
   path('resend-otp/', resend_otp, name='resend_otp'),
   path('profile/update', updateUserProfile, name='update-profile'),
   path('logout/', logout_view, name='logout'),
+  path('contact-us/', ContactView.as_view(), name='contact'),
 ]
