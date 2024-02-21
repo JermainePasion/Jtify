@@ -95,16 +95,15 @@ function Profile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const updatedUser = {
       name,
       email,
       color,
       font: selectedFont,
-      ...(profilePicture && { profile: { image: profilePicture } }),
     };
-
-    await dispatch(updateUserProfile(updatedUser));
+  
+    await dispatch(updateUserProfile(updatedUser, profilePicture));
     dispatch(getUserDetails());
   };
 

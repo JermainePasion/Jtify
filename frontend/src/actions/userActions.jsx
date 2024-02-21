@@ -310,7 +310,7 @@ export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
     dispatch({ type: USER_UPDATE_PROFILE_RESET });
   };
   
-  export const updateUserProfile = (updatedUser) => async (dispatch, getState) => {
+  export const updateUserProfile = (updatedUser, profilePicture) => async (dispatch, getState) => {
     try {
       dispatch({
         type: USER_UPDATE_PROFILE_REQUEST,
@@ -328,6 +328,10 @@ export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
       formData.append('email', updatedUser.email || '');
       formData.append('color', updatedUser.color || '#defaultColor');
       formData.append('font', updatedUser.font || 'defaultFont');
+  
+      if (profilePicture) {
+        formData.append('profile_picture', profilePicture);
+      }
   
       const config = {
         headers: {
@@ -352,6 +356,7 @@ export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
       });
     }
   };
+  
 
 export const contactUs = (name, email, message) => async (dispatch, getState) => {
   try {
