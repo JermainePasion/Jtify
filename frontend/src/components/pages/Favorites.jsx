@@ -1,32 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Container, Row, Card, Button } from 'react-bootstrap';
+import { Container, ListGroup, Image } from 'react-bootstrap';
 import Navbar from '../Navbar';
 import { fetchLikedSongs, unlikeSong } from '../../actions/songActions';
 import { getUserDetails } from '../../actions/userActions';
-import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import MusicPlayer from '../MusicPlayer';
+import Song from '../Song';
+
+import likedImage from '../img/liked.png';
 
 const Favorites = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userDetails.user);
   const color = user?.data?.profile_data?.color || '#defaultColor';
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
-  const likedSongs = useSelector((state) => state.fetchLikedSongs.songs); // Access the songs array
+  const likedSongs = useSelector((state) => state.fetchLikedSongs.songs);
   const [currentSong, setCurrentSong] = useState(null);
-
-  // Local state to track liked songs
-  const [likedSongsState, setLikedSongsState] = useState({});
+  const navigate = useNavigate();
+  const { loading, error, songs } = useSelector(state => state.songList);
+  const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(new Audio());
+  const progressBarRef = useRef(null);
 
   const handleSongClick = (song) => {
     if (currentSong === song.file) {
-      setCurrentSong(null); // Pause the song if it's already playing
+      setCurrentSong(null);
     } else {
-      setCurrentSong(song.file); // Start playing the clicked song
+      setCurrentSong(song.file);
+      playSong(song); // Play the clicked song
     }
   };
 
   useEffect(() => {
-    dispatch(getUserDetails()); // Fetch user details when the component mounts
+    dispatch(getUserDetails());
   }, [dispatch]);
 
   useEffect(() => {
@@ -35,24 +48,115 @@ const Favorites = () => {
     }
   }, [dispatch, user?.data?.user_data?.id]);
 
-  useEffect(() => {
-    // Initialize likedSongsState when likedSongs changes
-    const initialLikedSongsState = likedSongs.reduce((acc, song) => {
-      acc[song.id] = true;
-      return acc;
-    }, {});
-    setLikedSongsState(initialLikedSongsState);
-  }, [likedSongs]);
-
   const handleUnlike = (id) => {
     dispatch(unlikeSong(id)).then(() => {
-      // After successful unlike, update the UI by removing the liked song from the state
       const updatedLikedSongs = likedSongs.filter(song => song.id !== id);
       dispatch({ type: 'UPDATE_LIKED_SONGS', payload: updatedLikedSongs });
-
-      // Update likedSongsState
-      setLikedSongsState(prevState => ({ ...prevState, [id]: false }));
     });
+  };
+
+  useEffect(() => {
+    audioRef.current.addEventListener('timeupdate', () => {
+      if (!isDragging) {
+        setCurrentTime(audioRef.current.currentTime);
+      }
+    });
+    audioRef.current.addEventListener('durationchange', () => {
+      setDuration(audioRef.current.duration);
+    });
+    return () => {
+      audioRef.current.removeEventListener('timeupdate', () => {
+        if (!isDragging) {
+          setCurrentTime(audioRef.current.currentTime);
+        }
+      });
+      audioRef.current.removeEventListener('durationchange', () => {
+        setDuration(audioRef.current.duration);
+      });
+    };
+  }, [isDragging]);
+
+  useEffect(() => {
+    return () => {
+      pauseSong();
+      setCurrentlyPlaying(null);
+      setIsPlaying(false);
+    };
+  }, []);
+
+  const playSong = (song) => {
+    if (currentlyPlaying === song && !audioRef.current.paused) {
+      pauseSong();
+    } else {
+      if (currentlyPlaying !== song) {
+        audioRef.current.src = song.file;
+        setCurrentTime(0); // Reset currentTime when switching to a new song
+        setCurrentlyPlaying(song);
+        setIsPlaying(true);
+      } else {
+        audioRef.current.currentTime = currentTime;
+      }
+      audioRef.current.play();
+    }
+  };
+
+  const pauseSong = () => {
+    audioRef.current.pause();
+    setIsPlaying(false);
+    // Do not set currentTime when pausing
+  };
+
+  const togglePlayPause = () => {
+    if (!currentlyPlaying || audioRef.current.paused) {
+      if (!currentlyPlaying) {
+        playSong(songs[0]);
+      } else {
+        playSong(currentlyPlaying);
+      }
+    } else {
+      pauseSong();
+    }
+  };
+
+  const skipTrack = (forward = true) => {
+    const currentIndex = songs.findIndex(song => song === currentlyPlaying);
+    let newIndex = currentIndex + (forward ? 1 : -1);
+    if (newIndex < 0) {
+      newIndex = songs.length - 1;
+    } else if (newIndex >= songs.length) {
+      newIndex = 0;
+    }
+    playSong(songs[newIndex]);
+  };
+
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
+  const handleTimeBarClick = (e) => {
+    const clickedPosition = e.clientX - progressBarRef.current.getBoundingClientRect().left;
+    const timePerPixel = duration / progressBarRef.current.offsetWidth;
+    const newCurrentTime = clickedPosition * timePerPixel;
+    audioRef.current.currentTime = newCurrentTime;
+    setCurrentTime(newCurrentTime);
+  };
+
+  const handleTimeBarMouseDown = () => {
+    setIsDragging(true);
+  };
+
+  const handleTimeBarMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const calculateTimeBarWidth = () => {
+    if (duration) {
+      return (currentTime / duration) * 100 + '%';
+    } else {
+      return '0%';
+    }
   };
 
   return (
@@ -60,42 +164,56 @@ const Favorites = () => {
       <Navbar />
       <div className='template-background' style={{ flex: 1 }}>
         <Container fluid>
-          <h2 className="mt-3 mb-3" style={{ color: 'white' }}>Liked Songs</h2>
-          <Row>
+          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+            <Image src={likedImage} alt="Liked" style={{ width: '250px', height: '250px', objectFit: 'contain', marginLeft: '10px' }} />
+            <div style={{ marginLeft: '10px' }}>
+              <p style={{ color: 'white', position: 'absolute', fontFamily: selectedFont }}>Playlist</p>
+              <h2 className="mt-3 mb-3" style={{ color: 'white', fontSize: '50px', fontFamily: selectedFont }}>Liked Songs</h2>
+              <p style={{ color: 'white', position: 'absolute', top: '162px', fontFamily: selectedFont }}>Songs that you like in Jtify app will be shown here.</p>
+              <p style={{ color: 'white', position: 'absolute', fontSize: '20px', top: '200px', fontFamily: selectedFont }}>{likedSongs.length} songs</p>
+            </div>
+          </div>
+          <ListGroup variant="flush">
             {likedSongs.map((likedSong, index) => (
-              <Card key={index} className="my-3 mr-3 p-3 rounded" style={{ color: '#fff', width: '250px', fontFamily: selectedFont }}>
-                <img
-                  src={likedSong.picture}
-                  alt={likedSong.name}
-                  style={{ maxWidth: '230px', cursor: 'pointer', borderRadius: '15px' }}
-                  onClick={() => handleSongClick(likedSong)}
-                />
-                <div style={{ textAlign: 'center' }}>
-                  <Card.Title as="div" style={{ margin: '5px 0', fontSize: '18px', color: '#fff' }}>
-                    <strong>{likedSong.name}</strong>
-                  </Card.Title>
-                  <Card.Text as="div" style={{ fontSize: '16px', color: '#d8d4d9' }}>
-                    Artist: {likedSong.artist}
-                  </Card.Text>
-                  <Button variant="link" onClick={() => handleUnlike(likedSong.id)} style={{ color: 'inherit', background: 'transparent', border: 'none' }}>
-                    {likedSongsState[likedSong.id] ? (
-                      <AiFillHeart size={24} color="#e74c3c" />
-                    ) : (
-                      <AiOutlineHeart size={24} color="#e74c3c" />
-                    )}
-                  </Button>
+              <ListGroup.Item key={index} className="position-relative" style={{ backgroundColor: 'transparent', color: '#ffffff', fontFamily: selectedFont, border: 'none', position: 'relative', marginBottom: '10px', marginLeft: '10px' }}>
+                <div onClick={() => handleSongClick(likedSong)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                  <Image src={likedSong.picture} alt={likedSong.name} rounded style={{ marginRight: '15px', width: '64px', height: '64px' }} />
+                  <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                    <div style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '5px' }}>{likedSong.name}</div>
+                    <div style={{ fontSize: '14px', position: 'absolute', center: '10px', left: '550px' }}><span style={{ fontWeight: 'normal' }}>{likedSong.artist}</span></div>
+                  </div>
                 </div>
-              </Card>
+                <div style={{ position: 'absolute', top: '10px', right: '50px' }}>
+                  <FontAwesomeIcon icon={faHeart} style={{ cursor: 'pointer', color: '#fff', fontSize: '20px' }} onClick={() => handleUnlike(likedSong.id)} />
+                </div>
+                {index !== likedSongs.length - 1 && <div style={{ position: 'absolute', bottom: '-1px', left: '0', width: '100%', height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.3)' }}></div>}
+              </ListGroup.Item>
             ))}
-          </Row>
+          </ListGroup>
         </Container>
+        {currentlyPlaying && (
+          <MusicPlayer
+            currentlyPlaying={currentlyPlaying}
+            duration={duration}
+            currentTime={currentTime}
+            isDragging={isDragging}
+            audioRef={audioRef}
+            progressBarRef={progressBarRef}
+            color={color}
+            selectedFont={selectedFont}
+            playSong={playSong}
+            pauseSong={pauseSong}
+            togglePlayPause={togglePlayPause}
+            skipTrack={skipTrack}
+            formatTime={formatTime}
+            handleTimeBarClick={handleTimeBarClick}
+            handleTimeBarMouseDown={handleTimeBarMouseDown}
+            handleTimeBarMouseUp={handleTimeBarMouseUp}
+            calculateTimeBarWidth={calculateTimeBarWidth}
+            isPlaying={isPlaying}
+          />
+        )}
       </div>
-      {currentSong && (
-        <audio controls>
-          <source src={currentSong} type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
-      )}
     </div>
   );
 };

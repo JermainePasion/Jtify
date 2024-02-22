@@ -44,6 +44,7 @@ const AddForm = () => {
     ['Salsa', 'Salsa'],
     ['Afrobeat', 'Afrobeat'],
     ['Highlife', 'Highlife'],
+    ['EDM', 'EDM'],
   ];
 
   const [pictureName, setPictureName] = useState('');

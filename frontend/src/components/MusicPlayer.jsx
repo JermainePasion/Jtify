@@ -14,17 +14,25 @@ function MusicPlayer({
   skipTrack,
   formatTime,
 }) {
-  const [volume, setVolume] = useState(50);
+  const [volume, setVolume] = useState(() => {
+    const storedVolume = localStorage.getItem('volume');
+    return storedVolume !== null ? parseInt(storedVolume, 10) : 50;
+  });
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
 
   useEffect(() => {
+    const storedIsPlaying = localStorage.getItem('isPlaying') === 'true';
+    setIsPlaying(storedIsPlaying);
+
     const handlePlay = () => {
       setIsPlaying(true);
+      localStorage.setItem('isPlaying', 'true');
     };
 
     const handlePause = () => {
       setIsPlaying(false);
+      localStorage.setItem('isPlaying', 'false');
     };
 
     audioRef.current.addEventListener('play', handlePlay);
@@ -36,11 +44,14 @@ function MusicPlayer({
     };
   }, [audioRef]);
 
+  useEffect(() => {
+    audioRef.current.volume = volume / 100;
+    localStorage.setItem('volume', volume.toString());
+    setIsMuted(volume === 0);
+  }, [volume]);
+
   const handleVolumeChange = (event, newValue) => {
-    const mappedVolume = newValue / 100;
     setVolume(newValue);
-    audioRef.current.volume = mappedVolume;
-    setIsMuted(newValue === 0);
   };
 
   const handleTimeBarChange = (event, newValue) => {
@@ -59,8 +70,6 @@ function MusicPlayer({
   const toggleMute = () => {
     const newVolume = isMuted ? 50 : 0;
     setVolume(newVolume);
-    audioRef.current.volume = newVolume / 100;
-    setIsMuted(!isMuted);
   };
 
   return (
