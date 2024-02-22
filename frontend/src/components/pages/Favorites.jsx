@@ -1,10 +1,10 @@
-
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Row, Card, Button } from 'react-bootstrap';
 import Navbar from '../Navbar';
 import { fetchLikedSongs, unlikeSong } from '../../actions/songActions';
-import { getUserDetails } from '../../actions/userActions'; // Import getUserDetails action
+import { getUserDetails } from '../../actions/userActions';
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 
 const Favorites = () => {
   const dispatch = useDispatch();
@@ -13,6 +13,9 @@ const Favorites = () => {
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
   const likedSongs = useSelector((state) => state.fetchLikedSongs.songs); // Access the songs array
   const [currentSong, setCurrentSong] = useState(null);
+
+  // Local state to track liked songs
+  const [likedSongsState, setLikedSongsState] = useState({});
 
   const handleSongClick = (song) => {
     if (currentSong === song.file) {
@@ -32,11 +35,23 @@ const Favorites = () => {
     }
   }, [dispatch, user?.data?.user_data?.id]);
 
+  useEffect(() => {
+    // Initialize likedSongsState when likedSongs changes
+    const initialLikedSongsState = likedSongs.reduce((acc, song) => {
+      acc[song.id] = true;
+      return acc;
+    }, {});
+    setLikedSongsState(initialLikedSongsState);
+  }, [likedSongs]);
+
   const handleUnlike = (id) => {
     dispatch(unlikeSong(id)).then(() => {
       // After successful unlike, update the UI by removing the liked song from the state
       const updatedLikedSongs = likedSongs.filter(song => song.id !== id);
       dispatch({ type: 'UPDATE_LIKED_SONGS', payload: updatedLikedSongs });
+
+      // Update likedSongsState
+      setLikedSongsState(prevState => ({ ...prevState, [id]: false }));
     });
   };
 
@@ -45,7 +60,7 @@ const Favorites = () => {
       <Navbar />
       <div className='template-background' style={{ flex: 1 }}>
         <Container fluid>
-          <h2 className="mt-3 mb-3" style = {{color:'white'}}>Liked Songs</h2>
+          <h2 className="mt-3 mb-3" style={{ color: 'white' }}>Liked Songs</h2>
           <Row>
             {likedSongs.map((likedSong, index) => (
               <Card key={index} className="my-3 mr-3 p-3 rounded" style={{ color: '#fff', width: '250px', fontFamily: selectedFont }}>
@@ -62,7 +77,13 @@ const Favorites = () => {
                   <Card.Text as="div" style={{ fontSize: '16px', color: '#d8d4d9' }}>
                     Artist: {likedSong.artist}
                   </Card.Text>
-                  <Button variant="danger" onClick={() => handleUnlike(likedSong.id)}>Unlike</Button>
+                  <Button variant="link" onClick={() => handleUnlike(likedSong.id)} style={{ color: 'inherit', background: 'transparent', border: 'none' }}>
+                    {likedSongsState[likedSong.id] ? (
+                      <AiFillHeart size={24} color="#e74c3c" />
+                    ) : (
+                      <AiOutlineHeart size={24} color="#e74c3c" />
+                    )}
+                  </Button>
                 </div>
               </Card>
             ))}
@@ -70,10 +91,10 @@ const Favorites = () => {
         </Container>
       </div>
       {currentSong && (
-      <audio controls>
-        <source src={currentSong} type="audio/mpeg" />
-        Your browser does not support the audio element.
-      </audio>
+        <audio controls>
+          <source src={currentSong} type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
       )}
     </div>
   );

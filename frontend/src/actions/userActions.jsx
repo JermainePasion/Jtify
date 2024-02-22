@@ -73,23 +73,31 @@ export const login = (email, password) => async (dispatch) => {
 };
 
 
+// ... (your imports and axios instance)
+
 export const logout = (navigate) => async (dispatch, getState) => {
   const {
     userLogin: { userInfo },
   } = getState();
 
   try {
-    if (userInfo?.data?.token?.access) {
-      await instance.post('api/user/logout/');
-    }
+    // Display confirmation message
+    const confirmLogout = window.confirm('Are you sure you want to logout?');
+    
+    if (confirmLogout) {
+      if (userInfo?.data?.token?.access) {
+        await instance.post('api/user/logout/');
+      }
 
-    localStorage.removeItem('userInfo');
-    dispatch({ type: USER_LOGOUT });
-    navigate('/');
+      localStorage.removeItem('userInfo');
+      dispatch({ type: USER_LOGOUT });
+      navigate('/');
+    }
   } catch (error) {
     console.error('Error logging out:', error);
   }
 };
+
 
 
 export const register = (email, name, password, password2) => async (dispatch) => {

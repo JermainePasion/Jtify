@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { contactUs, getUserDetails } from '../../actions/userActions';
 import Navbar from '../Navbar';
+import { FaEnvelope, FaMapMarker, FaPhone } from 'react-icons/fa';
 
 const ContactLoggedIn = () => {
   const [formData, setFormData] = useState({
@@ -52,12 +53,43 @@ const ContactLoggedIn = () => {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: font }}>
-      <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
-      <div className='template-background' style={{ flex: 1, padding: '20px' }}>
+    <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
+    <div className='template-background' style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+
+          {/* Information Box 1 */}
+          <Card style={{ flex: 1, padding: '20px', border: '2px solid white', borderRadius: '10px', marginLeft: '10px', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}>
+            <h4 style={{ color: 'white', textAlign: 'center' }}> <FaEnvelope style={{ marginRight: '10px', fontSize: '40px', marginLeft: '10px', marginBottom: '0px' }} /></h4>
+            <h1 style={{ color: 'white', textAlign: 'center' }}>Email</h1>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white' }}>
+              <p>Information goes here...</p>
+            </div>
+          </Card>
+
+          {/* Information Box 2 */}
+          <Card style={{ flex: 1, padding: '20px', border: '2px solid white', borderRadius: '10px', marginLeft: '10px', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}>
+            <h4 style={{ color: 'white', textAlign: 'center' }}> <FaMapMarker style={{ marginRight: '10px', fontSize: '40px', marginLeft: '10px', marginBottom: '0px' }} /></h4>
+            <h1 style={{ color: 'white', textAlign: 'center' }}>Address</h1>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white' }}>
+              <p>Information goes here...</p>
+            </div>
+          </Card>
+
+          {/* Information Box 3 */}
+          <Card style={{ flex: 1, padding: '20px', border: '2px solid white', borderRadius: '10px', marginLeft: '10px', backgroundColor: 'rgba(255, 255, 255, 0.2)' }}>
+            <h4 style={{ color: 'white', textAlign: 'center' }}> <FaPhone style={{ marginRight: '10px', fontSize: '40px', marginLeft: '10px', marginBottom: '0px' }} /></h4>
+            <h1 style={{ color: 'white', textAlign: 'center' }}>Contact</h1>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'white' }}>
+              <p>Information goes here...</p>
+            </div>
+          </Card>
+      </div>
+
+        {/* Contact Form Card */}
         <h2 style={{ color: 'white', textAlign: 'center' }}>Contact Us</h2>
         <Card style={{ padding: '20px', border: '2px solid white', borderRadius: '10px' }}>
           <Form onSubmit={handleSubmit}>
-            <Form.Group controlId='formName'>
+          <Form.Group controlId='formName'>
               <Form.Label style={{ color: 'white' }}>Name</Form.Label>
               <Form.Control
                 type='text'
@@ -93,7 +125,6 @@ const ContactLoggedIn = () => {
                 required
               />
             </Form.Group>
-
             <Button variant='primary' type='submit'>
               Send
             </Button>

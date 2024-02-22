@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom'; // Import Link
-import { likeSong } from '../actions/songActions';
+import { likeSong, unlikeSong } from '../actions/songActions';
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 
 function Song({ song, playSong }) {
   const { id, picture, name, artist } = song;
@@ -10,6 +10,13 @@ function Song({ song, playSong }) {
   const color = user?.data?.profile_data?.color || '#defaultColor';
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
   const dispatch = useDispatch();
+  const [liked, setLiked] = useState(false);
+
+  // Load liked songs from localStorage on component mount
+  useEffect(() => {
+    const likedSongs = JSON.parse(localStorage.getItem('likedSongs')) || [];
+    setLiked(likedSongs.includes(id));
+  }, [id]);
 
   const cardStyle = {
     display: 'flex',
@@ -40,9 +47,17 @@ function Song({ song, playSong }) {
   };
 
   const handleLike = () => {
-    dispatch(likeSong(id)); // Dispatch the likeSong action with the song ID
+    const likedSongs = JSON.parse(localStorage.getItem('likedSongs')) || [];
+    if (liked) {
+      dispatch(unlikeSong(id));
+      localStorage.setItem('likedSongs', JSON.stringify(likedSongs.filter(songId => songId !== id)));
+    } else {
+      dispatch(likeSong(id));
+      localStorage.setItem('likedSongs', JSON.stringify([...likedSongs, id]));
+    }
+    setLiked(!liked);
   };
-  
+
   return (
     <Card className="my-3 p-3 rounded" style={{ color: '#fff', width: '250px', marginRight: '10px', padding: '10px', fontFamily: selectedFont }}>
       <Card.Img
@@ -53,15 +68,23 @@ function Song({ song, playSong }) {
       />
       <div style={cardStyle}>
         <Card.Body>
-          <Link to={`/songs/${id}`} style={{ textDecoration: 'none', color: 'inherit' }}> {/* Wrap the name and artist with Link */}
-            <Card.Title as="div" style={titleStyle}>
-              <strong>{name}</strong>
-            </Card.Title>
-            <Card.Text as="div" style={artistStyle}>
-              {artist}
-            </Card.Text>
-          </Link>
-          <Button onClick={handleLike} variant="primary">Like</Button> {/* Add the Like Button */}
+          <Card.Title as="div" style={titleStyle}>
+            <strong>{name}</strong>
+          </Card.Title>
+          <Card.Text as="div" style={artistStyle}>
+            {artist}
+          </Card.Text>
+          <Button
+            onClick={handleLike}
+            variant="link"
+            style={{ color: 'inherit', background: 'transparent', border: 'none' }}
+          >
+            {liked ? (
+              <AiFillHeart size={24} color="#e74c3c" />
+            ) : (
+              <AiOutlineHeart size={24} color="#e74c3c" />
+            )}
+          </Button>
         </Card.Body>
       </div>
     </Card>
