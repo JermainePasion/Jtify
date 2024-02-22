@@ -8,6 +8,7 @@ import Song from '../Song';
 const Discovery = () => {
   const dispatch = useDispatch();
   const [selectedGenre, setSelectedGenre] = useState('');
+  const [showGenres, setShowGenres] = useState(true); // State to manage the visibility of genre buttons
   const user = useSelector((state) => state.userDetails.user);
   const color = user?.data?.profile_data?.color || '#defaultColor';
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
@@ -25,8 +26,13 @@ const Discovery = () => {
 
   const handleGenreSelect = (genre) => {
     setSelectedGenre(genre);
+    setShowGenres(false); 
   };
 
+  const handleGoBack = () => {
+    setSelectedGenre(''); 
+    setShowGenres(true); 
+  };
   const genres = [
     ['Hip-Hop', 'Hip-Hop'],
     ['R&B', 'R&B'],
@@ -57,33 +63,56 @@ const Discovery = () => {
     ['Highlife', 'Highlife']
   ];
 
+  function getStripeColor(index) {
+    const colors = ['#FF5733', '#33FFA8', '#3366FF', '#FF33EB', '#FFD933', '#33FFFA', '#B33AFF', '#FF334D']; // Example colors
+    return colors[index % colors.length]; 
+  }
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
       <div className='template-background' style={{ flex: 1, padding: '20px', color: 'white' }}>
-        <h2 style={{ color: 'white', textAlign: 'center', fontFamily: selectedFont }}>Discovery Page</h2>
-        
-        {/* Genre buttons */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '10px', marginBottom: '20px' }}>
-          {genres.map((genre, index) => (
-            <button key={index} onClick={() => handleGenreSelect(genre[1])} style={{ margin: '0', padding: '10px', borderRadius: '5px', backgroundColor: '#333', color: 'white', border: 'none', cursor: 'pointer' }}>{genre[0]}</button>
-          ))}
-        </div>
+        <h2 style={{ color: 'white', textAlign: 'left', fontFamily: selectedFont, fontSize: '40px' }}>Discovery Page</h2>
 
-        {/* Display songs based on the selected genre */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly' }}>
-          {loading ? (
-            <p>Loading...</p>
-          ) : (
-            genreSongs.length === 0 ? (
-              <p>No songs available for this genre.</p>
+        
+        {selectedGenre && (
+          <button onClick={handleGoBack} className="custom-button">Go Back</button>
+        )}
+        
+     
+        {selectedGenre && (
+          <p style={{ color: 'white', fontFamily: selectedFont, fontSize: '20px', marginBottom: '10px' }}>Selected Genre: {selectedGenre}</p>
+        )}
+
+      
+
+        {showGenres && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '15px', marginBottom: '20px', maxWidth: '1500px' }}>
+            {genres.map((genre, index) => (
+              <button key={index} onClick={() => handleGenreSelect(genre[1])} style={{
+                margin: '0', padding: '12px 16px', borderRadius: '5px', backgroundColor: '#333', color: 'white', border: 'none', cursor: 'pointer',
+                borderLeft: `5px solid ${getStripeColor(index)}` // Use a function to get the stripe color based on index
+              }}>{genre[0]}</button>
+            ))}
+          </div>
+        )}
+
+      
+        {selectedGenre && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-evenly' }}>
+            {loading ? (
+              <p>Loading...</p>
             ) : (
-              genreSongs.map(song => (
-                <Song key={song.id} song={song} playSong={() => {}} />
-              ))
-            )
-          )}
-        </div>
+              genreSongs.length === 0 ? (
+                <p>No songs available for this genre.</p>
+              ) : (
+                genreSongs.map(song => (
+                  <Song key={song.id} song={song} playSong={() => {}} />
+                ))
+              )
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

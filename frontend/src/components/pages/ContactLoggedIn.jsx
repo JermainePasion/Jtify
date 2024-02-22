@@ -87,49 +87,54 @@ const ContactLoggedIn = () => {
 
         {/* Contact Form Card */}
         <h2 style={{ color: 'white', textAlign: 'center' }}>Contact Us</h2>
-        <Card style={{ padding: '20px', border: '2px solid white', borderRadius: '10px' }}>
-          <Form onSubmit={handleSubmit}>
-          <Form.Group controlId='formName'>
-              <Form.Label style={{ color: 'white' }}>Name</Form.Label>
-              <Form.Control
-                type='text'
-                placeholder='Enter your name'
-                name='name'
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
+        <Card style={{ padding: '20px', border: '2px solid white', borderRadius: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+  <Form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
+    <Form.Group controlId='formName'>
+      <Form.Label style={{ color: 'white' }}>Your Name</Form.Label>
+      <Form.Control
+        type='text'
+        placeholder='Enter your name'
+        name='name'
+        value={formData.name}
+        onChange={handleChange}
+        required
+      />
+    </Form.Group>
 
-            <Form.Group controlId='formEmail'>
-              <Form.Label style={{ color: 'white' }}>Email</Form.Label>
-              <Form.Control
-                type='email'
-                placeholder='Enter your email'
-                name='email'
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
+    <Form.Group controlId='formEmail'>
+      <Form.Label style={{ color: 'white' }}>Your Email</Form.Label>
+      <Form.Control
+        type='email'
+        placeholder='Enter your email'
+        name='email'
+        value={formData.email}
+        onChange={handleChange}
+        required
+        
+      />
+    </Form.Group>
 
-            <Form.Group controlId='formMessage'>
-              <Form.Label style={{ color: 'white' }}>Message</Form.Label>
-              <Form.Control
-                as='textarea'
-                rows={4}
-                placeholder='Type your message here'
-                name='message'
-                value={formData.message}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-            <Button variant='primary' type='submit'>
-              Send
-            </Button>
-          </Form>
-        </Card>
+    <Form.Group controlId='formMessage'>
+      <Form.Label style={{ color: 'white' }}>Your Message</Form.Label>
+      <Form.Control
+        as='textarea'
+        rows={4}
+        placeholder='Type your message here'
+        name='message'
+        value={formData.message}
+        onChange={handleChange}
+        required
+        style={{ width: '100%'}}
+      />
+    </Form.Group>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Button variant='primary' type='submit' className='custom-button'>
+          Send
+        </Button>
+    </div>
+  </Form>
+</Card>
         {showSuccessMessage && (
           <p style={{ color: 'white', textAlign: 'center', marginTop: '20px' }}>
             Form submitted successfully!

@@ -69,11 +69,10 @@ function Song({ song, playSong }) {
             <Card.Title as="div" style={titleStyle}>
               <strong>{name}</strong>
             </Card.Title>
+            </Link>
             <Card.Text as="div" style={artistStyle}>
-              {artist}
+              {artist}  <FontAwesomeIcon icon={liked ? solidHeart : regularHeart} onClick={handleLike} style={{ cursor: 'pointer', color: liked ? '#fff' : '#fff' }} /> {/* Set color to white */}
             </Card.Text>
-          </Link>
-          <FontAwesomeIcon icon={liked ? solidHeart : regularHeart} onClick={handleLike} style={{ cursor: 'pointer', color: liked ? '#fff' : '#fff' }} /> {/* Set color to white */}
         </Card.Body>
       </div>
     </Card>

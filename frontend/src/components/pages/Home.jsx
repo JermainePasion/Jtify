@@ -5,6 +5,8 @@ import { listSongs, searchSongs } from '../../actions/songActions';
 import Song from '../Song';
 import MusicPlayer from '../MusicPlayer';
 import { getUserDetails } from '../../actions/userActions';
+import { BsSearch } from 'react-icons/bs';
+
 
 function Home() {
   const dispatch = useDispatch();
@@ -153,12 +155,52 @@ function Home() {
         padding: '10px 20px', // Increase padding for better spacing
         backgroundSize: 'cover',
       }}>
-        <div style={{ position: 'absolute', top: '10px', right: '20px' }}> {/* Position search bar */}
-          {/* Search bar with Bootstrap classes */}
-          <div className="input-group rounded">
-            <input type="search" className="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" value={query} onChange={handleSearchChange} />
-            {/* <button className="btn btn-primary" type="button" id="search-addon" onClick={handleSearch}>Search</button> */}
-          </div>
+        <div style={{ position: 'absolute', top: '10px', right: '30px' }}> {/* Position search bar */}
+    {/* Search bar with Bootstrap classes */}
+    <div style={{ position: 'absolute', top: '10px', right: '30px', display: 'flex', alignItems: 'center' }}> {/* Position search bar */}
+    {/* Search bar with Bootstrap classes */}
+    <div className="input-group rounded">
+    <input
+        type="search"
+        className="form-control rounded pl-5"
+        placeholder="Search"
+        aria-label="Search"
+        aria-describedby="search-addon"
+        value={query}
+        onChange={handleSearchChange}
+        style={{
+            position: 'relative',
+            transition: 'width 0.3s ease-in-out',
+            width: '300px',
+            paddingLeft: '30px'
+        }}
+        onFocus={(e) => e.target.style.width = '600px'}
+        onBlur={(e) => e.target.style.width = '300px'}
+    />
+    <div className="input-group-append">
+        <span className="input-group-text border-0" id="search-addon">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="icon icon-tabler icon-tabler-search"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ position: 'absolute', left: '5px', top: '50%', transform: 'translateY(-50%)' }}
+            >
+                <path stroke="none" d="M0 0h24v24H0z" />
+                <circle cx="10" cy="10" r="7" />
+                <line x1="21" y1="21" x2="15" y2="15" />
+            </svg>
+        </span>
+    </div>
+</div>
+
+</div>
         </div>
         <h1 style={{ color: 'white', fontFamily: selectedFont, fontSize: '30px' }}>Today's hits</h1>
         <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'auto' }}>

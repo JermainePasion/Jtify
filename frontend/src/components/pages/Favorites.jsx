@@ -160,6 +160,7 @@ const Favorites = () => {
     }
   };
 
+  
   return (
     <div style={{ display: 'flex', flexDirection: 'row', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
@@ -188,7 +189,9 @@ const Favorites = () => {
                   <FontAwesomeIcon icon={faHeart} style={{ cursor: 'pointer', color: '#fff', fontSize: '20px' }} onClick={() => handleUnlike(likedSong.id)} />
                 </div>
                 {index !== likedSongs.length - 1 && <div style={{ position: 'absolute', bottom: '-1px', left: '0', width: '100%', height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.3)' }}></div>}
+                
               </ListGroup.Item>
+              
             ))}
           </ListGroup>
         </Container>

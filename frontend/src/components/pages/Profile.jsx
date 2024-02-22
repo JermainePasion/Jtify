@@ -191,7 +191,7 @@ function Profile() {
                   </div>
                   </Card>
                   </div>
-                  <button type="submit" style={{ alignContent: 'center', padding: '10px', backgroundColor: 'rgb(130,50,139)', color: 'white', border: 'none', 
+                  <button className='custom-button' type="submit" style={{alignContent: 'center', padding: '10px',  color: 'white', border: 'none', 
                   cursor: 'pointer', width: '50%', marginTop: '20px' }}>Update Profile</button>
                 </div>
                 </form>
