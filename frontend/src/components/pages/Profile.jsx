@@ -160,10 +160,11 @@ function Profile() {
                   <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '500px', width: '725px', padding: '15px', 
                   borderRadius: '10px', backgroundColor: color, opacity: 0.9, marginTop: '10px', marginLeft: '-7px'}}>
                   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1, alignItems: 'left', position: 'relative'}}>
-                  <div style={{ marginBottom: '15px', marginLeft: '20px'}}>
-                    <label htmlFor="profilePicture" style={{ color: 'white', display: 'block', marginBottom: '5px' }}>Profile Picture:</label>
-                    <input type="file" id="profilePicture" onChange={handleFileChange} style={{ width: '100%' }} />
-                  </div>
+              <div style={{ marginBottom: '15px', marginLeft: '20px', color: 'white' }}>
+                <label htmlFor="profilePicture" style={{ display: 'block', marginBottom: '5px' }}>Profile Picture:</label>
+                <input type="file" id="profilePicture" onChange={handleFileChange} style={{ width: '100%', color: 'white' }} />
+                {fileName && <p style={{ marginTop: '5px' }}></p>} {/* Display file name if a file has been selected */}
+              </div>
                   <div style={{ marginBottom: '15px', position: 'relative', marginLeft: '20px' }}>
                     <label htmlFor="color" style={{ color: 'white', display: 'block', marginBottom: '5px' }}>Profile Color:</label>
                     <div

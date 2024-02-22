@@ -11,4 +11,5 @@ urlpatterns = [
     path('upload/', upload_songs, name='upload-song'),
     path('<int:pk>/delete/', delete_songs, name='delete-song'),
     path('genres/<str:genre>/', GenreSongListView.as_view(), name='genre-song-list'),
+    path('search/', SearchSongListView.as_view(), name='search-song-list'),
 ]

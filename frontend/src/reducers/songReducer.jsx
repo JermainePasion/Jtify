@@ -26,6 +26,9 @@ import {
   FETCH_SONGS_BY_GENRE_REQUEST,
   FETCH_SONGS_BY_GENRE_SUCCESS,
   FETCH_SONGS_BY_GENRE_FAILURE,
+  SONG_SEARCH_REQUEST,
+  SONG_SEARCH_SUCCESS,
+  SONG_SEARCH_FAILURE,
 
 } from '../constants/songConstants';
 // songReducer.jsx
@@ -50,6 +53,15 @@ const songReducer = (state = initialState, action) => {
       return { ...state, loading: false, error: action.payload, songs: [] };
     case SONG_DETAILS_SUCCESS: // Add case for SONG_DETAILS_SUCCESS
       return { ...state, loading: false, song: action.payload, error: null }; // Update state with song details
+    case FETCH_SONGS_BY_GENRE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        genreSongs: action.payload,
+        error: null,
+      };
+    case SONG_SEARCH_SUCCESS:
+      return { ...state, loading: false, songs: action.payload, error: null };
     default:
       return state;
   }
@@ -165,19 +177,35 @@ export const songGenreReducer = (state = initialState, action) => {
         loading: true,
         error: null,
       };
-    case FETCH_SONGS_BY_GENRE_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        genreSongs: action.payload,
-      };
+      case FETCH_SONGS_BY_GENRE_SUCCESS:
+        return {
+          ...state,
+          loading: false,
+          genreSongs: action.payload,
+          error: null,
+        };
     case FETCH_SONGS_BY_GENRE_FAILURE:
+      console.log('Error in FETCH_SONGS_BY_GENRE_FAILURE:', action.payload); // Add this line to log any errors
       return {
         ...state,
         loading: false,
         error: action.payload,
+        genreSongs: [],
       };
     default:
       return state;
   }
 };
+
+export const songSearchReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case SONG_SEARCH_REQUEST:
+      return { ...state, loading: true, error: null };
+    case SONG_SEARCH_SUCCESS:
+      return { ...state, loading: false, songs: action.payload, error: null };
+    case SONG_SEARCH_FAILURE:
+      return { ...state, loading: false, error: action.payload, songs: [] };
+    default:
+      return state;
+  }
+}

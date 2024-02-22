@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
-
+from rest_framework import filters
 from .models import Song, Like
 from .serializers import *
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -180,5 +180,12 @@ class unlikeSong(APIView):
 class GenreSongListView(APIView):
     def get(self, request, genre):
         songs = Song.objects.filter(genre=genre)
+        serializer = SongSerializer(songs, many=True)
+        return Response(serializer.data)
+    
+class SearchSongListView(APIView):
+    def get(self, request):
+        query = request.query_params.get('q', '')
+        songs = Song.objects.filter(name__icontains=query) | Song.objects.filter(artist__icontains=query)
         serializer = SongSerializer(songs, many=True)
         return Response(serializer.data)

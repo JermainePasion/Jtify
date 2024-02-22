@@ -18,6 +18,7 @@ import ContactLoggedIn from './components/pages/ContactLoggedIn'; // Import Cont
 import Discovery from './components/pages/Discovery';
 
 
+
 const isAuthenticated = () => {
   return localStorage.getItem('userInfo') !== null;
 };

@@ -27,7 +27,9 @@ import {
   FETCH_SONGS_BY_GENRE_REQUEST,
   FETCH_SONGS_BY_GENRE_SUCCESS,
   FETCH_SONGS_BY_GENRE_FAILURE,
-
+  SONG_SEARCH_REQUEST,
+  SONG_SEARCH_SUCCESS,
+  SONG_SEARCH_FAILURE,
 } from '../constants/songConstants'; 
 
  const instance = axios.create({
@@ -342,13 +344,45 @@ export const fetchSongsByGenre = (genre) => async (dispatch, getState) => {
       },
     };
 
-    // Update the URL to include the genre
-    const { data } = await axios.get(`/api/songs/genres/${genre}`, config);
-    
-    dispatch({ type: FETCH_SONGS_BY_GENRE_SUCCESS, payload: data });
+    const response = await instance.get(`/api/songs/genres/${genre}`, config);
+    console.log('Response from fetchSongsByGenre:', response.data); // Add this line to log the response data
+
+    dispatch({ type: FETCH_SONGS_BY_GENRE_SUCCESS, payload: response.data });
   } catch (error) {
+    console.log('Error in fetchSongsByGenre:', error); // Add this line to log any errors
     dispatch({
       type: FETCH_SONGS_BY_GENRE_FAILURE,
+      payload: error.message && error.response.data.message
+        ? error.response.data.message
+        : error.message,
+    });
+  }
+};
+
+export const searchSongs = (query) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: SONG_SEARCH_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    if (!userInfo?.data?.token?.access) {
+      throw new Error('User information is missing or incomplete');
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.data.token.access}`,
+      },
+    };
+
+    const response = await instance.get(`/api/songs/search/?q=${query}`, config);
+
+    dispatch({ type: SONG_SEARCH_SUCCESS, payload: response.data });
+  } catch (error) {
+    dispatch({
+      type: SONG_SEARCH_FAILURE,
       payload: error.message && error.response.data.message
         ? error.response.data.message
         : error.message,

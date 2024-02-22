@@ -11,6 +11,7 @@ import songListReducer, { songAddReducer } from './reducers/songReducer';
 import songDetailReducer from './reducers/songReducer'; // Import the new reducer
 import songEditReducer from './reducers/songReducer'; // Import the new reducer
 import { likeSongReducer } from './reducers/songReducer';
+import songSearchReducer from './reducers/songReducer';
 import { fetchLikedSongsReducer } from './reducers/songReducer';
 import { contactUsReducer } from './reducers/userReducers'; // Import the new reducer
 import  songGenreReducer  from './reducers/songReducer';
@@ -32,7 +33,7 @@ const reducer = combineReducers({
     fetchLikedSongs: fetchLikedSongsReducer,
     contactUs: contactUsReducer,
     songGenre: songGenreReducer,
-
+    songSearch: songSearchReducer,
 });
 
 const initialState = {

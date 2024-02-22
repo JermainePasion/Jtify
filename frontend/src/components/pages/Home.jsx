@@ -1,8 +1,7 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Navbar from '../Navbar';
-import { listSongs } from '../../actions/songActions';
+import { listSongs, searchSongs } from '../../actions/songActions';
 import Song from '../Song';
 import MusicPlayer from '../MusicPlayer';
 import { getUserDetails } from '../../actions/userActions';
@@ -15,6 +14,7 @@ function Home() {
   const [currentTime, setCurrentTime] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [query, setQuery] = useState(''); // Define query state variable
   const audioRef = useRef(new Audio());
   const progressBarRef = useRef(null);
   const user = useSelector(state => state.userDetails.user);
@@ -23,40 +23,28 @@ function Home() {
 
   useEffect(() => {
     dispatch(getUserDetails());
-  }, [dispatch]);
-  
-  useEffect(() => {
     dispatch(listSongs());
   }, [dispatch]);
 
   useEffect(() => {
-    audioRef.current.addEventListener('timeupdate', () => {
-      if (!isDragging) {
-        setCurrentTime(audioRef.current.currentTime);
-      }
-    });
-    audioRef.current.addEventListener('durationchange', () => {
-      setDuration(audioRef.current.duration);
-    });
-    return () => {
-      audioRef.current.removeEventListener('timeupdate', () => {
-        if (!isDragging) {
-          setCurrentTime(audioRef.current.currentTime);
-        }
-      });
-      audioRef.current.removeEventListener('durationchange', () => {
-        setDuration(audioRef.current.duration);
-      });
-    };
-  }, [isDragging]);
+    const timer = setTimeout(() => {
+      // Dispatch searchSongs action after 500ms of typing inactivity
+      dispatch(searchSongs(query));
+    }, 500);
 
-  useEffect(() => {
     return () => {
-      pauseSong();
-      setCurrentlyPlaying(null);
-      setIsPlaying(false);
+      clearTimeout(timer); // Clear the timeout on cleanup
     };
-  }, []);
+  }, [query, dispatch]);
+
+  const handleSearchChange = (e) => {
+    setQuery(e.target.value); // Define handleSearchChange function
+  };
+
+  const handleSearch = () => {
+    // Dispatch searchSongs action immediately when the search button is clicked
+    dispatch(searchSongs(query));
+  };
 
   const playSong = (song) => {
     if (currentlyPlaying === song && !audioRef.current.paused) {
@@ -133,7 +121,6 @@ function Home() {
     }
   };
 
-
   return (
     <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
@@ -142,9 +129,16 @@ function Home() {
         marginLeft: '10px', 
         position: 'relative', 
         overflowX: 'auto', 
-        padding: '10px 0',
+        padding: '10px 20px', // Increase padding for better spacing
         backgroundSize: 'cover',
       }}>
+        <div style={{ position: 'absolute', top: '10px', right: '20px' }}> {/* Position search bar */}
+          {/* Search bar with Bootstrap classes */}
+          <div className="input-group rounded">
+            <input type="search" className="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" value={query} onChange={handleSearchChange} />
+            {/* <button className="btn btn-primary" type="button" id="search-addon" onClick={handleSearch}>Search</button> */}
+          </div>
+        </div>
         <h1 style={{ color: 'white', fontFamily: selectedFont, fontSize: '30px' }}>Today's hits</h1>
         <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'auto' }}>
           {loading ? (
