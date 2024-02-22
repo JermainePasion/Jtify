@@ -18,7 +18,7 @@ const Favorites = () => {
   const color = user?.data?.profile_data?.color || '#defaultColor';
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
   const likedSongs = useSelector((state) => state.fetchLikedSongs.songs);
-  const [currentSong, setCurrentSong] = useState(null);
+  const [currentSongIndex, setCurrentSongIndex] = useState(null);
   const navigate = useNavigate();
   const { loading, error, songs } = useSelector(state => state.songList);
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
@@ -29,12 +29,12 @@ const Favorites = () => {
   const audioRef = useRef(new Audio());
   const progressBarRef = useRef(null);
 
-  const handleSongClick = (song) => {
-    if (currentSong === song.file) {
-      setCurrentSong(null);
+  const handleSongClick = (index) => {
+    if (currentSongIndex === index) {
+      setCurrentSongIndex(null);
     } else {
-      setCurrentSong(song.file);
-      playSong(song); // Play the clicked song
+      setCurrentSongIndex(index);
+      playSong(index); // Play the clicked song
     }
   };
 
@@ -84,7 +84,8 @@ const Favorites = () => {
     };
   }, []);
 
-  const playSong = (song) => {
+  const playSong = (index) => {
+    const song = likedSongs[index];
     if (currentlyPlaying === song && !audioRef.current.paused) {
       pauseSong();
     } else {
@@ -109,9 +110,9 @@ const Favorites = () => {
   const togglePlayPause = () => {
     if (!currentlyPlaying || audioRef.current.paused) {
       if (!currentlyPlaying) {
-        playSong(songs[0]);
+        playSong(0); // Play the first song in the liked songs list
       } else {
-        playSong(currentlyPlaying);
+        playSong(currentSongIndex);
       }
     } else {
       pauseSong();
@@ -119,14 +120,14 @@ const Favorites = () => {
   };
 
   const skipTrack = (forward = true) => {
-    const currentIndex = songs.findIndex(song => song === currentlyPlaying);
-    let newIndex = currentIndex + (forward ? 1 : -1);
+    let newIndex = currentSongIndex + (forward ? 1 : -1);
     if (newIndex < 0) {
-      newIndex = songs.length - 1;
-    } else if (newIndex >= songs.length) {
+      newIndex = likedSongs.length - 1;
+    } else if (newIndex >= likedSongs.length) {
       newIndex = 0;
     }
-    playSong(songs[newIndex]);
+    setCurrentSongIndex(newIndex);
+    playSong(newIndex);
   };
 
   const formatTime = (timeInSeconds) => {
@@ -176,7 +177,7 @@ const Favorites = () => {
           <ListGroup variant="flush">
             {likedSongs.map((likedSong, index) => (
               <ListGroup.Item key={index} className="position-relative" style={{ backgroundColor: 'transparent', color: '#ffffff', fontFamily: selectedFont, border: 'none', position: 'relative', marginBottom: '10px', marginLeft: '10px' }}>
-                <div onClick={() => handleSongClick(likedSong)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                <div onClick={() => handleSongClick(index)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                   <Image src={likedSong.picture} alt={likedSong.name} rounded style={{ marginRight: '15px', width: '64px', height: '64px' }} />
                   <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                     <div style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '5px' }}>{likedSong.name}</div>
