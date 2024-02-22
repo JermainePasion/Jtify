@@ -37,6 +37,27 @@ function Home() {
     };
   }, [query, dispatch]);
 
+  useEffect(() => {
+    audioRef.current.addEventListener('timeupdate', () => {
+      if (!isDragging) {
+        setCurrentTime(audioRef.current.currentTime);
+      }
+    });
+    audioRef.current.addEventListener('durationchange', () => {
+      setDuration(audioRef.current.duration);
+    });
+    return () => {
+      audioRef.current.removeEventListener('timeupdate', () => {
+        if (!isDragging) {
+          setCurrentTime(audioRef.current.currentTime);
+        }
+      });
+      audioRef.current.removeEventListener('durationchange', () => {
+        setDuration(audioRef.current.duration);
+      });
+    };
+  }, [isDragging]);
+
   const handleSearchChange = (e) => {
     setQuery(e.target.value); // Define handleSearchChange function
   };
