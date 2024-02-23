@@ -50,3 +50,17 @@ class Like(models.Model):
 
     class Meta:
         unique_together = ['user', 'song']
+
+class Playlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    songs = models.ManyToManyField(Song, related_name='playlists')
+    playlistCover = models.ImageField(upload_to='playlist_pictures/')
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.name
+
+    def add_user_songs(self):
+        user_songs = Song.objects.filter(user=self.user)
+        self.songs.add(*user_songs)

@@ -30,6 +30,9 @@ import {
   SONG_SEARCH_REQUEST,
   SONG_SEARCH_SUCCESS,
   SONG_SEARCH_FAILURE,
+  PLAYLIST_LIST_REQUEST,
+  PLAYLIST_LIST_SUCCESS,
+  PLAYLIST_LIST_FAILURE,
 } from '../constants/songConstants'; 
 
  const instance = axios.create({
@@ -359,9 +362,33 @@ export const fetchSongsByGenre = (genre) => async (dispatch, getState) => {
   }
 };
 
-export const searchSongs = (query) => async (dispatch, getState) => {
+export const searchSongs = (query) => async (dispatch) => {
   try {
     dispatch({ type: SONG_SEARCH_REQUEST });
+
+    // Ensure that query is defined before making the request
+    const url = query ? `/api/songs/search?query=${query}` : '/api/songs';
+
+    const { data } = await axios.get(url);
+
+    dispatch({
+      type: SONG_ADD_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: SONG_ADD_FAILURE,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const playlistView = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: PLAYLIST_LIST_REQUEST });
 
     const {
       userLogin: { userInfo },
@@ -377,12 +404,12 @@ export const searchSongs = (query) => async (dispatch, getState) => {
       },
     };
 
-    const response = await instance.get(`/api/songs/search/?q=${query}`, config);
-
-    dispatch({ type: SONG_SEARCH_SUCCESS, payload: response.data });
+    const { data } = await instance.get(`/api/songs/playlist/`, config);
+    dispatch({ type: PLAYLIST_LIST_SUCCESS, payload: data });
   } catch (error) {
+    console.log('Error in playlistView:', error);
     dispatch({
-      type: SONG_SEARCH_FAILURE,
+      type: PLAYLIST_LIST_FAILURE,
       payload: error.message && error.response.data.message
         ? error.response.data.message
         : error.message,

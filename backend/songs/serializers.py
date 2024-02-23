@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Song, Like 
+from .models import Song, Like, Playlist
 from account.models import User 
 
 class SongSerializer(serializers.ModelSerializer):
@@ -26,3 +26,9 @@ class LikeSerializer(serializers.ModelSerializer):
         # Pass the modified validated_data to the Like model creation
         like_instance = Like.objects.create(**validated_data)
         return like_instance
+    
+class PlaylistSerializer(serializers.ModelSerializer):
+    songs = SongSerializer(many=True, read_only=True)
+    class Meta:
+        model = Playlist
+        fields = ['id', 'user', 'name', 'songs', 'playlistCover', 'created_at', ]

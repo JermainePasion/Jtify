@@ -16,6 +16,7 @@ import { fetchLikedSongsReducer } from './reducers/songReducer';
 import { contactUsReducer } from './reducers/userReducers'; // Import the new reducer
 import  songGenreReducer  from './reducers/songReducer';
 import { artistRegisterReducer } from './reducers/userReducers';
+import playlistReducer from './reducers/songReducer'; // Import the new reducer
 
 
 const reducer = combineReducers({
@@ -35,7 +36,8 @@ const reducer = combineReducers({
     contactUs: contactUsReducer,
     songGenre: songGenreReducer,
     songSearch: songSearchReducer,
-    artistRegister: artistRegisterReducer
+    artistRegister: artistRegisterReducer,
+    playlistView: playlistReducer,
 });
 
 const initialState = {

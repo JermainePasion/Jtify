@@ -189,3 +189,19 @@ class SearchSongListView(APIView):
         songs = Song.objects.filter(name__icontains=query) | Song.objects.filter(artist__icontains=query)
         serializer = SongSerializer(songs, many=True)
         return Response(serializer.data)
+    
+class PlaylistListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        playlists = Playlist.objects.filter(user=request.user)
+        serializer = PlaylistSerializer(playlists, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = PlaylistSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.validated_data['user'] = request.user
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

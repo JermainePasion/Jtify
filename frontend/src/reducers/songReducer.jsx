@@ -29,6 +29,10 @@ import {
   SONG_SEARCH_REQUEST,
   SONG_SEARCH_SUCCESS,
   SONG_SEARCH_FAILURE,
+  PLAYLIST_LIST_REQUEST,
+
+  PLAYLIST_LIST_SUCCESS,
+  PLAYLIST_LIST_FAILURE,
 
 } from '../constants/songConstants';
 // songReducer.jsx
@@ -38,9 +42,10 @@ import {
 const initialState = {
   songs: [],
   genreSongs: [],
+  playlists: [],
   loading: false,
   error: null,
-  song: null, 
+  song: null,
 };
 
 const songReducer = (state = initialState, action) => {
@@ -51,22 +56,24 @@ const songReducer = (state = initialState, action) => {
       return { ...state, loading: false, songs: action.payload, error: null };
     case SONG_LIST_FAILURE:
       return { ...state, loading: false, error: action.payload, songs: [] };
-    case SONG_DETAILS_SUCCESS: // Add case for SONG_DETAILS_SUCCESS
-      return { ...state, loading: false, song: action.payload, error: null }; // Update state with song details
-    case FETCH_SONGS_BY_GENRE_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        genreSongs: action.payload,
-        error: null,
-      };
-    case SONG_SEARCH_SUCCESS:
-      return { ...state, loading: false, songs: action.payload, error: null };
+    case SONG_DETAILS_SUCCESS:
+      return { ...state, loading: false, song: action.payload, error: null };
+    case PLAYLIST_LIST_SUCCESS:
+        console.log('Payload:', action.payload); // Add this line
+        return {
+          ...state,
+          loading: false,
+          playlists: action.payload.map(playlist => ({
+            ...playlist,
+            songs: Array.isArray(playlist.songs) ? playlist.songs : [playlist.songs],
+            numberOfSongs: playlist.songs.length,
+          })),
+          error: null,
+        };
     default:
       return state;
   }
 };
-
 export default songReducer;
 
 
@@ -78,12 +85,9 @@ export default songReducer;
 export const DetailViewReducer = (state = initialState, action) => {
   switch (action.type) {
     case SONG_DETAILS_REQUEST:
-      return { ...state, loading: true, error: null, song: null }; // Set song to null initially
+      return { ...state, loading: true, error: null, song: null };
     case SONG_DETAILS_SUCCESS:
-      console.log('Reducer received payload:', action.payload);
-      const updatedState = { ...state, loading: false, song: action.payload, error: null };
-      console.log('Updated state:', updatedState);
-      return updatedState;
+      return { ...state, loading: false, song: action.payload, error: null };
     case SONG_DETAILS_FAILURE:
       return { ...state, loading: false, error: action.payload, song: null };
     default:
@@ -209,3 +213,16 @@ export const songSearchReducer = (state = initialState, action) => {
       return state;
   }
 }
+
+export const playlistReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case PLAYLIST_LIST_REQUEST:
+      return { ...state, loading: true, error: null };
+    case PLAYLIST_LIST_SUCCESS:
+      return { ...state, loading: false, playlists: action.payload, error: null }; // Make sure playlists is updated correctly
+    case PLAYLIST_LIST_FAILURE:
+      return { ...state, loading: false, error: action.payload, playlists: [] };
+    default:
+      return state;
+  }
+};
