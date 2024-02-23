@@ -4,7 +4,7 @@ import { FaHome, FaSearch } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../actions/userActions';
-import { BsDoorOpenFill,BsFire, BsPersonSquare, BsFillHeartFill, BsFillTelephoneFill, BsBrowserSafari } from "react-icons/bs";
+import { BsDoorOpenFill,BsFire, BsPersonSquare, BsFillHeartFill, BsFillTelephoneFill, BsBrowserSafari, BsMusicNoteList } from "react-icons/bs";
 import { useSelector } from 'react-redux';
 
 
@@ -73,7 +73,7 @@ const Navbar = () => {
 
         <h1>
           <button className='Navbar-items' onClick={goToArtistRegister} style={{ fontFamily: selectedFont }}>
-            <BsFire /> Be an Artist
+          <BsMusicNoteList /> Be an Artist
           </button>
         </h1>
 
