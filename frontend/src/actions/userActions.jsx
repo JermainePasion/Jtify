@@ -28,7 +28,10 @@ import {
     USER_UPDATE_PROFILE_RESET,
     USER_CONTACT_US_REQUEST,
     USER_CONTACT_US_SUCCESS,
-    USER_CONTACT_US_FAIL
+    USER_CONTACT_US_FAIL,
+    ARTIST_REGISTER_REQUEST,
+    ARTIST_REGISTER_SUCCESS,
+    ARTIST_REGISTER_FAILURE
 } from '../constants/userConstants';
 
 
@@ -372,14 +375,12 @@ export const contactUs = (name, email, message) => async (dispatch, getState) =>
       type: USER_CONTACT_US_REQUEST
     });
 
-    // const {
-    //   userLogin: { userInfo },
-    // } = getState();
+
 
     const config = {
       headers: {
         'Content-Type': 'application/json',
-        // Authorization: `Bearer ${userInfo?.data?.token?.access}` // Include the access token
+
       }
     };
 
@@ -400,3 +401,32 @@ export const contactUs = (name, email, message) => async (dispatch, getState) =>
     });
   }
 };
+
+
+export const artistRegister = (name, artist_name, email, phone_number, youtube_link)  => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: ARTIST_REGISTER_REQUEST
+    });
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const response = await instance.post('api/user/artist-register/', {name, artist_name, email, phone_number, youtube_link}, 
+      config);
+
+      dispatch({
+        type: ARTIST_REGISTER_SUCCESS,
+        payload: response.data 
+      });
+    } catch (error) {
+      dispatch({
+        type: ARTIST_REGISTER_FAILURE,
+        payload: error.response ? error.response.data : 'Failed to register'
+      });
+    }
+  };
+

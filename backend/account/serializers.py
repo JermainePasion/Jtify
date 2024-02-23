@@ -10,7 +10,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import DjangoUnicodeDecodeError
 from . import utils
 from .models import Profile
-from .models import Contact
+from .models import Contact, ArtistRegister
 
 
 User = get_user_model()
@@ -140,3 +140,9 @@ class ContactSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contact
         fields = '__all__'
+
+class ArtistRegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArtistRegister
+        fields = '__all__'
+

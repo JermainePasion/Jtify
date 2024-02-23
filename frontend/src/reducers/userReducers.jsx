@@ -26,9 +26,14 @@ import { USER_LOGIN_REQUEST,
     USER_UPDATE_PROFILE_RESET,
     USER_CONTACT_US_REQUEST,
     USER_CONTACT_US_SUCCESS,
-    USER_CONTACT_US_FAIL
+    USER_CONTACT_US_FAIL,
+    ARTIST_REGISTER_REQUEST,
+    ARTIST_REGISTER_SUCCESS,
+    ARTIST_REGISTER_FAILURE
  } 
 from '../constants/userConstants';
+
+
 
 
 export const userLoginReducer = (state = {}, action) => {
@@ -154,5 +159,15 @@ export const contactUsReducer = (state = {}, action) => {
     }
   }
   
-
-  
+export const artistRegisterReducer = (state = {}, action)  => {
+    switch (action.type) {
+      case ARTIST_REGISTER_REQUEST:
+        return {loading: true,};
+      case ARTIST_REGISTER_SUCCESS:
+        return {loading: false,success: true, userInfo: action.payload};
+      case ARTIST_REGISTER_FAILURE:
+        return {loading: false,error: action.payload};
+      default:
+        return state;
+    }
+  };

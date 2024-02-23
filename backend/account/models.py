@@ -42,6 +42,7 @@ class UserManager(BaseUserManager):
       )
       user.is_admin = True
       user.is_active = True
+      user.is_artist = True
       user.save(using=self._db)
       return user
 
@@ -55,6 +56,7 @@ class User(AbstractBaseUser):
   name = models.CharField(max_length=200)
   is_active = models.BooleanField(default=False)
   is_admin = models.BooleanField(default=False)
+  is_artist = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 #   is_email_verified = models.BooleanField(default=False)
@@ -151,3 +153,14 @@ class Contact(models.Model):
 
   def __str__(self):
       return self.name
+  
+class ArtistRegister(models.Model):
+  name = models.CharField(max_length=255)
+  artist_name = models.CharField(max_length=255)
+  email = models.EmailField(max_length=255)
+  phone_number = models.IntegerField(max_length=12)
+  youtube_link = models.URLField(max_length=200)
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+      return self.name  

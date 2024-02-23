@@ -43,6 +43,10 @@ const Navbar = () => {
     navigate('/discovery');
   };
 
+  const goToArtistRegister = () => {
+    navigate('/artistregister');
+  };
+
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', alignItems: 'center', justifyContent: 'center', fontFamily: selectedFont }}>
@@ -66,6 +70,13 @@ const Navbar = () => {
             <BsBrowserSafari /> Discovery
           </button>
         </h1>
+
+        <h1>
+          <button className='Navbar-items' onClick={goToArtistRegister} style={{ fontFamily: selectedFont }}>
+            <BsFire /> Be an Artist
+          </button>
+        </h1>
+
         <h1>
           <button className='Navbar-items' onClick={goToAddSong} style={{ fontFamily: selectedFont }}>
             <BsFire /> Add Song

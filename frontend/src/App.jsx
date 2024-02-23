@@ -16,6 +16,7 @@ import AddSong from './components/pages/AddSong';
 import ContactLoggedOut from './components/pages/ContactLoggedOut';
 import ContactLoggedIn from './components/pages/ContactLoggedIn'; // Import ContactLoggedIn component
 import Discovery from './components/pages/Discovery';
+import ArtistRegister from './components/pages/ArtistRegister';
 
 
 
@@ -38,6 +39,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/discovery" element={<Discovery />} />
+        <Route path="/artistregister" element={<ArtistRegister />} />
         
         <Route
           path="/register"

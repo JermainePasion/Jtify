@@ -254,3 +254,21 @@ class ContactView(APIView):
             self.perform_create(serializer)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ArtistRegisterView(APIView):
+    serializer_class = ArtistRegisterSerializer
+
+    def get(self, request, format=None):
+       
+        registrations = ArtistRegister.objects.all()
+        serializer = self.serializer_class(registrations, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        # Deserialize the incoming data
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            # Save the validated data to the database
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

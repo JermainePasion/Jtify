@@ -16,4 +16,5 @@ urlpatterns = [
   path('profile/update', updateUserProfile, name='update-profile'),
   path('logout/', logout_view, name='logout'),
   path('contact-us/', ContactView.as_view(), name='contact'),
+  path('artist-register/', ArtistRegisterView.as_view(), name='artist-register-list-create'),
 ]
