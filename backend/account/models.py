@@ -158,7 +158,7 @@ class ArtistRegister(models.Model):
   name = models.CharField(max_length=255)
   artist_name = models.CharField(max_length=255)
   email = models.EmailField(max_length=255)
-  phone_number = models.IntegerField(max_length=12)
+  phone_number = models.IntegerField()
   youtube_link = models.URLField(max_length=200)
   created_at = models.DateTimeField(auto_now_add=True)
 

@@ -122,7 +122,7 @@ const AddForm = () => {
             </div>
             <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <label htmlFor="artist" style={{ color: 'white', width: '100px', marginRight: '10px' }}>Artist:</label>
-              <input type='text' id="artist" name='artist' placeholder='Artist' style={{ width: '50%', padding: '8px' }} />
+              <input type='text' id="artist" name='artist' placeholder='Artist' style={{ width: '50%', padding: '8px' }} defaultValue={user?.data?.user_data?.name} readOnly/>
             </div>
 
             <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

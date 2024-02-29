@@ -13,10 +13,14 @@ import songEditReducer from './reducers/songReducer'; // Import the new reducer
 import { likeSongReducer } from './reducers/songReducer';
 import songSearchReducer from './reducers/songReducer';
 import { fetchLikedSongsReducer } from './reducers/songReducer';
-import { contactUsReducer } from './reducers/userReducers'; // Import the new reducer
+import { contactUsReducer } from './reducers/userReducers'; 
 import  songGenreReducer  from './reducers/songReducer';
 import { artistRegisterReducer } from './reducers/userReducers';
-import playlistReducer from './reducers/songReducer'; // Import the new reducer
+import playlistDetailViewReducer from './reducers/songReducer'; 
+import playlistReducer from './reducers/songReducer'; 
+import addPlaylistReducer from './reducers/songReducer'; 
+import mySongsReducer from './reducers/songReducer';
+import myPlaylistsReducer from './reducers/songReducer';
 
 
 const reducer = combineReducers({
@@ -38,6 +42,10 @@ const reducer = combineReducers({
     songSearch: songSearchReducer,
     artistRegister: artistRegisterReducer,
     playlistView: playlistReducer,
+    playlistDetail: playlistDetailViewReducer,
+    addPlaylist: addPlaylistReducer,
+    mySongs: mySongsReducer,
+    myPlaylist: myPlaylistsReducer,
 });
 
 const initialState = {

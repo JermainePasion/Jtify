@@ -43,6 +43,14 @@ const Navbar = () => {
     navigate('/discovery');
   };
 
+  const goToMySongs = () => {
+    navigate('/mysongs');
+  };
+
+  const goToMyPlaylist = () => {
+    navigate('/myplaylist');
+  };
+
   const goToArtistRegister = () => {
     navigate('/artistregister');
   };
@@ -79,7 +87,18 @@ const Navbar = () => {
 
         <h1>
           <button className='Navbar-items' onClick={goToAddSong} style={{ fontFamily: selectedFont }}>
-            <BsFire /> Add Song
+            <BsMusicNoteList /> Add Song
+          </button>
+        </h1>
+
+        <h1>
+          <button className='Navbar-items' onClick={goToMySongs} style={{ fontFamily: selectedFont }}>
+            <BsMusicNoteList /> My Songs
+          </button>
+        </h1>
+        <h1>
+          <button className='Navbar-items' onClick={goToMyPlaylist} style={{ fontFamily: selectedFont }}>
+            <BsFire /> My Playlist
           </button>
         </h1>
       </Card>

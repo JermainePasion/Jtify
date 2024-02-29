@@ -33,6 +33,18 @@ import {
   PLAYLIST_LIST_REQUEST,
   PLAYLIST_LIST_SUCCESS,
   PLAYLIST_LIST_FAILURE,
+  PLAYLIST_DETAILS_REQUEST,
+  PLAYLIST_DETAILS_SUCCESS,
+  PLAYLIST_DETAILS_FAILURE,
+  ADD_PLAYLIST_REQUEST,
+  ADD_PLAYLIST_SUCCESS,
+  ADD_PLAYLIST_FAILURE,
+  MY_SONGS_REQUEST,
+  MY_SONGS_SUCCESS,
+  MY_SONGS_FAILURE,
+  MY_PLAYLISTS_REQUEST,
+  MY_PLAYLISTS_SUCCESS,
+  MY_PLAYLISTS_FAILURE,
 } from '../constants/songConstants'; 
 
  const instance = axios.create({
@@ -372,12 +384,12 @@ export const searchSongs = (query) => async (dispatch) => {
     const { data } = await axios.get(url);
 
     dispatch({
-      type: SONG_ADD_SUCCESS,
-      payload: data,
+      type: SONG_SEARCH_SUCCESS,
+      payload: data, // Dispatch SONG_SEARCH_SUCCESS with the search results payload
     });
   } catch (error) {
     dispatch({
-      type: SONG_ADD_FAILURE,
+      type: SONG_SEARCH_FAILURE,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
@@ -416,3 +428,113 @@ export const playlistView = () => async (dispatch, getState) => {
     });
   }
 };
+
+export const playlistDetailView = (id) => async (dispatch, getState) => {
+  try {
+    console.log('Dispatching PLAYLIST_DETAILS_REQUEST');
+    dispatch({ type: PLAYLIST_DETAILS_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    if (!userInfo?.data?.token?.access) {
+      throw new Error('User information is missing or incomplete');
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.data.token.access}`,
+      },
+    };
+
+    const response = await axios.get(`/api/songs/playlist/${id}`, config);
+    dispatch({ type: PLAYLIST_DETAILS_SUCCESS, payload: response.data });
+  } catch (error) {
+    dispatch({ type: PLAYLIST_DETAILS_FAILURE, payload: error.message });
+  }
+};
+
+
+export const addPlaylist = (playlist) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: ADD_PLAYLIST_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    if (!userInfo?.data?.token?.access) {
+      throw new Error('User information is missing or incomplete');
+    }
+
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.data.token.access}`,
+      },
+    };
+
+    const response = await axios.post('/api/songs/addPlaylist/', playlist, config);
+    dispatch({ type: ADD_PLAYLIST_SUCCESS, payload: response.data });
+  } catch (error) {
+    dispatch({ type: ADD_PLAYLIST_FAILURE, payload: error.message });
+  }
+}
+
+
+export const fetchMySongs = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: MY_SONGS_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    if (!userInfo?.data?.token?.access) {
+      throw new Error('User information is missing or incomplete');
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.data.token.access}`,
+      },
+    };
+
+    console.log('Fetching My Songs');
+
+    const response = await axios.get('/api/songs/mySongs/', config);
+    console.log('Fetch My Songs Response:', response.data); // Add this line to see the response
+    dispatch({ type: MY_SONGS_SUCCESS, payload: response.data });
+  } catch (error) {
+    console.error('Fetch My Songs Error:', error); // Add this line to see any errors
+    dispatch({ type: MY_SONGS_FAILURE, payload: error.message });
+  }
+};
+
+export const fetchMyPlaylists = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: MY_PLAYLISTS_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    if (!userInfo?.data?.token?.access) {
+      throw new Error('User information is missing or incomplete');
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.data.token.access}`,
+      },
+    };
+
+    const response = await axios.get('/api/songs/myPlaylists/', config);
+    dispatch({ type: MY_PLAYLISTS_SUCCESS, payload: response.data });
+    console.log('My Playlists:', response.data);
+  } catch (error) {
+    dispatch({ type: MY_PLAYLISTS_FAILURE, payload: error.message });
+  }
+}
+

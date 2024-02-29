@@ -194,7 +194,7 @@ class PlaylistListView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        playlists = Playlist.objects.filter(user=request.user)
+        playlists = Playlist.objects.all()
         serializer = PlaylistSerializer(playlists, many=True)
         return Response(serializer.data)
 
@@ -205,3 +205,64 @@ class PlaylistListView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class PlaylistDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, pk):
+        return get_object_or_404(Playlist, pk=pk)
+
+    def get(self, request, pk):
+        playlist = self.get_object(pk)
+        serializer = PlaylistSerializer(playlist)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        playlist = self.get_object(pk)
+        serializer = PlaylistSerializer(playlist, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        playlist = self.get_object(pk)
+        playlist.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class addPlaylist(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+
+            if Playlist.objects.filter(name=request.data['name'], user=request.user).exists():
+                return Response({"error": "Playlist already exists."}, status=status.HTTP_400_BAD_REQUEST)
+
+            serializer = PlaylistSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save(user=request.user)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e:
+            print(e)
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class MySongListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        songs = Song.objects.filter(user=request.user)
+        serializer = SongSerializer(songs, many=True)
+        return Response(serializer.data)
+
+
+class MyPlaylistListView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        playlists = Playlist.objects.filter(user=request.user)
+        serializer = PlaylistSerializer(playlists, many=True)
+        return Response(serializer.data)

@@ -40,6 +40,7 @@ class Song(models.Model):
     genre = models.CharField(max_length=255, choices=genreChoices)
     created_at = models.DateTimeField(default=timezone.now)
 
+
     def __str__(self):
         return self.name
     
@@ -57,10 +58,15 @@ class Playlist(models.Model):
     songs = models.ManyToManyField(Song, related_name='playlists')
     playlistCover = models.ImageField(upload_to='playlist_pictures/')
     created_at = models.DateTimeField(default=timezone.now)
+    
 
     def __str__(self):
         return self.name
 
-    def add_user_songs(self):
-        user_songs = Song.objects.filter(user=self.user)
-        self.songs.add(*user_songs)
+    def add_songs(self, song_ids):
+        """
+        Add songs to the playlist.
+        :param song_ids: List of song ids to add to the playlist.
+        """
+        songs_to_add = Song.objects.filter(id__in=song_ids)
+        self.songs.add(*songs_to_add)

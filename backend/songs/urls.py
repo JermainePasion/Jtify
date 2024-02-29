@@ -13,4 +13,9 @@ urlpatterns = [
     path('genres/<str:genre>/', GenreSongListView.as_view(), name='genre-song-list'),
     path('search/', SearchSongListView.as_view(), name='search-song-list'),
     path('playlist/', PlaylistListView.as_view(), name='playlist-list'),
+    path('playlist/<int:pk>/', PlaylistDetailView.as_view(), name='playlist-detail'),
+    path('addPlaylist/', addPlaylist.as_view(), name='add-playlist'),
+    path('mySongs/', MySongListView.as_view(), name='my-song-list'),
+    path('myPlaylists/', MyPlaylistListView.as_view(), name='my-playlist-list'),
+
 ]

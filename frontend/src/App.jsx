@@ -17,6 +17,10 @@ import ContactLoggedOut from './components/pages/ContactLoggedOut';
 import ContactLoggedIn from './components/pages/ContactLoggedIn'; // Import ContactLoggedIn component
 import Discovery from './components/pages/Discovery';
 import ArtistRegister from './components/pages/ArtistRegister';
+import PlaylistDetailView from './components/pages/PlaylistDetailView';
+import AddPlaylistScreen from './components/pages/AddPlaylistScreen';
+import MyPlaylistScreen from './components/pages/MyPlaylistScreen';
+import MySongsScreen from './components/pages/MySongsScreen';
 
 
 
@@ -58,6 +62,10 @@ function App() {
           path="/contact"
           element={isAuthenticated() ? <ContactLoggedIn /> : <ContactLoggedOut />}
         />
+        <Route path ="playlist/:id" element={<PlaylistDetailView />} />
+        <Route path ="/add-playlist" element={<AddPlaylistScreen />} />
+        <Route path ="/myplaylist" element={<MyPlaylistScreen/>} />
+        <Route path ="/mysongs" element = {<MySongsScreen/>} />
       </Routes>
     </Router>
   );

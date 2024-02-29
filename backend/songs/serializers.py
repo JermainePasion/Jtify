@@ -31,4 +31,4 @@ class PlaylistSerializer(serializers.ModelSerializer):
     songs = SongSerializer(many=True, read_only=True)
     class Meta:
         model = Playlist
-        fields = ['id', 'user', 'name', 'songs', 'playlistCover', 'created_at', ]
+        fields = ['id', 'name',  'songs', 'playlistCover', 'created_at', ]
