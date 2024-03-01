@@ -67,10 +67,31 @@ def edit_songs(request, pk):
 
     if request.method == 'PUT':
         try:
-            # Use request.data instead of json.loads(request.body)
+            # Extract the current playlist of the song
+            current_playlist = song.playlist
+
+            # Update the Song object directly with values from request data
             song.name = request.data.get('name', song.name)
             song.artist = request.data.get('artist', song.artist)
             song.genre = request.data.get('genre', song.genre)
+
+            # Use the provided playlist_id to update the playlist
+            playlist_id = request.data.get('playlist')
+
+            # Check if playlist_id is provided and exists
+            if playlist_id:
+                try:
+                    new_playlist = Playlist.objects.get(id=playlist_id)
+                    # Switch the song to the new playlist
+                    song.playlist = new_playlist
+                    new_playlist.songs.add(song)
+                    
+                    # Remove the song from the current playlist
+                    if current_playlist:
+                        current_playlist.songs.remove(song)
+                except Playlist.DoesNotExist:
+                    return Response({"error": "Playlist does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+                
 
             # Handle file upload if present
             if 'picture' in request.FILES:
@@ -79,6 +100,7 @@ def edit_songs(request, pk):
             if 'file' in request.FILES:
                 song.file = request.FILES['file']
 
+            # Save the changes
             song.save()
             return Response(status=status.HTTP_200_OK)
         except Exception as e:
@@ -86,28 +108,9 @@ def edit_songs(request, pk):
             return Response({"error": "Invalid request body."}, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
     
-@api_view(['POST'])
-def upload_songs(request):
-    permission_classes = [IsAuthenticated]
-    try:
-        name = request.data.get('name')
-        artist = request.data.get('artist')
-        picture = request.FILES.get('picture')
-        genre = request.data.get('genre')
-        file = request.FILES.get('file')
-
-        if name is None or artist is None or picture is None or file is None:
-            return Response({"error": "Missing required fields in the request."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        user = request.user
-
-        song = Song(name=name, artist=artist, picture=picture, file=file, genre=genre, user=user)
-        song.save()
-        return Response(status=status.HTTP_201_CREATED)
-
-    except MultiValueDictKeyError as e:
-        return Response({"error": "Invalid request body."}, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['DELETE'])
 def delete_songs(request, pk):
@@ -266,3 +269,54 @@ class MyPlaylistListView(APIView):
         playlists = Playlist.objects.filter(user=request.user)
         serializer = PlaylistSerializer(playlists, many=True)
         return Response(serializer.data)
+    
+@api_view(['POST'])
+def upload_song_with_specific_playlist(request, playlist_id):
+    try:
+        # print("Request Data:", request.data)  # Debugging statement
+
+        # Extract data from the request
+        song_data = {
+            'user': request.user.id,  # Changed 'user' to 'user_id
+            'name': request.data.get('name'),
+            'artist': request.data.get('artist'),
+            'genre': request.data.get('genre'),
+            'playlist': request.data.get('playlist'),
+            'file': request.FILES.get('file'),
+            'picture': request.FILES.get('picture')
+        }
+
+        # print("Song Data:", song_data)  # Debugging statement
+
+        # Get the file and picture data from the request.FILES dictionary
+        file = request.FILES.get('file')
+        picture = request.FILES.get('picture')
+        print("File:", request.FILES.get('file'), request.FILES.get('picture'))  # Debugging statement
+
+        # Create the song object
+        song_serializer = SongSerializer(data=song_data)
+        if song_serializer.is_valid():
+            song = song_serializer.save()
+        else:
+            return Response(song_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Save the file and picture data to the song object
+        song.file.save(file.name, file, save=False)
+        song.picture.save(picture.name, picture, save=False)
+        song.save()
+
+        # Get the playlist ID from the request data
+        playlist_id = request.data.get('playlist')  # Corrected the variable name
+
+        print("Playlist ID:", playlist_id)  # Debugging statement
+
+        # Retrieve the playlist object
+        playlist = Playlist.objects.get(id=playlist_id)
+
+        # Add the song to the playlist
+        playlist.songs.add(song)
+
+        return Response({'message': 'Song uploaded and added to playlist successfully'}, status=status.HTTP_201_CREATED)
+    except Exception as e:
+        print("Error:", e)  # Debugging statement
+        return Response({'error': 'An error occurred while uploading the song'}, status=status.HTTP_400_BAD_REQUEST)

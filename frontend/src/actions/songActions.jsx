@@ -9,9 +9,6 @@ import {
   SONG_EDIT_REQUEST,
   SONG_EDIT_SUCCESS,
   SONG_EDIT_FAILURE,
-  SONG_ADD_REQUEST,
-  SONG_ADD_SUCCESS,
-  SONG_ADD_FAILURE,
   SONG_DELETE_REQUEST,
   SONG_DELETE_SUCCESS,
   SONG_DELETE_FAILURE,
@@ -45,6 +42,10 @@ import {
   MY_PLAYLISTS_REQUEST,
   MY_PLAYLISTS_SUCCESS,
   MY_PLAYLISTS_FAILURE,
+  UPLOAD_SONG_TO_PLAYLIST_REQUEST,
+  UPLOAD_SONG_TO_PLAYLIST_SUCCESS,
+  UPLOAD_SONG_TO_PLAYLIST_FAILURE,
+
 } from '../constants/songConstants'; 
 
  const instance = axios.create({
@@ -141,6 +142,7 @@ export const EditSong = (id, song) => async (dispatch, getState) => {
     formData.append('name', song.name || '');
     formData.append('artist', song.artist || '');
     formData.append('genre', song.genre || '');
+    formData.append('playlist', song.playlist || '');
 
     // Append 'picture' only if it exists
     if (song.picture) {
@@ -167,38 +169,7 @@ export const EditSong = (id, song) => async (dispatch, getState) => {
   }
 };
 
-export const AddSong = (song) => async (dispatch, getState) => {
-  try {
-    dispatch({ type: SONG_ADD_REQUEST });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-
-    if (!userInfo?.data?.token?.access) {
-      throw new Error('User information is missing or incomplete');
-    }
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.data.token.access}`,
-        'Content-Type': 'multipart/form-data',
-      },
-    };
-
-    const { data } = await axios.post('/api/songs/upload/', song, config);
-
-    dispatch({ type: SONG_ADD_SUCCESS, payload: data });
-  } catch (error) {
-    console.error("Error in handleSongUpload:", error);
-    dispatch({
-      type: SONG_ADD_FAILURE,
-      payload: error.message && error.response.data.message
-        ? error.response.data.message
-        : error.message,
-    });
-  }
-};
 
 export const DeleteSong = (id) => async (dispatch, getState) => {
   try {
@@ -538,3 +509,36 @@ export const fetchMyPlaylists = () => async (dispatch, getState) => {
   }
 }
 
+export const uploadSong = (playlistId, songData) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: UPLOAD_SONG_TO_PLAYLIST_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    if (!userInfo?.data?.token?.access) {
+      throw new Error('User information is missing or incomplete');
+    }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.data.token.access}`,
+        'Content-Type': 'multipart/form-data'  // Ensure correct content type for file upload
+      },
+    };
+
+    const formData = new FormData();
+    formData.append('name', songData.name);
+    formData.append('artist', songData.artist);
+    formData.append('genre', songData.genre);
+    formData.append('file', songData.file);
+    formData.append('picture', songData.picture);
+    formData.append('playlist', playlistId)
+
+    const response = await axios.post(`/api/songs/uploadSong/${playlistId}`, formData, config);
+    dispatch({ type: UPLOAD_SONG_TO_PLAYLIST_SUCCESS, payload: response.data });
+  } catch (error) {
+    dispatch({ type: UPLOAD_SONG_TO_PLAYLIST_FAILURE, payload: error.message });
+  }
+}

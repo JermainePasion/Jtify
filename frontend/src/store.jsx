@@ -21,6 +21,7 @@ import playlistReducer from './reducers/songReducer';
 import addPlaylistReducer from './reducers/songReducer'; 
 import mySongsReducer from './reducers/songReducer';
 import myPlaylistsReducer from './reducers/songReducer';
+import uploadSongToPlaylistReducer from './reducers/songReducer';
 
 
 const reducer = combineReducers({
@@ -34,7 +35,6 @@ const reducer = combineReducers({
     userUpdateProfile: userUpdateProfileReducer,
     songDetail: songDetailReducer,
     songEdit: songEditReducer,
-    songAdd: songAddReducer,
     likeSong: likeSongReducer,
     fetchLikedSongs: fetchLikedSongsReducer,
     contactUs: contactUsReducer,
@@ -46,6 +46,7 @@ const reducer = combineReducers({
     addPlaylist: addPlaylistReducer,
     mySongs: mySongsReducer,
     myPlaylist: myPlaylistsReducer,
+    uploadSongstoPlaylist: uploadSongToPlaylistReducer,
 });
 
 const initialState = {

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMySongs } from '../../actions/songActions';
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import Navbar from '../Navbar';
 
 const MySongsScreen = () => {
@@ -27,11 +28,13 @@ const MySongsScreen = () => {
           <ul style={{ listStyleType: 'none', padding: 0 }}>
             {songs.map((song) => (
               <li key={song.id} style={{ marginBottom: '10px', borderBottom: '1px solid #444', display: 'flex', alignItems: 'center' }}>
-                <img src={song.picture} alt={song.name} style={{ width: '64px', height: '64px', marginRight: '10px' }} />
-                <div>
-                  <span style={{ fontWeight: 'bold' }}>{song.name}</span>
-                  <span style={{ marginLeft: '10px' }}>- {song.artist}</span>
-                </div>
+                <Link to={`/songs/${song.id}`} style={{ textDecoration: 'none', color: '#fff' }}>
+                  <img src={song.picture} alt={song.name} style={{ width: '64px', height: '64px', marginRight: '10px' }} />
+                  <div>
+                    <span style={{ fontWeight: 'bold' }}>{song.name}</span>
+                    <span style={{ marginLeft: '10px' }}>- {song.artist}</span>
+                  </div>
+                </Link>
               </li>
             ))}
           </ul>

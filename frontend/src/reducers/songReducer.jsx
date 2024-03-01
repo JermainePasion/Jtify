@@ -8,9 +8,6 @@ import {
   SONG_EDIT_REQUEST,
   SONG_EDIT_SUCCESS,
   SONG_EDIT_FAILURE,
-  SONG_ADD_REQUEST,
-  SONG_ADD_SUCCESS,
-  SONG_ADD_FAILURE,
   SONG_DELETE_REQUEST,
   SONG_DELETE_SUCCESS,
   SONG_DELETE_FAILURE,
@@ -45,6 +42,9 @@ import {
   MY_PLAYLISTS_REQUEST,
   MY_PLAYLISTS_SUCCESS,
   MY_PLAYLISTS_FAILURE,
+  UPLOAD_SONG_TO_PLAYLIST_REQUEST,
+  UPLOAD_SONG_TO_PLAYLIST_SUCCESS,
+  UPLOAD_SONG_TO_PLAYLIST_FAILURE,
 
 } from '../constants/songConstants';
 // songReducer.jsx
@@ -90,6 +90,13 @@ const songReducer = (state = initialState, action) => {
       return { ...state, loading: false, songs: action.payload, error: null };
     case MY_PLAYLISTS_SUCCESS:
         return { ...state, loading: false, playlists: action.payload, error: null };
+      case FETCH_SONGS_BY_GENRE_SUCCESS:
+        return {
+          ...state,
+          loading: false,
+          genreSongs: action.payload,
+          error: null,
+        };
     default:
       return state;
   }
@@ -127,19 +134,6 @@ export const songEditReducer = (state = {}, action) => {
       return state;
   }
 };
-
-export const songAddReducer = (state = {}, action) => {
-  switch (action.type) {
-    case SONG_ADD_REQUEST:
-      return { loading: true };
-    case SONG_ADD_SUCCESS:
-      return { loading: false, success: true, song: action.payload };
-    case SONG_ADD_FAILURE:
-      return { loading: false, error: action.payload };
-    default:
-      return state;
-  }
-}
 
 export const songDeleteReducer = (state = {}, action) => {
   switch (action.type) {
@@ -297,6 +291,19 @@ export const myPlaylistsReducer = (state = initialState, action) => {
       return { ...state, loading: false, playlists: action.payload, error: null };
     case MY_PLAYLISTS_FAILURE:
       return { ...state, loading: false, error: action.payload, playlists: [] };
+    default:
+      return state;
+  }
+}
+
+export const uploadSongToPlaylistReducer = (state = {}, action) => {
+  switch (action.type) {
+    case UPLOAD_SONG_TO_PLAYLIST_REQUEST:
+      return { loading: true };
+    case UPLOAD_SONG_TO_PLAYLIST_SUCCESS:
+      return { loading: false, success: true };
+    case UPLOAD_SONG_TO_PLAYLIST_FAILURE:
+      return { loading: false, error: action.payload };
     default:
       return state;
   }

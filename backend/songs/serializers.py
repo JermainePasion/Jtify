@@ -5,7 +5,7 @@ from account.models import User
 class SongSerializer(serializers.ModelSerializer):
     class Meta:
         model = Song
-        fields = ['id', 'name', 'user', 'picture', 'file', 'artist', 'genre', 'created_at']
+        fields = ['id', 'name', 'user', 'playlist','picture', 'file', 'artist', 'genre', 'created_at']
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:

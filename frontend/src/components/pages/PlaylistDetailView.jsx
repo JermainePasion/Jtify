@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, Link } from 'react-router-dom';
-import { Container, Button, Spinner, Nav } from 'react-bootstrap'; // Import Nav from react-bootstrap
+import { Container, Button, Spinner, Image } from 'react-bootstrap'; // Import Image from react-bootstrap
 import { playlistDetailView } from '../../actions/songActions';
 import { getUserDetails } from '../../actions/userActions';
 import Navbar from '../Navbar';
@@ -38,10 +38,6 @@ const PlaylistDetails = () => {
               Back to Home
             </Button>
           </Link>
-          {/* Add a button to navigate to the add songs page */}
-          {/* <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <Nav.Link href="/add-songs" style={{ color: 'white' }}>Add song</Nav.Link>
-          </div> */}
           {loading ? (
             <Spinner animation="border" role="status">
               <span className="sr-only">Loading...</span>
@@ -50,17 +46,24 @@ const PlaylistDetails = () => {
             <p>Error: {error}</p>
           ) : (
             playlist && (
-              <div>
-                <h2>{playlist.name}</h2>
-                <p>Created by: {user?.data?.user_data?.name}</p>
-                <p>Number of Songs: {playlist.songs.length}</p>
-                <img src={playlist.playlistCover} alt="Playlist Cover" style={{ width: '300px', height: '300px', borderRadius: '15px', marginBottom: '20px' }} />
-                <h3>Songs Included:</h3>
+              <div style={{ position: 'relative' }}>
+                <div className='template-background' style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+                  <Image src={playlist.playlistCover} alt="Liked" style={{ width: '250px', height: '250px', objectFit: 'contain', marginLeft: '10px' }} />
+                  <div style={{ marginLeft: '10px' }}>
+                    {/* <p style={{ color: 'white', fontFamily: selectedFont }}>Playlist</p> */}
+                    <h2 className="mt-3 mb-3" style={{ color: 'white', fontSize: '50px', fontFamily: selectedFont }}>{playlist.name}</h2>
+                    <p style={{ color: 'white', fontSize: '20px', fontFamily: selectedFont }}>Created by: {user?.data?.user_data?.name}</p>
+                    <p style={{ color: 'white', fontSize: '20px', fontFamily: selectedFont }}>Number of Songs: {playlist.songs.length}</p>
+                  </div>
+                </div>
+                <h3 style={{ color: 'white', marginBottom: '20px', fontSize: '24px', fontFamily: selectedFont }}>Songs Included:</h3>
                 {playlist.songs.map((song) => (
-                  <div key={song.id}>
-                    <h4>Name: {song.name}</h4>
-                    <img src={song.picture} alt="Album Cover" style={{ width: '100px', height: '100px', borderRadius: '15px', marginBottom: '20px' }} />
-                    <p>Artist: {song.artist}</p>
+                  <div key={song.id} style={{ marginBottom: '20px' }}>
+                    <Link to={`/songs/${song.id}`} style={{ textDecoration: 'none', color: '#fff' }}>
+                      <h4 style={{ fontWeight: 'bold', marginBottom: '5px', fontFamily: selectedFont }}>{song.name}</h4>
+                      <Image src={song.picture} alt="Album Cover" style={{ width: '100px', height: '100px', borderRadius: '15px' }} />
+                      <p style={{ marginBottom: '5px', fontFamily: selectedFont }}>Artist: {song.artist}</p>
+                    </Link>
                   </div>
                 ))}
               </div>

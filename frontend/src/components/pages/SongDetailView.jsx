@@ -1,25 +1,30 @@
-// SongDetail.jsx
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { DetailViewSong, DeleteSong, EditSong } from '../../actions/songActions'; // Import DeleteSong action
+import { DetailViewSong, DeleteSong, EditSong, fetchMyPlaylists } from '../../actions/songActions';
 import { Container, Row, Col, Button, Form, Spinner } from 'react-bootstrap';
-import { useParams, Link, useNavigate } from 'react-router-dom'; // Import useHistory hook
+import { useParams, Link,  } from 'react-router-dom'; // Import useHistory hook
 import Navbar from '../Navbar';
 import { getUserDetails } from '../../actions/userActions';
 
-
 const SongDetail = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Initialize useHistory hook
   const { id } = useParams();
   const user = useSelector(state => state.userDetails.user);
   const color = user?.data?.profile_data?.color || '#defaultColor';
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
+  const playlists = useSelector(state => state.myPlaylist.playlists);
+
+  const handleGoBack = () => {
+    window.history.back(); // Go back to the previous page
+  }
 
   useEffect(() => {
     dispatch(getUserDetails());
     dispatch(DetailViewSong(id));
+    dispatch(fetchMyPlaylists())
   }, [dispatch, id]);
+
+  console.log(playlists)
 
   const songDetail = useSelector((state) => state.songDetail);
   const { loading, song, error } = songDetail || {};
@@ -29,36 +34,6 @@ const SongDetail = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [fileNames, setFileNames] = useState({});
 
-  const genres = [
-    ['Hip-Hop', 'Hip-Hop'],
-    ['R&B', 'R&B'],
-    ['Pop', 'Pop'],
-    ['Rock', 'Rock'],
-    ['Country', 'Country'],
-    ['Jazz', 'Jazz'],
-    ['Classical', 'Classical'],
-    ['Blues', 'Blues'],
-    ['Electronic', 'Electronic'],
-    ['Reggae', 'Reggae'],
-    ['Folk', 'Folk'],
-    ['Punk', 'Punk'],
-    ['Metal', 'Metal'],
-    ['Soul', 'Soul'],
-    ['Funk', 'Funk'],
-    ['Disco', 'Disco'],
-    ['Gospel', 'Gospel'],
-    ['House', 'House'],
-    ['Techno', 'Techno'],
-    ['Dubstep', 'Dubstep'],
-    ['Trap', 'Trap'],
-    ['Drum & Bass', 'Drum & Bass'],
-    ['Grime', 'Grime'],
-    ['Garage', 'Garage'],
-    ['Salsa', 'Salsa'],
-    ['Afrobeat', 'Afrobeat'],
-    ['Highlife', 'Highlife'],
-  ];
-
   const handleEditClick = () => {
     setIsEditing(true);
 
@@ -67,6 +42,7 @@ const SongDetail = () => {
       name: song.name,
       artist: song.artist,
       genre: song.genre,
+      playlist: song.playlist,
     });
   };
 
@@ -101,7 +77,7 @@ const SongDetail = () => {
       dispatch(DeleteSong(id))
         .then(() => {
           // Redirect to home page after successful deletion
-          navigate('/home');
+          window.history.goBack();
         })
         .catch((error) => {
           // Handle error if deletion fails
@@ -113,6 +89,36 @@ const SongDetail = () => {
   const handleCancelEdit = () => {
     setIsEditing(false);
   };
+
+  const genres = [
+    ['Hip-Hop', 'Hip-Hop'],
+    ['R&B', 'R&B'],
+    ['Pop', 'Pop'],
+    ['Rock', 'Rock'],
+    ['Country', 'Country'],
+    ['Jazz', 'Jazz'],
+    ['Classical', 'Classical'],
+    ['Blues', 'Blues'],
+    ['Electronic', 'Electronic'],
+    ['Reggae', 'Reggae'],
+    ['Folk', 'Folk'],
+    ['Punk', 'Punk'],
+    ['Metal', 'Metal'],
+    ['Soul', 'Soul'],
+    ['Funk', 'Funk'],
+    ['Disco', 'Disco'],
+    ['Gospel', 'Gospel'],
+    ['House', 'House'],
+    ['Techno', 'Techno'],
+    ['Dubstep', 'Dubstep'],
+    ['Trap', 'Trap'],
+    ['Drum & Bass', 'Drum & Bass'],
+    ['Grime', 'Grime'],
+    ['Garage', 'Garage'],
+    ['Salsa', 'Salsa'],
+    ['Afrobeat', 'Afrobeat'],
+    ['Highlife', 'Highlife'],
+  ];
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', fontFamily: selectedFont, backgroundColor: color }}>
@@ -128,12 +134,10 @@ const SongDetail = () => {
         backgroundSize: 'cover',
       }}>
         <Container>
-          <Link to="/home" style={{ textDecoration: 'none' }}>
-            <Button variant="secondary" style={{ marginBottom: '20px' }}>
-              Back to Home
-            </Button>
-          </Link>
-      
+          <Button variant="secondary" style={{ marginBottom: '20px' }} onClick={handleGoBack}>
+            Go Back
+          </Button>
+
           {loading ? (
             <Spinner animation="border" role="status">
               <span className="sr-only">Loading...</span>
@@ -181,6 +185,22 @@ const SongDetail = () => {
                         {genres && genres.map(([value, label], index) => (
                           <option key={index} value={value}>{label}</option>
                         ))}
+                      </select>
+                      <Form.Label style = {{color: 'white', margin: '10px'}}>Edit Playlist:</Form.Label>
+                      <select
+                        id="playlist"
+                        name='playlist'
+                        value={editedSong.playlist || ''} // Set the value of the select to editedSong.playlist
+                        onChange={(e) => setEditedSong({ ...editedSong, playlist: e.target.value })} // Update playlist in state
+                        required
+                        style={{ width: '75%', padding: '8px' }} // Adjust width and padding
+                      >
+                        <option value='' disabled>Select Playlist</option>
+                        {Array.isArray(playlists) && playlists.map(playlist => {
+                            return (
+                              <option key={playlist.id} value={playlist.id}>{playlist.name}</option>
+                            );
+                          })}
                       </select>
                     </Form.Group>
                       <Form.Group controlId="formPicture">

@@ -1,161 +1,111 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AddSong, listSongs } from '../../actions/songActions';
+import { uploadSong } from '../../actions/songActions';
+import { fetchMyPlaylists } from '../../actions/songActions';
 import Navbar from '../Navbar';
 import { getUserDetails } from '../../actions/userActions';
 
-const AddForm = () => {
+const AddSong = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.userDetails.user);
-  const color = user?.data?.profile_data?.color || '#defaultColor';
-  const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
-
-  const [successPromptVisible, setSuccessPromptVisible] = useState(false); // State to manage the visibility of the success prompt
+  const playlists = useSelector(state => state.myPlaylist.playlists);
+  const user = useSelector(state => state.userDetails.user);
+  const color = user?.data?.profile_data?.color || '#000';
+  const selectedFont = user?.data?.profile_data?.font || 'Arial, sans-serif';
 
   useEffect(() => {
-    dispatch(getUserDetails());
+    dispatch(fetchMyPlaylists());
   }, [dispatch]);
 
-  const genres = [
-    ['Hip-Hop', 'Hip-Hop'],
-    ['R&B', 'R&B'],
-    ['Pop', 'Pop'],
-    ['Rock', 'Rock'],
-    ['Country', 'Country'],
-    ['Jazz', 'Jazz'],
-    ['Classical', 'Classical'],
-    ['Blues', 'Blues'],
-    ['Electronic', 'Electronic'],
-    ['Reggae', 'Reggae'],
-    ['Folk', 'Folk'],
-    ['Punk', 'Punk'],
-    ['Metal', 'Metal'],
-    ['Soul', 'Soul'],
-    ['Funk', 'Funk'],
-    ['Disco', 'Disco'],
-    ['Gospel', 'Gospel'],
-    ['House', 'House'],
-    ['Techno', 'Techno'],
-    ['Dubstep', 'Dubstep'],
-    ['Trap', 'Trap'],
-    ['Drum & Bass', 'Drum & Bass'],
-    ['Grime', 'Grime'],
-    ['Garage', 'Garage'],
-    ['Salsa', 'Salsa'],
-    ['Afrobeat', 'Afrobeat'],
-    ['Highlife', 'Highlife'],
-    ['EDM', 'EDM'],
-  ];
+  const [formData, setFormData] = useState({
+    name: '',
+    artist: '',
+    genre: '',
+    file: '',
+    picture:'',
+    playlistId: ''
+  });
 
-  const [pictureName, setPictureName] = useState('');
-  const [audioName, setAudioName] = useState('');
+  const { name, artist, genre, file, picture, playlistId } = formData;
 
-  const handleSongUpload = async (e) => {
-    e.preventDefault();
-    const name = e.target.name.value;
-    const artist = e.target.artist.value;
-    const genre = e.target.genre.value;
-    const picture = e.target.picture.files[0];
-    const file = e.target.file.files[0];
-
-    if (name && artist && genre && picture && file) {
-      const formData = new FormData();
-      formData.append('name', name);
-      formData.append('artist', artist);
-      formData.append('genre', genre);
-      formData.append('picture', picture);
-      formData.append('file', file);
-
-      try {
-        await dispatch(AddSong(formData));
-        // Fetch songs again after adding a new one
-        await dispatch(listSongs());
-        setSuccessPromptVisible(true); // Show the success prompt
-        // Hide the success prompt after a delay
-        setTimeout(() => {
-          setSuccessPromptVisible(false);
-        }, 3000); // Adjust the delay as needed
-      } catch (error) {
-        console.error('Error in handleSongUpload:', error);
-        // Handle the error (e.g., display a message to the user)
-      }
-    } else {
-      // Handle error (e.g., display a message to the user)
-    }
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handlePictureChange = (e) => {
-    setPictureName(e.target.files[0].name);
+    console.log(e.target.files[0])
+    setFormData({ ...formData, picture: e.target.files[0] });
   };
 
-  const handleAudioChange = (e) => {
-    setAudioName(e.target.files[0].name);
+  const handleFileChange = (e) => {
+    console.log(e.target.files[0])
+    setFormData({ ...formData, file: e.target.files[0] });
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(uploadSong(playlistId, formData));
+    setFormData({
+      name: '',
+      artist: '',
+      genre: '',
+      // file: '',
+      // picture:'',
+      playlistId: ''
+    });
+  };
+
+  const genres = [
+    'Hip-Hop', 'R&B', 'Pop', 'Rock', 'Country', 'Jazz', 'Classical',
+    'Blues', 'Electronic', 'Reggae', 'Folk', 'Punk', 'Metal', 'Soul',
+    'Funk', 'Disco', 'Gospel', 'House', 'Techno', 'Dubstep', 'Trap',
+    'Drum & Bass', 'Grime', 'Garage', 'Salsa', 'Afrobeat', 'Highlife',
+    'EDM'
+  ];
 
   return (
     <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
-      <Navbar style={{ alignSelf: 'flex-start' }} />
-      <div
-        className='template-background'
-        style={{
-          flex: 1,
-          marginLeft: '10px',
-          position: 'relative',
-          overflowX: 'auto',
-          padding: '10px 0',
-          backgroundSize: 'cover',
-        }}
-      >
-        <div>
-          <h1 style={{ color: 'white', fontSize: '30px', marginBottom: '20px', position: 'relative', textAlign: 'center' }}>
-            Add Song
-          </h1>
-          {successPromptVisible && ( // Conditionally render the success prompt
-            <div style={{ color: 'white', textAlign: 'center', marginBottom: '20px' }}>
-              Song uploaded successfully!
+      <Navbar />
+      <div className='template-background' style={{ flex: 1, marginLeft: '10px', padding: '10px 0' }}>
+        <div style = {{color: 'white'}} >
+          <h1>Add Song</h1>
+        </div>
+        <div >
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: '15px' }}>
+              <label htmlFor="name" style={{ color: '#fff', marginRight: '10px' }}>Name:</label>
+              <input type="text" id="name" name="name" value={name} onChange={handleChange} style={{ padding: '8px' }} />
             </div>
-          )}
-          <form onSubmit={handleSongUpload} style={{ margin: '10px 0', textAlign: 'center' }}>
-            <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <label htmlFor="name" style={{ color: 'white', width: '100px', marginRight: '10px' }}>Song Name:</label>
-              <input type="text" id="name" name='name' placeholder='Song Name' style={{ width: '50%', padding: '8px' }} />
+            <div style={{ marginBottom: '15px' }}>
+              <label htmlFor="artist" style={{ color: '#fff', marginRight: '10px' }}>Artist:</label>
+              <input type="text" id="artist" name="artist" value={artist} onChange={handleChange} style={{ padding: '8px' }} />
             </div>
-            <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <label htmlFor="artist" style={{ color: 'white', width: '100px', marginRight: '10px' }}>Artist:</label>
-              <input type='text' id="artist" name='artist' placeholder='Artist' style={{ width: '50%', padding: '8px' }} defaultValue={user?.data?.user_data?.name} readOnly/>
-            </div>
-
-            <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <label htmlFor="genre" style={{ color: 'white', width: '100px', marginRight: '10px' }}>Genre:</label>
-              <select id="genre" name='genre' defaultValue='' required style={{ width: '50%', padding: '8px' }}>
-                <option value='' disabled>
-                  Select Genre
-                </option>
-                {genres.map(([value, label], index) => (
-                  <option key={index} value={value}>
-                    {label}
-                  </option>
+            <div style={{ marginBottom: '15px' }}>
+              <label htmlFor="genre" style={{ color: '#fff', marginRight: '10px' }}>Genre:</label>
+              <select id="genre" name="genre" value={genre} onChange={handleChange} style={{ padding: '8px' }}>
+                <option value="">Select Genre</option>
+                {genres.map((genreOption, index) => (
+                  <option key={index} value={genreOption}>{genreOption}</option>
                 ))}
               </select>
             </div>
-            <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <label htmlFor="picture" style={{ color: 'white', width: '100px', marginRight: '10px' }}>Picture:</label>
-              <input type='file' id="picture" name='picture' accept='image/*' style={{ color: 'white', margin: '0 10px' }} onChange={handlePictureChange} />
-              {pictureName }
+            <div style={{ marginBottom: '15px' }}>
+              <label htmlFor="file" style={{ color: '#fff', marginRight: '10px' }}>File:</label>
+              <input type="file" id="file" name="file" onChange={handleFileChange} style={{ color: '#fff', padding: '8px' }} />
             </div>
-            <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <label htmlFor="file" style={{ color: 'white', width: '100px', marginRight: '10px' }}>Audio File:</label>
-              <input type='file' id="file" name='file' accept='audio/*' style={{ color: 'white', margin: '0 10px' }} onChange={handleAudioChange} />
-              {audioName }
+            <div style={{ marginBottom: '15px' }}>
+              <label htmlFor="picture" style={{ color: '#fff', marginRight: '10px' }}>Picture:</label>
+              <input type="file" id="picture" name="picture" onChange={handlePictureChange} style={{ color: '#fff', padding: '8px' }} />
             </div>
-            <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <button
-                type='submit'
-                style={{ backgroundColor: color, color: '#fff', border: 'none', padding: '8px 12px', cursor: 'pointer' }}
-              >
-                Add Song
-              </button>
+            <div style={{ marginBottom: '15px' }}>
+              <label htmlFor="playlistId" style={{ color: '#fff', marginRight: '10px' }}>Select Playlist:</label>
+              <select id="playlistId" name="playlistId" value={playlistId} onChange={handleChange} style={{ padding: '8px' }}>
+                <option value="">Select Playlist</option>
+                {Array.isArray(playlists) && playlists.map(playlist => (
+                  <option key={playlist.id} value={playlist.id}>{playlist.name}</option>
+                ))}
+              </select>
             </div>
+            <button type="submit" style={{ backgroundColor: '#333', color: '#fff', border: 'none', padding: '10px', cursor: 'pointer' }}>Upload Song</button>
           </form>
         </div>
       </div>
@@ -163,4 +113,4 @@ const AddForm = () => {
   );
 };
 
-export default AddForm;
+export default AddSong;
