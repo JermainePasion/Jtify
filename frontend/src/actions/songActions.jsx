@@ -350,7 +350,7 @@ export const searchSongs = (query) => async (dispatch) => {
     dispatch({ type: SONG_SEARCH_REQUEST });
 
     // Ensure that query is defined before making the request
-    const url = query ? `/api/songs/search?query=${query}` : '/api/songs';
+    const url = query ? `/api/songs/search?query=${query}` : '/api/songs/search';  // Change query parameter name
 
     const { data } = await axios.get(url);
 

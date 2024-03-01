@@ -17,27 +17,28 @@ function Home() {
   const [currentTime, setCurrentTime] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [query, setQuery] = useState(''); // Define query state variable
+  const [query, setQuery] = useState('');
   const audioRef = useRef(new Audio());
   const progressBarRef = useRef(null);
   const user = useSelector(state => state.userDetails.user);
   const color = user?.data?.profile_data?.color || '#defaultColor';
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
+  console.log("Songs:", songs);
+  console.log("Playlists:", playlists);
 
   useEffect(() => {
     dispatch(getUserDetails());
     dispatch(listSongs());
-    dispatch(playlistView()); // Fetch playlists on component mount
+    dispatch(playlistView());
   }, [dispatch]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Dispatch searchSongs action after 500ms of typing inactivity
       dispatch(searchSongs(query));
     }, 500);
 
     return () => {
-      clearTimeout(timer); // Clear the timeout on cleanup
+      clearTimeout(timer);
     };
   }, [query, dispatch]);
 
@@ -67,7 +68,6 @@ function Home() {
   };
 
   const handleSearch = () => {
-    // Dispatch searchSongs action immediately when the search button is clicked
     dispatch(searchSongs(query));
   };
 
@@ -77,7 +77,7 @@ function Home() {
     } else {
       if (currentlyPlaying !== song) {
         audioRef.current.src = song.file;
-        setCurrentTime(0); // Reset currentTime when switching to a new song
+        setCurrentTime(0);
         setCurrentlyPlaying(song);
         setIsPlaying(true);
       } else {
@@ -90,7 +90,6 @@ function Home() {
   const pauseSong = () => {
     audioRef.current.pause();
     setIsPlaying(false);
-    // Do not set currentTime when pausing
   };
 
   const togglePlayPause = () => {
@@ -157,7 +156,7 @@ function Home() {
         padding: '10px 20px', // Increase padding for better spacing
         backgroundSize: 'cover',
       }}>
-        <div style={{ position: 'absolute', top: '10px', right: '30px' }}> {/* Position search bar */}
+        <div style={{ position: 'absolute', top: '10px', right: '30px' }}>
           <div style={{ position: 'absolute', top: '10px', right: '30px', display: 'flex', alignItems: 'center' }}>
             <div className="input-group rounded">
               <input
@@ -199,22 +198,32 @@ function Home() {
         </div>
         <h1 style={{ color: 'white', fontFamily: selectedFont, fontSize: '30px' }}>Today's hits</h1>
         <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'auto' }}>
-          {loading ? (
-            <div>Loading...</div>
-          ) : error ? (
-            <div>Error: {error}</div>
-          ) : (
-            songs && songs.map(song => (
-              <Song key={song.id} song={song} playSong={playSong} isPlaying={currentlyPlaying === song} selectedFont={selectedFont} />
-            ))
-          )}
-        </div>
-        <h2  style={{ color: 'white', fontFamily: selectedFont, fontSize: '30px' }}>Playlists</h2>
-        <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'auto' }}>
-          {playlists.map(playlist => (
+        {loading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div>Error: {error}</div>
+        ) : (
+          // Filter songs based on the search query and then map
+          songs.filter(song => song.name.toLowerCase().includes(query.toLowerCase()) || song.artist.toLowerCase().includes(query.toLowerCase()))
+              .map(song => (
+            <Song key={song.id} song={song} playSong={playSong} isPlaying={currentlyPlaying === song} selectedFont={selectedFont} />
+          ))
+        )}
+      </div>
+      <h2 style={{ color: 'white', fontFamily: selectedFont, fontSize: '30px' }}>Playlists</h2>
+      <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'auto' }}>
+        {loading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div>Error: {error}</div>
+        ) : (
+          // Filter playlists based on the search query and then map
+          playlists.filter(playlist => playlist.name.toLowerCase().includes(query.toLowerCase()))
+                  .map(playlist => (
             <Playlist key={playlist.id} playlist={playlist} />
-          ))}
-        </div>
+          ))
+        )}
+      </div>
       </div>
       {currentlyPlaying && (
         <MusicPlayer

@@ -188,10 +188,17 @@ class GenreSongListView(APIView):
     
 class SearchSongListView(APIView):
     def get(self, request):
-        query = request.query_params.get('q', '')
+        query = request.query_params.get('query', '')  # Change 'q' to 'query'
+        
+        # Filter songs based on the search query
         songs = Song.objects.filter(name__icontains=query) | Song.objects.filter(artist__icontains=query)
-        serializer = SongSerializer(songs, many=True)
-        return Response(serializer.data)
+        song_serializer = SongSerializer(songs, many=True)
+    
+        # Filter playlists based on the search query
+        playlists = Playlist.objects.filter(name__icontains=query)
+        playlist_serializer = PlaylistSerializer(playlists, many=True)
+        
+        return Response({'songs': song_serializer.data, 'playlists': playlist_serializer.data})
     
 class PlaylistListView(APIView):
     permission_classes = [IsAuthenticated]
