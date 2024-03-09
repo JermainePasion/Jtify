@@ -165,29 +165,29 @@
   background-size: cover;
 }
 
-
+  
   /* background template */
 
   
   /* Contact Page design */
 
 .contact-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
   padding: 20px;
 
 }
 
 .contact-form {
   border: 1px solid #ccc;
-  width: 70%;
+    width: 70%;
   max-width: 500px;
   background-color: rgba(255, 255, 255, 0.163);
-  padding: 20px;
-  border-radius: 10px;
-  margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
   box-shadow: 0 0 10px rgba(167, 20, 20, 0.1);
   color : white;
 }
@@ -266,4 +266,105 @@
 
 /* Discovery page design */
 
+   .profile-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+    min-height: calc(-673px + 100vh);
+  }
 
+  .profile-card {
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    max-width: 100%;
+    padding: 3rem;
+    border-radius: 10px;
+    margin-left: -0.5rem;
+  }
+  
+  .profile-card img {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    border-radius: 50%;
+    margin: 1rem 2rem;
+    width: 250px;
+  }
+  
+  .profile-card h1 {
+    color: white;
+    text-align: left; 
+    margin: 0.5rem;
+  }
+  
+  .profile-card h1:first-child {
+    margin-top: 1rem;
+    font-size: 15px;
+    margin-bottom: -0.5rem;
+    font-weight: 400;
+  }
+  
+  .profile-card h1:last-child {
+    visibility: visible; 
+    width: 100%; 
+    font-size: 4rem; 
+    white-space: normal;
+  }
+  
+  /* Media query for smaller screens */
+  @media only screen and (max-width: 768px) {
+    .profile-card {
+      flex-direction: column;
+    }
+  
+    .profile-card h1:last-child {
+      font-size: 1.5rem;
+    }
+  }
+
+
+ .name-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  align-items: left;
+  position: relative;
+ }
+ .name-card div{
+  margin-bottom: 10px;
+  margin-left: 20px;
+ }
+ .name-card input {
+  width: 90%;
+  padding: 10px;
+  margin-bottom: 15px;  
+}
+
+.name-card label {
+  color: white;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.name-card #name {
+  margin-bottom: 10px;
+}
+
+.editsong-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  min-height: calc(-673px + 173vh);
+  margin: 0.5rem;
+  margin-top: -0.1rem;
+  margin-right: 1rem;
+  border-radius: 20px;
+}

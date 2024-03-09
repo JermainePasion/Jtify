@@ -110,9 +110,7 @@ function Profile() {
     <div style={{ display: 'flex', width: '100vw', height: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
       <div className='template-background' >
-      <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '100vh', width: '100vw', padding: '20px', 
-        borderRadius: '10px',  margin: '5px', opacity: 0.9, marginTop: '-5px'}}>
-
+      <div className='profile-container'>
           <div>
             {loading ? (
               <p>Loading...</p>
@@ -124,41 +122,39 @@ function Profile() {
                 {updateError && <p style={{ color: 'red', marginBottom: '15px' }}>{updateError}</p>}
 
                 {user.data && user.data.profile_data && user.data.profile_data.image && (
-                  <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '250px', width: '1490px', padding: '15px', 
-                    borderRadius: '10px', backgroundColor: 'rgba(255, 255, 255, 0.18)', opacity: 0.9, marginLeft: '-7px', marginTop: '-60px'}}>
+                  <div className='profile-card' style={{backgroundColor: color}}>
                   <img
                     src={user.data.profile_data.image}
                     alt='Profile'
-                    style={{ width: '200px', height: '200px', borderRadius: '50%', marginBottom: '20px', marginLeft: '50px', marginTop: '50px' }}
                   />
                   <div style={{ marginRight: '20px' }}>
-                  <h1 style={{ color: 'white', fontSize: '20px', marginBottom: '-30px', textAlign: 'left', marginLeft: '20px' }}>Profile : </h1>
-                  <h1 style={{ color: 'white', fontSize: '35px', marginBottom: '20px', textAlign: 'left',  marginLeft: '20px' }}>{name}</h1>
+                  <h1 className='h1'>Profile</h1>
+                  <h1 className='h1'>{name}</h1>
+                  </div>  
                   </div>
-                  </Card>
                 )}
                 
-                <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '600px', width: '1490px', padding: '15px', 
-                  borderRadius: '10px', opacity: 0.9, marginTop: '-15px', marginLeft: '-7px'}}>
+                <form onSubmit={handleSubmit} >
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px', 
+                  borderRadius: '10px', opacity: 0.9, marginTop: '-0.5rem', marginLeft:'-1rem' }}>
                   <div style={{ display: 'flex', flexDirection: 'row1', justifyContent: 'center' }}>
                   {/* Name and Email Card  */}
-                  <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '500px', width: '725px', padding: '15px', 
-                  borderRadius: '10px', backgroundColor: 'rgba(255, 255, 255, 0.18)', opacity: 0.9, marginTop: '10px', marginLeft: '-5px', marginRight: '15px'}}>
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1, alignItems: 'left', position: 'relative'}}>
-                  <div style={{ marginBottom: '10px', marginLeft: '20px'}}>
+                  <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '500px', width: '720px', padding: '15px', 
+                  borderRadius: '10px', backgroundColor: color, opacity: 0.9, marginTop: '0.1rem', marginLeft: '1rem', marginRight: '0.5rem'}}>
+                  <div className='name-card'>
+                  <div>
                     <label htmlFor="name" style={{ color: 'white', display: 'block', marginBottom: '5px' }}>Name:</label>
-                    <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} style={{ width: '90%', padding: '8px' }} />
+                    <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} />
                   </div>
                   <div style={{ marginBottom: '15px', marginLeft: '20px'}}>
                     <label htmlFor="email" style={{ color: 'white', display: 'block', marginBottom: '5px' }}>Email:</label>
-                    <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ width: '90%', padding: '8px' }} />
+                    <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
                   </div>
                   </div>
                   </Card>
                   {/* Profile, Color, and Fonts Card */}
-                  <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '500px', width: '725px', padding: '15px', 
-                  borderRadius: '10px', backgroundColor: color, opacity: 0.9, marginTop: '10px', marginLeft: '-7px'}}>
+                  <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '500px', width: '720px', padding: '15px', 
+                  borderRadius: '10px', backgroundColor: color , opacity: 0.9, marginTop: '0.1rem', marginLeft: '0.1rem'}}>
                   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1, alignItems: 'left', position: 'relative'}}>
               <div style={{ marginBottom: '15px', marginLeft: '20px', color: 'white' }}>
                 <label htmlFor="profilePicture" style={{ display: 'block', marginBottom: '5px' }}>Profile Picture:</label>
@@ -198,7 +194,7 @@ function Profile() {
               </>
             )}
           </div>
-        </Card>
+        </div>
       </div>
     </div>
 

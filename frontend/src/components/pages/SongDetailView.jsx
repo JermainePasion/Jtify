@@ -133,9 +133,11 @@ const SongDetail = () => {
         padding: '10px 0',
         backgroundSize: 'cover',
       }}>
+        <div className='editsong-container' style={{backgroundColor: color}}>
         <Container>
-          <Button variant="secondary" style={{ marginBottom: '20px' }} onClick={handleGoBack}>
-            Go Back
+          <Button variant="secondary" classname="backbutton" style={{ marginBottom: '20px',  backgroundColor: color,  border: 'none', border: '2px solid #000',
+    borderRadius: '30px', padding: '15px 30px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginLeft: '10px'}} onClick={handleGoBack}>
+            Back
           </Button>
 
           {loading ? (
@@ -148,7 +150,7 @@ const SongDetail = () => {
             <Row>
               <Col>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <img src={song.picture} alt="Album Cover" style={{ width: '300px', height: '300px', borderRadius: '15px', marginBottom: '20px' }} />
+                  <img src={song.picture} alt="Album Cover" style={{ width: '300px', height: '300px', borderRadius: '15px', marginBottom: '10px' }} />
                   <h2 style={{ marginBottom: '10px', color: '#fff' }}>{song.name}</h2>
                   <p style={{ marginBottom: '20px', color: '#fff' }}>{song.artist}</p>
                   {isEditing && (
@@ -156,6 +158,12 @@ const SongDetail = () => {
                       <Form.Group controlId="formSongName">
                         <Form.Label style = {{color: 'white', margin: '10px'}}>Edit Name:</Form.Label>
                         <Form.Control 
+                          style = {{color: 'black', margin: '10px', width: '100%',
+                          padding: '8px',
+                          border: '1px solid #ccc',
+                          borderRadius: '5px',
+                          boxSizing: 'border-box',
+                          marginTop: '5px',}}
                           type="text" 
                           placeholder="Enter new name" 
                           value={editedSong.name || ''}
@@ -165,6 +173,12 @@ const SongDetail = () => {
                       <Form.Group controlId="formSongArtist">
                         <Form.Label style = {{color: 'white', margin: '10px'}}>Edit Artist:</Form.Label>
                         <Form.Control 
+                          style = {{color: 'black', margin: '10px',     width: '100%',
+                          padding: '8px',
+                          border: '1px solid #ccc',
+                          borderRadius: '5px',
+                          boxSizing: 'border-box',
+                          marginTop: '5px',}}
                           type="text" 
                           placeholder="Enter new artist" 
                           value={editedSong.artist || ''}
@@ -179,21 +193,33 @@ const SongDetail = () => {
                         value={editedSong.genre || ''} // Set the value of the select to editedSong.genre
                         onChange={(e) => setEditedSong({ ...editedSong, genre: e.target.value })} // Update genre in state
                         required
-                        style={{ width: '75%', padding: '8px' }} // Adjust width and padding
+                        style={{
+                          width: '30%',
+                          padding: '8px',
+                          border: '1px solid #ccc',
+                          borderRadius: '5px',
+                          boxSizing: 'border-box',
+                          marginTop: '5px',
+                        }}
                       >
                         <option value='' disabled>Select Genre</option>
                         {genres && genres.map(([value, label], index) => (
                           <option key={index} value={value}>{label}</option>
                         ))}
                       </select>
-                      <Form.Label style = {{color: 'white', margin: '10px'}}>Edit Playlist:</Form.Label>
+                      <Form.Label style = {{color: 'white', margin: '10px', marginLeft: '20px'}}>Edit Playlist:</Form.Label>
                       <select
                         id="playlist"
                         name='playlist'
                         value={editedSong.playlist || ''} // Set the value of the select to editedSong.playlist
                         onChange={(e) => setEditedSong({ ...editedSong, playlist: e.target.value })} // Update playlist in state
                         required
-                        style={{ width: '75%', padding: '8px' }} // Adjust width and padding
+                        style={{
+                          width: '28%',
+                          padding: '10px',
+                          borderRadius: '5px',
+                          marginTop: '5px',
+                        }}
                       >
                         <option value='' disabled>Select Playlist</option>
                         {Array.isArray(playlists) && playlists.map(playlist => {
@@ -204,7 +230,7 @@ const SongDetail = () => {
                       </select>
                     </Form.Group>
                       <Form.Group controlId="formPicture">
-                        <Form.Label style={{ color: '#fff' }}>Edit Album Cover:</Form.Label>
+                        <Form.Label style={{ color: '#fff', marginLeft: '10px' }}>Edit Album Cover:</Form.Label>
                         <Form.Control
                           type="file"
                           accept="image/*"
@@ -216,10 +242,10 @@ const SongDetail = () => {
                             e.target.value = null;
                           }}
                         />
-                        <p style={{ color: '#fff' }}>Chosen File: {fileNames.picture}</p>
+                        <p style={{ color: '#fff', display: 'flex', marginLeft: '10px' }}> Chosen File: {fileNames.picture}</p>
                       </Form.Group>
                       <Form.Group controlId="formAudioFile">
-                        <Form.Label style={{ color: '#fff' }}>Edit Audio File:</Form.Label>
+                        <Form.Label style={{ color: '#fff', marginLeft: '10px' }}>Edit Audio File:</Form.Label>
                         <Form.Control
                           type="file"
                           accept="audio/*"
@@ -231,21 +257,56 @@ const SongDetail = () => {
                             e.target.value = null;
                           }}
                         />
-                        <p style={{ color: '#fff' }}>Chosen File: {fileNames.audio}</p>
+                        <p style={{ color: '#fff', display:'flex', marginLeft: '10px'}}> Chosen File: {fileNames.audio}</p>
                       </Form.Group>
-                      <Button variant="primary" onClick={handleEdit}>
-                        Save Changes
-                      </Button>
-                      <Button variant="secondary" onClick={handleCancelEdit} style={{ marginLeft: '10px' }}>Cancel</Button>
+                      <Button variant="primary" onClick={handleEdit}  style={{
+                      marginLeft: '150px',
+                      marginBottom:  '10px',
+                      backgroundColor: '#28a745',
+                      color: '#fff',
+                      padding: '10px 20px',
+                      border: 'none',
+                      borderRadius: '5px',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.3s ease',}}  
+                      onMouseOver={(e) => (e.target.style.backgroundColor = '#28a745')}
+                      onMouseOut={(e) => (e.target.style.backgroundColor = '#218838')}>Save Changes</Button>
+                      <Button variant="secondary" onClick={handleCancelEdit} style={{
+                      marginLeft: '10px',
+                      marginBottom:  '10px',
+                      backgroundColor: '#FF6347',
+                      color: '#fff',
+                      padding: '10px 20px',
+                      border: 'none',
+                      borderRadius: '5px',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.3s ease',}}  
+                      onMouseOver={(e) => (e.target.style.backgroundColor = '#FF6347')}
+                      onMouseOut={(e) => (e.target.style.backgroundColor = '#D9534F')}>Cancel</Button>
                     </Form>
                   )}
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     {!isEditing && (
-                      <Button variant="primary" onClick={handleEditClick} style={{ marginRight: '10px' }}>
+                      <Button variant="primary" onClick={handleEditClick}  style={{ marginRight: '10px', backgroundColor: '#4CAF50',
+                      color: '#fff',
+                      padding: '10px 20px',
+                      border: 'none',
+                      borderRadius: '5px',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.3s ease'}}>
                         Edit
                       </Button>
                     )}
-                    <Button variant="danger" onClick={handleDelete}>Delete</Button>
+                    <Button variant="danger" onClick={handleDelete} style={{
+                      backgroundColor: '#d9534f',
+                      color: '#fff',
+                      padding: '10px 20px',
+                      border: 'none',
+                      borderRadius: '5px',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.3s ease',}}  
+                      onMouseOver={(e) => (e.target.style.backgroundColor = '#c9302c')}
+                      onMouseOut={(e) => (e.target.style.backgroundColor = '#d9534f')}>Delete</Button>
                   </div>
                 </div>
               </Col>
@@ -254,6 +315,7 @@ const SongDetail = () => {
             <p style={{ color: '#fff' }}>Song details not available</p>
           )}
         </Container>
+        </div>
       </div>
     </div>
   );
