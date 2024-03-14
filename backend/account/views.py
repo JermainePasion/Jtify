@@ -19,6 +19,10 @@ from account.models import Contact
 from account.serializers import ContactSerializer
 from django.core.mail import send_mail
 from django.conf import settings
+from .serializers import UserProfileSerializer
+from songs .serializers import SongSerializer, PlaylistSerializer
+from songs .models import Song, Playlist
+
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -272,3 +276,25 @@ class ArtistRegisterView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserProfileDetailView(APIView):
+    def get(self, request, user_id):
+        try:
+            # Retrieve user profile, uploaded songs, and created playlists
+            user_profile = User.objects.get(id=user_id)
+            uploaded_songs = Song.objects.filter(user_id=user_id)
+            created_playlists = Playlist.objects.filter(user_id=user_id)
+
+            # Serialize the data
+            profile_serializer = UserProfileSerializer(user_profile)
+            song_serializer = SongSerializer(uploaded_songs, many=True)
+            playlist_serializer = PlaylistSerializer(created_playlists, many=True)
+
+            # Return JSON response
+            return Response({
+                'profile': profile_serializer.data,
+                'uploaded_songs': song_serializer.data,
+                'created_playlists': playlist_serializer.data
+            })
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)

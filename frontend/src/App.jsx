@@ -21,7 +21,7 @@ import PlaylistDetailView from './components/pages/PlaylistDetailView';
 import AddPlaylistScreen from './components/pages/AddPlaylistScreen';
 import MyPlaylistScreen from './components/pages/MyPlaylistScreen';
 import MySongsScreen from './components/pages/MySongsScreen';
-
+import ArtistProfile from './components/pages/ArtistProfile';
 
 
 const isAuthenticated = () => {
@@ -41,6 +41,7 @@ function App() {
         />
         <Route path="/" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/artistprofile/:id" element={<ArtistProfile />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/discovery" element={<Discovery />} />
         <Route path="/artistregister" element={<ArtistRegister />} />

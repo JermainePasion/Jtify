@@ -31,7 +31,10 @@ import {
     USER_CONTACT_US_FAIL,
     ARTIST_REGISTER_REQUEST,
     ARTIST_REGISTER_SUCCESS,
-    ARTIST_REGISTER_FAILURE
+    ARTIST_REGISTER_FAILURE,
+    GET_USER_PROFILE_REQUEST,
+    GET_USER_PROFILE_SUCCESS,
+    GET_USER_PROFILE_FAILURE,
 } from '../constants/userConstants';
 
 
@@ -430,3 +433,43 @@ export const artistRegister = (name, artist_name, email, phone_number, youtube_l
     }
   };
 
+
+  
+export const userProfile = {
+    getUserProfile: () => async (dispatch, getState) => {
+      try {
+        dispatch({
+          type: GET_USER_PROFILE_REQUEST,
+        });
+    
+        const {
+          userLogin: { userInfo },
+        } = getState();
+    
+        if (!userInfo?.data?.token?.access) {
+          // If userInfo or its properties are undefined, handle it accordingly
+          throw new Error('User information is missing or incomplete');
+        }
+    
+        const config = {
+          headers: {
+            Authorization: `Bearer ${userInfo.data.token.access}`,
+          },
+        };
+    
+        const { data } = await instance.get(`api/user/user-profile/`, config);
+    
+        dispatch({
+          type: GET_USER_PROFILE_SUCCESS,
+          payload: data,
+        });
+      } catch (error) {
+        dispatch({
+          type: GET_USER_PROFILE_FAILURE,
+          payload: error.response
+            ? error.response.data.message
+            : error.message || 'Error fetching user profile',
+        });
+      }
+    }
+  };

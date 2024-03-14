@@ -29,7 +29,10 @@ import { USER_LOGIN_REQUEST,
     USER_CONTACT_US_FAIL,
     ARTIST_REGISTER_REQUEST,
     ARTIST_REGISTER_SUCCESS,
-    ARTIST_REGISTER_FAILURE
+    ARTIST_REGISTER_FAILURE,
+    GET_USER_PROFILE_REQUEST,
+    GET_USER_PROFILE_SUCCESS,
+    GET_USER_PROFILE_FAILURE
  } 
 from '../constants/userConstants';
 
@@ -171,3 +174,32 @@ export const artistRegisterReducer = (state = {}, action)  => {
         return state;
     }
   };
+
+export const userProfileReducer = (state = {}, action)  => {
+    switch (action.type) {
+      case GET_USER_PROFILE_REQUEST:
+        return {
+          ...state,
+          loading: true,
+          error: null
+        };
+      case GET_USER_PROFILE_SUCCESS:
+        return {
+          ...state,
+          loading: false,
+          profile: action.payload.profile,
+          uploadedSongs: action.payload.uploadedSongs,
+          createdPlaylists: action.payload.createdPlaylists,
+          error: null
+        };
+      case GET_USER_PROFILE_FAILURE:
+        return {
+          ...state,
+          loading: false,
+          error: action.payload
+        };
+      default:
+        return state;
+    }
+  };
+  

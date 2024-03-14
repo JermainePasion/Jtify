@@ -22,6 +22,7 @@ import addPlaylistReducer from './reducers/songReducer';
 import mySongsReducer from './reducers/songReducer';
 import myPlaylistsReducer from './reducers/songReducer';
 import uploadSongToPlaylistReducer from './reducers/songReducer';
+import { userProfileReducer } from './reducers/userReducers';
 
 
 const reducer = combineReducers({
@@ -47,6 +48,7 @@ const reducer = combineReducers({
     mySongs: mySongsReducer,
     myPlaylist: myPlaylistsReducer,
     uploadSongstoPlaylist: uploadSongToPlaylistReducer,
+    userProfile: userProfileReducer
 });
 
 const initialState = {

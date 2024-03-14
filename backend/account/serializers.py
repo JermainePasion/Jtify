@@ -12,7 +12,6 @@ from . import utils
 from .models import Profile
 from .models import Contact, ArtistRegister
 
-
 User = get_user_model()
 
 class UserRegistrationSerializer(serializers.ModelSerializer):

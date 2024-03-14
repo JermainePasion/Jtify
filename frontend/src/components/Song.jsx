@@ -8,7 +8,7 @@ import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 
 function Song({ song, playSong }) {
-  const { id, picture, name, artist } = song;
+  const { id, picture, name, artist, } = song;
   const user = useSelector(state => state.userDetails.user);
   const likedSongs = useSelector(state => state.fetchLikedSongs.songs);
   const isLiked = likedSongs ? likedSongs.some(likedSong => likedSong.id === id) : false;
@@ -70,9 +70,11 @@ function Song({ song, playSong }) {
               <strong>{name}</strong>
             </Card.Title>
             </Link>
+            <Link to={`/Artistprofile/${song.user}`} style={{ textDecoration: 'none', color: 'inherit' }}>
             <Card.Text as="div" style={artistStyle}>
-              {artist}  <FontAwesomeIcon icon={liked ? solidHeart : regularHeart} onClick={handleLike} style={{ cursor: 'pointer', color: liked ? '#fff' : '#fff' }} /> {/* Set color to white */}
+              {artist}  <FontAwesomeIcon icon={liked ? solidHeart : regularHeart} onClick={handleLike} style={{ cursor: 'pointer', color: liked ? '#fff' : '#fff' }} />
             </Card.Text>
+            </Link>
         </Card.Body>
       </div>
     </Card>
