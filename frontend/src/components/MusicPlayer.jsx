@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlay, FaPause, FaStepForward, FaStepBackward, FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
+import { FaPlay, FaPause, FaStepForward, FaStepBackward, FaVolumeUp, FaVolumeMute, FaRandom } from 'react-icons/fa';
+import { BiRepeat } from 'react-icons/bi';
 import Slider from '@mui/material/Slider';
 
 function MusicPlayer({
   currentlyPlaying,
-  duration,
-  currentTime,
   audioRef,
-  color,
   selectedFont,
   playSong,
   pauseSong,
@@ -20,6 +18,10 @@ function MusicPlayer({
   });
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [isShuffle, setIsShuffle] = useState(false);
+  const [isRepeat, setIsRepeat] = useState(false);
 
   useEffect(() => {
     const storedIsPlaying = localStorage.getItem('isPlaying') === 'true';
@@ -35,12 +37,24 @@ function MusicPlayer({
       localStorage.setItem('isPlaying', 'false');
     };
 
+    const handleTimeUpdate = () => {
+      setCurrentTime(audioRef.current.currentTime);
+    };
+
+    const handleDurationChange = () => {
+      setDuration(audioRef.current.duration);
+    };
+
     audioRef.current.addEventListener('play', handlePlay);
     audioRef.current.addEventListener('pause', handlePause);
+    audioRef.current.addEventListener('timeupdate', handleTimeUpdate);
+    audioRef.current.addEventListener('durationchange', handleDurationChange);
 
     return () => {
       audioRef.current.removeEventListener('play', handlePlay);
       audioRef.current.removeEventListener('pause', handlePause);
+      audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
+      audioRef.current.removeEventListener('durationchange', handleDurationChange);
     };
   }, [audioRef]);
 
@@ -57,19 +71,31 @@ function MusicPlayer({
   const handleTimeBarChange = (event, newValue) => {
     const newTime = (newValue / 100) * duration;
     audioRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
   };
 
   const togglePlayPause = () => {
     if (isPlaying) {
-      pauseSong();
+      audioRef.current.pause();
     } else {
-      playSong(currentlyPlaying);
+      audioRef.current.play();
     }
+    setIsPlaying(!isPlaying);
   };
 
   const toggleMute = () => {
     const newVolume = isMuted ? 50 : 0;
     setVolume(newVolume);
+  };
+
+  const toggleShuffle = () => {
+    setIsShuffle(!isShuffle);
+    // Implement shuffle logic here
+  };
+
+  const toggleRepeat = () => {
+    setIsRepeat(!isRepeat);
+    // Implement repeat logic here
   };
 
   return (
@@ -85,6 +111,9 @@ function MusicPlayer({
           </div>
         )}
         <div style={{ position: 'fixed', left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center' }}>
+          <button onClick={toggleRepeat} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '24px', color: '#fff' }}>
+            {isRepeat ? <BiRepeat style={{ color: '#8a63d2' }} /> : <BiRepeat style={{ color: '#fff' }} />}
+          </button>
           <button onClick={() => skipTrack(false)} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '24px', color: '#fff' }}>
             <FaStepBackward />
           </button>
@@ -93,6 +122,9 @@ function MusicPlayer({
           </button>
           <button onClick={() => skipTrack()} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '24px', color: '#fff' }}>
             <FaStepForward />
+          </button>
+          <button onClick={toggleShuffle} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '24px', color: '#fff' }}>
+            <FaRandom style={{ color: isShuffle ? '#8a63d2' : '#fff' }} />
           </button>
         </div>
         {duration > 0 && (
@@ -147,7 +179,7 @@ function MusicPlayer({
             value={volume}
             onChange={handleVolumeChange}
             aria-labelledby="continuous-slider"
-            style={{ color: '#fff', width: '100px', '& .MuiSlider-thumb': { width: 20, height: 20 } }} // Adjust width and height of the thumb here
+            style={{ color: '#fff', width: '100px', '& .MuiSlider-thumb': { width: 20, height: 20 } }}
           />
         </div>
       </div>
