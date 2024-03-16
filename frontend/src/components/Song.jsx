@@ -27,7 +27,7 @@ function Song({ song, playSong }) {
   };
 
   const imgStyle = {
-    maxWidth: '230px',
+    maxWidth: '200px',
     marginLeft: '18px',
     cursor: 'pointer',
     borderRadius: '15px',

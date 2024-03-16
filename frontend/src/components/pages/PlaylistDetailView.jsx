@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, Link } from 'react-router-dom';
-import { Container, Button, Spinner, Image } from 'react-bootstrap'; // Import Image from react-bootstrap
+import { Container, Button, Spinner, Image, Col, Row } from 'react-bootstrap'; // Import Image from react-bootstrap
 import { playlistDetailView } from '../../actions/songActions';
 import { getUserDetails } from '../../actions/userActions';
 import Navbar from '../Navbar';
 import Song from '../Song';
 import MusicPlayer from '../MusicPlayer';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClock } from '@fortawesome/free-solid-svg-icons';
 
 const PlaylistDetails = () => {
   const dispatch = useDispatch();
@@ -136,15 +138,17 @@ const PlaylistDetails = () => {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
+    <div style={{ display: 'flex', minHeight: '110vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
       <div style={{ flex: 1, padding: '20px', color: 'white' }}>
         <Container>
-          <Link to="/home" style={{ textDecoration: 'none' }}>
-            <Button variant="secondary" style={{ marginBottom: '20px' }} onClick={handleGoBack}>
-              Back to Home
-            </Button>
-          </Link>
+              <Link to="/home" style={{ textDecoration: 'none' }}>
+               <div className="back-to-home" onClick={handleGoBack}>
+              <span className="arrow-icon" style={{ marginRight: '5px', fontSize: '25px' }}>&#8592;</span>
+              <span className="button-text">Back to Home</span>
+            </div>
+             </Link>
+
           {loading ? (
             <Spinner animation="border" role="status">
               <span className="sr-only">Loading...</span>
@@ -154,19 +158,35 @@ const PlaylistDetails = () => {
           ) : (
             playlist && (
               <div style={{ position: 'relative' }}>
-                <div className='template-background' style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-                  <Image src={playlist.playlistCover} alt="Liked" style={{ width: '250px', height: '250px', objectFit: 'contain', marginLeft: '10px' }} />
-                  <div style={{ marginLeft: '10px' }}>
+                <div className='template-background' style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                  <Image src={playlist.playlistCover} alt="Liked" style={{ width: '250px', height: '250px', objectFit: 'contain', marginLeft: '10px', marginTop:'-10px',  marginBottom:'-10px' }} />
+                  <div style={{ marginLeft: '5px' }}>
                     {/* <p style={{ color: 'white', fontFamily: selectedFont }}>Playlist</p> */}
-                    <h2 className="mt-3 mb-3" style={{ color: 'white', fontSize: '50px', fontFamily: selectedFont }}>{playlist.name}</h2>
-                    <p style={{ color: 'white', fontSize: '20px', fontFamily: selectedFont }}>Created by: {user?.data?.user_data?.name}</p>
-                    <p style={{ color: 'white', fontSize: '20px', fontFamily: selectedFont }}>Number of Songs: {playlist.songs.length}</p>
+                    <h2 className="mt-3 mb-3" style={{ color: 'white', fontSize: '100px', marginBottom: '10px', marginTop:'5px' ,fontFamily: selectedFont }}>{playlist.name}</h2>
+                    <p style={{ color: 'white', fontSize: '20px', fontFamily: selectedFont, marginBottom: '5px', marginTop:'5px' }}>Created by: {user?.data?.user_data?.name}</p>
+                    <p style={{ color: 'white', fontSize: '20px', fontFamily: selectedFont, marginBottom: '5px', marginTop:'5px' }}>Number of Songs: {playlist.songs.length}</p>
                   </div>
                 </div>
-                <h3 style={{ color: 'white', marginBottom: '20px', fontSize: '24px', fontFamily: selectedFont }}>Songs Included:</h3>
-                {playlist.songs.map((song) => (
-                  <div key={song.id} style={{ marginBottom: '20px' }}>
-                    <Song key={song.id} song={song} playSong={() => playSong(song)} />
+                <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <h3 style={{ color: 'white', marginBottom: '10px', fontSize: '20px', fontFamily: selectedFont }}>Titles:</h3>
+                  <span className="clock-icon" style={{ marginTop: '20px', marginRight: '20px', fontSize: '20px' }}>
+                    <FontAwesomeIcon icon={faClock} />
+                  </span>
+                  </div>
+                  <hr style={{ borderBottom: '1px solid white', marginBottom: '10px' }} />
+
+                </div>
+                {playlist.songs.map((song, index) => (
+                  <div key={song.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px', cursor: 'pointer' }} onClick={() => playSong(song)}>
+                    <span style={{ marginRight: '10px', fontWeight: 'bold' }}>{index + 1}</span> {/* Add the number here */}
+                    <Image src={song.picture} alt={song.name} rounded style={{ marginRight: '15px', width: '64px', height: '63px' }} />
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ fontSize: '16px', fontWeight: 'bold' }}>{song.name}</div>
+                      <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center' }}>
+                        <span style={{ marginRight: '10px', fontWeight: 'normal' }}>{song.name}</span>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

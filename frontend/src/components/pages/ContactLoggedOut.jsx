@@ -41,7 +41,7 @@ const ContactLoggedOut = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '115vh' }}>
 
 
                   <Card style={{ width: '400px', padding: '20px', border: '2px solid white', borderRadius: '10px' }}>

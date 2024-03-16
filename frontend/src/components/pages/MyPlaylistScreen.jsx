@@ -16,7 +16,7 @@ const PlaylistScreen = () => {
   }, [dispatch]);
 
   return (
-    <div style={{ fontFamily: selectedFont, display: 'flex', backgroundColor: color, minHeight: '100vh', color: '#000' }}> {/* Changed text color to black */}
+    <div style={{ fontFamily: selectedFont, display: 'flex', backgroundColor: color, minHeight: '115vh', color: '#000' }}> {/* Changed text color to black */}
       <div style={{ flex: '0 0 auto' }}>
         <Navbar />
       </div>

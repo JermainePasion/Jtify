@@ -162,7 +162,7 @@ const Favorites = () => {
 
   
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
+    <div style={{ display: 'flex', flexDirection: 'row', width: '100vw', minHeight: '115vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
       <div className='template-background' style={{ flex: 1 }}>
         <Container fluid>

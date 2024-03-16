@@ -107,7 +107,7 @@ function Profile() {
   };
 
   return (
-    <div style={{ display: 'flex', width: '100vw', height: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
+    <div style={{ display: 'flex', width: '100vw', height: '115vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
       <div className='template-background' >
       <div className='profile-container'>

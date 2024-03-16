@@ -16,7 +16,7 @@ const MySongsScreen = () => {
   }, [dispatch]);
 
   return (
-    <div style={{ display: 'flex', backgroundColor: color, color: '#fff', fontFamily: selectedFont }}>
+    <div style={{ display: 'flex', backgroundColor: color, minHeight: '115vh', color: '#fff', fontFamily: selectedFont }}>
       <Navbar />
       <div className='template-background' style={{ flex: 1, padding: '20px' }}>
         <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>My Songs</h1>

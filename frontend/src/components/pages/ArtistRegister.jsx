@@ -6,6 +6,7 @@ import {getUserDetails } from '../../actions/userActions';
 import { artistRegister } from '../../actions/userActions';
 import Navbar from '../Navbar';
 
+
 const ArtistRegister = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -42,75 +43,89 @@ const ArtistRegister = () => {
   }, [dispatch]);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: font }}>
-    <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
-    <div className='template-background' style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column' }}>
-    <h1 style={{color: 'white' }}>Be an Artist</h1>
-        <Form onSubmit={handleSubmit}>
-        <Form.Group controlId='FormName'>
-  <Form.Label style={{color: 'white' }}>Name</Form.Label>
-  <Form.Control
-    type='text'
-    placeholder='Enter your name'
-    name='name'  // Should match the key in formData
-    value={formData.name}
-    onChange={handleInputChange}
-    required
-  />
-          </Form.Group>
-          <Form.Group controlId='artistName'>
-            <Form.Label style={{color: 'white' }}>Artist Name</Form.Label>
-            <Form.Control
-              type='text'
-              placeholder='Enter your artist name'
-              name='artist_name'  // Should match the key in formData
-              value={formData.artist_name}
-              onChange={handleInputChange}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId='email'>
-            <Form.Label style={{color: 'white' }}>Email</Form.Label>
-            <Form.Control
-              type='email'
-              placeholder='Enter your email'
-              name='email'  // Should match the key in formData
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId='phoneNumber'>
-            <Form.Label style={{color: 'white' }}>Phone Number</Form.Label>
-            <Form.Control
-              type='tel'
-              placeholder='Enter your phone number'
-              name='phone_number'  // Should match the key in formData
-              value={formData.phone_number}
-              onChange={handleInputChange}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId='youtubeLink'>
-            <Form.Label style={{color: 'white' }}>YouTube Link</Form.Label>
-            <Form.Control
-              type='text'
-              placeholder='Enter your YouTube link'
-              name='youtube_link'  // Should match the key in formData
-              value={formData.youtube_link}
-              onChange={handleInputChange}
-              required
-            />
-          </Form.Group>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Button variant='primary' type='submit' className='custom-button'>
-          Submit
-        </Button>
-    </div>
-        </Form>
+    <div style={{ display: 'flex', minHeight: '115vh', backgroundColor: color, fontFamily: font }}>
+      <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
+      <div className='template-background artist-register-container' style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column' }}>
+        
+        {/* Adjusted width of the form box */}
+        <div className="form-box" style={{ width: '36%' }}>
+          <Form onSubmit={handleSubmit}>
+          <h1 style={{ WebkitBackgroundClip: 'text', color: '#A020F0', fontSize: '2.5em' }}><span style={{ color: '#0000FF' }}>Register</span> Form</h1>
+            <p style={{ color: 'black', marginTop: '-1.5em'  }}>Please fill in this form to register as an artist.</p>
+
+            <Form.Label style={{ color: 'black' }}>Name</Form.Label>
+            <Form.Group controlId='FormName'>
+              <Form.Control
+                type='text'
+                placeholder='Name'
+                name='name'
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                style={{ borderRadius: '3px' }} 
+              />
+            </Form.Group>
+            <Form.Label style={{ color: 'black' }}>Artist Name</Form.Label>
+            <Form.Group controlId='artistName'>
+              <Form.Control
+                type='text'
+                placeholder='Enter your artist name'
+                name='artist_name'
+                value={formData.artist_name}
+                onChange={handleInputChange}
+                required
+                style={{ borderRadius: '3px' }} 
+              />
+            </Form.Group>
+            <Form.Label style={{ color: 'black' }}>Email</Form.Label>
+            <Form.Group controlId='email'>
+              <Form.Control
+                type='email'
+                placeholder='Enter your email'
+                name='email'
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+                style={{ borderRadius: '3px' }} 
+              />
+            </Form.Group>
+            <Form.Label style={{ color: 'black' }}>Phone Number</Form.Label>
+            <Form.Group controlId='phoneNumber'>
+              <Form.Control
+                type='tel'
+                placeholder='Enter your phone number'
+                name='phone_number'
+                value={formData.phone_number}
+                onChange={handleInputChange}
+                required
+                style={{ borderRadius: '3px' }} 
+              />
+            </Form.Group>
+            <Form.Label style={{ color: 'black' }}>YouTube Link</Form.Label>
+            <Form.Group controlId='youtubeLink'>
+              <Form.Control
+                type='text'
+                placeholder='Enter your YouTube link'
+                name='youtube_link'
+                value={formData.youtube_link}
+                onChange={handleInputChange}
+                required
+                style={{ borderRadius: '3px' }} 
+              />
+            </Form.Group>
+            <Form.Group controlId='submitBtn' style={{ display: 'flex', justifyContent: 'center' }}>
+              <Button 
+                variant='primary' 
+                type='submit' 
+                className='custom-button'
+                style={{ backgroundColor: '#28a745', borderColor: '#28a745', color: '#fff', width: '200px' }}>
+                Submit
+              </Button>
+            </Form.Group>
+          </Form>
+        </div>
       </div>
     </div>
-       
   );
 };
 
