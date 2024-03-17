@@ -155,6 +155,7 @@ class Contact(models.Model):
       return self.name
   
 class ArtistRegister(models.Model):
+#user = models.ForeignKey(User, on_delete=models.CASCADE)
   name = models.CharField(max_length=255)
   artist_name = models.CharField(max_length=255)
   email = models.EmailField(max_length=255)

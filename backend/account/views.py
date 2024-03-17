@@ -262,20 +262,54 @@ class ContactView(APIView):
 class ArtistRegisterView(APIView):
     serializer_class = ArtistRegisterSerializer
 
-    def get(self, request, format=None):
-       
-        registrations = ArtistRegister.objects.all()
-        serializer = self.serializer_class(registrations, many=True)
-        return Response(serializer.data)
-
     def post(self, request, format=None):
-        # Deserialize the incoming data
-        serializer = self.serializer_class(data=request.data)
+        # Add the user field to the request data
+        data = request.data.copy()
+        data['user'] = request.user.id  # Assign the logged-in user's id to the user field
+        
+        # Initialize the serializer with the data including the user field
+        serializer = self.serializer_class(data=data)
+        
         if serializer.is_valid():
             # Save the validated data to the database
             serializer.save()
+
+            # Send email notification to EMAIL_HOST_USER
+            send_mail_notification(serializer.data, request.user.id)  # Pass the user id here
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+def send_mail_notification(data, user_id):
+    subject = 'New Artist Registration'
+    message = f'''
+    New artist registration details:
+    Name: {data['name']}
+    Artist Name: {data['artist_name']}
+    Email: {data['email']}
+    Phone Number: {data['phone_number']}
+    YouTube Link: {data['youtube_link']}
+    Created At: {data['created_at']}
+    
+    Click the following link to verify artist registration:
+    http://localhost:3000/verify-artist/{user_id}
+    '''
+    from_email = settings.EMAIL_HOST_USER
+    recipient_list = [data['email']]  # Send email to the registered user
+    send_mail(subject, message, from_email, recipient_list)
+def verify_artist(request, artist_id):
+    try:
+        artist = ArtistRegister.objects.get(id=artist_id)
+        # Update user as artist
+        user = User.objects.get(email=artist.email)
+        user.is_artist = True
+        user.save()
+        # You may want to delete the ArtistRegister entry here
+        artist.delete()
+        return Response({'message': 'Artist verified successfully'}, status=status.HTTP_200_OK)
+    except ArtistRegister.DoesNotExist:
+        return Response({'message': 'Artist registration not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 class UserProfileDetailView(APIView):
     def get(self, request, user_id):
