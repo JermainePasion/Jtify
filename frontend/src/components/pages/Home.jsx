@@ -197,7 +197,13 @@ function Home() {
           </div>
         </div>
         <h1 style={{ color: 'white', fontFamily: selectedFont, fontSize: '30px' }}>Today's hits</h1>
-        <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'hidden',  transition: 'overflow-x 0.5s' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.overflowX = 'auto';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.overflowX = 'hidden';
+          }} >
         {loading ? (
           <div>Loading...</div>
         ) : error ? (
@@ -211,7 +217,13 @@ function Home() {
         )}
       </div>
       <h2 style={{ color: 'white', fontFamily: selectedFont, fontSize: '30px' }}>Playlists</h2>
-      <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'auto' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'hidden',  transition: 'overflow-x 0.5s' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.overflowX = 'auto';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.overflowX = 'hidden';
+          }} >
         {loading ? (
           <div>Loading...</div>
         ) : error ? (

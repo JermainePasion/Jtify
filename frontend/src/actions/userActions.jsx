@@ -32,6 +32,9 @@ import {
     ARTIST_REGISTER_REQUEST,
     ARTIST_REGISTER_SUCCESS,
     ARTIST_REGISTER_FAILURE,
+    ARTIST_VERIFY_REQUEST,
+    ARTIST_VERIFY_SUCCESS,
+    ARTIST_VERIFY_FAILURE,
     GET_USER_PROFILE_REQUEST,
     GET_USER_PROFILE_SUCCESS,
     GET_USER_PROFILE_FAILURE,
@@ -405,6 +408,23 @@ export const contactUs = (name, email, message) => async (dispatch, getState) =>
   }
 };
 
+export const artistVerify = (artistId) => async (dispatch) => {
+  try {
+      dispatch({ type: ARTIST_VERIFY_REQUEST });
+
+      const response = await instance.post(`api/user/verify-artist/${artistId}/`);
+
+      dispatch({
+          type: ARTIST_VERIFY_SUCCESS,
+          payload: response.data
+      });
+  } catch (error) {
+      dispatch({
+          type: ARTIST_VERIFY_FAILURE,
+          payload: error.response ? error.response.data : 'Failed to verify artist'
+      });
+  }
+};
 
 export const artistRegister = (name, artist_name, email, phone_number, youtube_link)  => async (dispatch, getState) => {
   try {
@@ -425,6 +445,10 @@ export const artistRegister = (name, artist_name, email, phone_number, youtube_l
         type: ARTIST_REGISTER_SUCCESS,
         payload: response.data 
       });
+      // If artist registration was successful, dispatch artistVerify to trigger artist verification
+      if (response.data && response.data.artist_id) {
+        dispatch(artistVerify(response.data.artist_id));
+    }
     } catch (error) {
       dispatch({
         type: ARTIST_REGISTER_FAILURE,
@@ -432,6 +456,8 @@ export const artistRegister = (name, artist_name, email, phone_number, youtube_l
       });
     }
   };
+
+
 
 
   
