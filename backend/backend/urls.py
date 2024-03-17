@@ -28,6 +28,7 @@ urlpatterns = [
     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # new
     path('api/user/', include('account.urls')), # new
     path('api/songs/', include('songs.urls')),
+    path('api/ads/', include('ads.urls')),
 ] 
 
 if settings.DEBUG:

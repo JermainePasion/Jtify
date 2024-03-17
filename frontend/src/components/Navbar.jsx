@@ -4,7 +4,7 @@ import { FaHome, FaSearch } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../actions/userActions';
-import { BsDoorOpenFill,BsFire, BsPersonSquare, BsFillHeartFill, BsFillTelephoneFill, BsBrowserSafari, BsMusicNoteList } from "react-icons/bs";
+import { BsDoorOpenFill,BsFire,BsList, BsPersonSquare, BsFillHeartFill, BsFillTelephoneFill, BsBrowserSafari, BsMusicNoteList } from "react-icons/bs";
 import { useSelector } from 'react-redux';
 
 
@@ -51,6 +51,10 @@ const Navbar = () => {
     navigate('/myplaylist');
   };
 
+  const goToAds = () => {
+    navigate('/ads');
+  }
+
   const goToArtistRegister = () => {
     navigate('/artistregister');
   };
@@ -59,8 +63,9 @@ const Navbar = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', alignItems: 'center', justifyContent: 'center', fontFamily: selectedFont }}>
       <div style={{top: '20px', left: '20px', display:'flex', marginRight: '100px', }}>
-        <img src="Jlogo.png" alt="background" width={200} onClick={goToHome} />
-    </div>
+        <img src="/Jlogo.png" alt="background" width={200} onClick={goToHome} />
+      </div>
+
     
       <Card style={{marginTop: '110px', height: '600px', width: '280px', padding: '20px', borderRadius: '10px', backgroundColor: 'rgba(255, 255, 255, 0.18)', margin: '5px', opacity: 0.9 }}>
         <h1>
@@ -99,6 +104,11 @@ const Navbar = () => {
         <h1>
           <button className='Navbar-items' onClick={goToMyPlaylist} style={{ fontFamily: selectedFont }}>
             <BsFire /> My Playlist
+          </button>
+        </h1>
+        <h1>
+          <button className='Navbar-items' onClick={goToAds} style={{ fontFamily: selectedFont }}>
+            <BsList /> Ads
           </button>
         </h1>
       </Card>

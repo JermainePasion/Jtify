@@ -23,10 +23,13 @@ import mySongsReducer from './reducers/songReducer';
 import myPlaylistsReducer from './reducers/songReducer';
 import uploadSongToPlaylistReducer from './reducers/songReducer';
 import { userProfileReducer } from './reducers/userReducers';
+import { adsUploadReducer } from './reducers/adsReducer';
+import {adslistReducer} from './reducers/adsReducer'; // Import the new reducer
 
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
+    adsList: adslistReducer,
     userRegister: userRegisterReducer,
     userSendChangePassword: userSendChangePasswordReducer,
     userConfirmChangePassword: userConfirmChangePasswordReducer,
@@ -48,7 +51,8 @@ const reducer = combineReducers({
     mySongs: mySongsReducer,
     myPlaylist: myPlaylistsReducer,
     uploadSongstoPlaylist: uploadSongToPlaylistReducer,
-    userProfile: userProfileReducer
+    userProfile: userProfileReducer,
+    adsUpload: adsUploadReducer
 });
 
 const initialState = {

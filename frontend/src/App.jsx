@@ -22,6 +22,11 @@ import AddPlaylistScreen from './components/pages/AddPlaylistScreen';
 import MyPlaylistScreen from './components/pages/MyPlaylistScreen';
 import MySongsScreen from './components/pages/MySongsScreen';
 import ArtistProfile from './components/pages/ArtistProfile';
+import Ads from './components/pages/Ads';
+import AdEditForm from './components/pages/AdEditForm';
+import AdUploadForm from './components/pages/AdUploadForm';
+
+import AdDetails from './components/pages/AdDetails';
 
 
 const isAuthenticated = () => {
@@ -67,6 +72,10 @@ function App() {
         <Route path ="/add-playlist" element={<AddPlaylistScreen />} />
         <Route path ="/myplaylist" element={<MyPlaylistScreen/>} />
         <Route path ="/mysongs" element = {<MySongsScreen/>} />
+        <Route path="/ads" element={<Ads />} />
+        <Route path ="/ads/upload" element = {<AdUploadForm />} />
+        <Route path ="/ads/edit/:id" element = {<AdEditForm />} />
+        <Route path ="/ads/:id" element = {<AdDetails/>} />
       </Routes>
     </Router>
   );

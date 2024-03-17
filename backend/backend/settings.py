@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders', # new
     'songs',
     'colorfield',
+    'ads',
 ]
 
 REST_FRAMEWORK = {
