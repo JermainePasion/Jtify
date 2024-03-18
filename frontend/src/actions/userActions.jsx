@@ -408,11 +408,13 @@ export const contactUs = (name, email, message) => async (dispatch, getState) =>
   }
 };
 
-export const artistVerify = (artistId) => async (dispatch) => {
+export const artistVerify = (token) => async (dispatch) => {
   try {
       dispatch({ type: ARTIST_VERIFY_REQUEST });
 
-      const response = await instance.post(`api/user/verify-artist/${artistId}/`);
+      const response = await instance.get(`api/user/verify-artist/${token}/`);
+      console.log('Verify Artist API Response:', response);
+      console.log(token)
 
       dispatch({
           type: ARTIST_VERIFY_SUCCESS,
@@ -426,19 +428,21 @@ export const artistVerify = (artistId) => async (dispatch) => {
   }
 };
 
-export const artistRegister = (name, artist_name, email, phone_number, youtube_link)  => async (dispatch, getState) => {
+export const artistRegister = ( phone_number, youtube_link)  => async (dispatch, getState) => {
   try {
     dispatch({
       type: ARTIST_REGISTER_REQUEST
     });
 
+    const { userLogin: { userInfo } } = getState();
       const config = {
         headers: {
+          Authorization: `Bearer ${userInfo.data.token.access}`,
           'Content-Type': 'application/json'
         }
       };
 
-      const response = await instance.post('api/user/artist-register/', {name, artist_name, email, phone_number, youtube_link}, 
+      const response = await instance.post('api/user/artist-register/', {phone_number, youtube_link}, 
       config);
 
       dispatch({

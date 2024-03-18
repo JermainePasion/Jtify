@@ -25,6 +25,7 @@ import uploadSongToPlaylistReducer from './reducers/songReducer';
 import { userProfileReducer } from './reducers/userReducers';
 import { adsUploadReducer } from './reducers/adsReducer';
 import {adslistReducer} from './reducers/adsReducer'; // Import the new reducer
+import {artistVerifyReducer} from './reducers/userReducers';
 
 
 const reducer = combineReducers({
@@ -52,7 +53,8 @@ const reducer = combineReducers({
     myPlaylist: myPlaylistsReducer,
     uploadSongstoPlaylist: uploadSongToPlaylistReducer,
     userProfile: userProfileReducer,
-    adsUpload: adsUploadReducer
+    adsUpload: adsUploadReducer,
+    artistVerify:artistVerifyReducer,
 });
 
 const initialState = {

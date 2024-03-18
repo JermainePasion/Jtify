@@ -22,6 +22,11 @@ from django.conf import settings
 from .serializers import UserProfileSerializer
 from songs .serializers import SongSerializer, PlaylistSerializer
 from songs .models import Song, Playlist
+from django.utils.crypto import get_random_string
+from django.utils import timezone
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+
+
 
 
 def get_tokens_for_user(user):
@@ -259,54 +264,87 @@ class ContactView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
 class ArtistRegisterView(APIView):
     serializer_class = ArtistRegisterSerializer
+    permission_classes = [IsAuthenticated]  # Require authentication for this view
 
     def post(self, request, format=None):
-        # Add the user field to the request data
         data = request.data.copy()
-        data['user'] = request.user.id  # Assign the logged-in user's id to the user field
+        data['user'] = request.user.id
         
-        # Initialize the serializer with the data including the user field
+        # Generate verification token
+        verification_token = get_random_string(length=32)  # Generate a random string
+        print(f"Generated verification token: {verification_token}")
+        data['verification_token'] = verification_token  # Add the token to the data
+        
         serializer = self.serializer_class(data=data)
         
         if serializer.is_valid():
-            # Save the validated data to the database
-            serializer.save()
-
-            # Send email notification to EMAIL_HOST_USER
-            send_mail_notification(serializer.data, request.user.id)  # Pass the user id here
+            artist_register = serializer.save()
+            
+            # Send email notification to the user and admin
+            send_mail_notification(request.user, artist_register, verification_token)
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-def send_mail_notification(data, user_id):
-    subject = 'New Artist Registration'
-    message = f'''
-    New artist registration details:
-    Name: {data['name']}
-    Artist Name: {data['artist_name']}
-    Email: {data['email']}
-    Phone Number: {data['phone_number']}
-    YouTube Link: {data['youtube_link']}
-    Created At: {data['created_at']}
-    
-    Click the following link to verify artist registration:
-    http://localhost:3000/verify-artist/{user_id}
+class ArtistVerificationTokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, artist_register, timestamp):
+        return (
+            str(artist_register.pk) + str(timestamp) + artist_register.verification_token
+        )
+
+
+def send_mail_notification(user, artist_register, token):
+    print(f"Verification token in email: {token}")
+    subject_user = 'New Artist Registration'
+    message_user = f'''
+    Dear {user.name},
+
+    Thank you for your artist registration. We have received your submission and will review it shortly.
+
+    Regards,
+    YourCompanyName
     '''
+
     from_email = settings.EMAIL_HOST_USER
-    recipient_list = [data['email']]  # Send email to the registered user
-    send_mail(subject, message, from_email, recipient_list)
-def verify_artist(request, artist_id):
+    recipient_list_user = [user.email]  # Send email to the registered user
+    send_mail(subject_user, message_user, from_email, recipient_list_user)
+
+    # Send email to admin
+    subject_admin = 'New Artist Registration'
+    message_admin = f'''
+    New artist registration details:
+    Name: {user.name}
+    Email: {user.email}
+    Phone Number: {artist_register.phone_number}
+    YouTube Link: {artist_register.youtube_link}
+    Created At: {artist_register.created_at}
+    
+    Click the following link to verify artist: http://localhost:3000/verify-artist/{token}/
+    '''
+   
+    recipient_list_admin = [settings.EMAIL_HOST_USER]  # Send email to the admin
+    send_mail(subject_admin, message_admin, from_email, recipient_list_admin)
+
+@api_view(['GET'])
+def verify_artist(request, token):
+    print(f"Verification token: {token}")
     try:
-        artist = ArtistRegister.objects.get(id=artist_id)
-        # Update user as artist
-        user = User.objects.get(email=artist.email)
-        user.is_artist = True
-        user.save()
-        # You may want to delete the ArtistRegister entry here
-        artist.delete()
-        return Response({'message': 'Artist verified successfully'}, status=status.HTTP_200_OK)
+        artist_register = ArtistRegister.objects.get(verification_token=token)
+        print(f"Artist registration found: {artist_register}" )
+        token_generator = ArtistVerificationTokenGenerator()
+        print(f"Token generator: {token_generator}")
+        if token_generator.check_token(artist_register, token):
+            print(f"Token verified: {token}")
+            # Mark the user as an artist
+            artist_register.user.is_artist = True
+            artist_register.user.save()
+            return Response({'message': 'Artist verified successfully'}, status=status.HTTP_200_OK)
+        else:
+            print(f"Token not verified: {token}")
+            return Response({'message': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
     except ArtistRegister.DoesNotExist:
         return Response({'message': 'Artist registration not found'}, status=status.HTTP_404_NOT_FOUND)
 

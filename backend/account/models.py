@@ -155,13 +155,13 @@ class Contact(models.Model):
       return self.name
   
 class ArtistRegister(models.Model):
-#user = models.ForeignKey(User, on_delete=models.CASCADE)
-  name = models.CharField(max_length=255)
-  artist_name = models.CharField(max_length=255)
-  email = models.EmailField(max_length=255)
-  phone_number = models.IntegerField()
-  youtube_link = models.URLField(max_length=200)
-  created_at = models.DateTimeField(auto_now_add=True)
+    # Fields you already have
+    phone_number = models.IntegerField()
+    youtube_link = models.URLField(max_length=200)
+    created_at = models.DateTimeField(auto_now_add=True)
+    verification_token = models.CharField(max_length=100, unique=True)
 
-  def __str__(self):
-      return self.name  
+    # Define __str__ method to display meaningful representation in the admin panel
+    def __str__(self):
+        return f'{self.phone_number} - {self.youtube_link}'
+

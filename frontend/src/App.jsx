@@ -25,8 +25,8 @@ import ArtistProfile from './components/pages/ArtistProfile';
 import Ads from './components/pages/Ads';
 import AdEditForm from './components/pages/AdEditForm';
 import AdUploadForm from './components/pages/AdUploadForm';
-
 import AdDetails from './components/pages/AdDetails';
+import VerifyArtist from './components/pages/VerifyArtist';
 
 
 const isAuthenticated = () => {
@@ -76,6 +76,7 @@ function App() {
         <Route path ="/ads/upload" element = {<AdUploadForm />} />
         <Route path ="/ads/edit/:id" element = {<AdEditForm />} />
         <Route path ="/ads/:id" element = {<AdDetails/>} />
+        <Route path ="/verify-artist/:token" element = {<VerifyArtist/>} />
       </Routes>
     </Router>
   );
