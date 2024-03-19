@@ -141,6 +141,7 @@ class ContactSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ArtistRegisterSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     class Meta:
         model = ArtistRegister
         fields = '__all__'

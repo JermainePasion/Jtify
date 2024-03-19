@@ -281,7 +281,8 @@ class ArtistRegisterView(APIView):
         serializer = self.serializer_class(data=data)
         
         if serializer.is_valid():
-            artist_register = serializer.save()
+            user = request.user
+            artist_register = serializer.save(user=user)
             
             # Send email notification to the user and admin
             send_mail_notification(request.user, artist_register, verification_token)
@@ -289,15 +290,9 @@ class ArtistRegisterView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ArtistVerificationTokenGenerator(PasswordResetTokenGenerator):
-    def _make_hash_value(self, artist_register, timestamp):
-        return (
-            str(artist_register.pk) + str(timestamp) + artist_register.verification_token
-        )
 
-
-def send_mail_notification(user, artist_register, token):
-    print(f"Verification token in email: {token}")
+def send_mail_notification(user, artist_register, verification_token):
+    print(f"Verification token in email: {verification_token}")
     subject_user = 'New Artist Registration'
     message_user = f'''
     Dear {user.name},
@@ -305,7 +300,7 @@ def send_mail_notification(user, artist_register, token):
     Thank you for your artist registration. We have received your submission and will review it shortly.
 
     Regards,
-    YourCompanyName
+    Jtify
     '''
 
     from_email = settings.EMAIL_HOST_USER
@@ -322,31 +317,46 @@ def send_mail_notification(user, artist_register, token):
     YouTube Link: {artist_register.youtube_link}
     Created At: {artist_register.created_at}
     
-    Click the following link to verify artist: http://localhost:3000/verify-artist/{token}/
+    Click the following link to verify artist: http://localhost:3000/verify-artist/{verification_token}/
     '''
    
     recipient_list_admin = [settings.EMAIL_HOST_USER]  # Send email to the admin
     send_mail(subject_admin, message_admin, from_email, recipient_list_admin)
 
 @api_view(['GET'])
-def verify_artist(request, token):
-    print(f"Verification token: {token}")
+def verify_artist(request, verification_token):
+    print(f"Verification token: {verification_token}")
     try:
-        artist_register = ArtistRegister.objects.get(verification_token=token)
+        artist_register = ArtistRegister.objects.get(verification_token=verification_token)
         print(f"Artist registration found: {artist_register}" )
-        token_generator = ArtistVerificationTokenGenerator()
-        print(f"Token generator: {token_generator}")
-        if token_generator.check_token(artist_register, token):
-            print(f"Token verified: {token}")
-            # Mark the user as an artist
-            artist_register.user.is_artist = True
-            artist_register.user.save()
-            return Response({'message': 'Artist verified successfully'}, status=status.HTTP_200_OK)
+        
+        if artist_register.user.is_artist:
+            return Response({'message': 'Artist is already verified'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if artist_register.verification_token == verification_token:
+            user = artist_register.user
+            user.is_artist = True
+            user.save()
+
+            subject_user = 'Artist Registration Successful'
+            message_user = f'''
+            Dear {user.name},
+            Artist registration successful. You can now upload your songs and create playlists.
+            
+            Regards,
+            jtify
+            '''
+            from_email = settings.EMAIL_HOST_USER
+            recipient_list_user = [user.email]  # Send email to the registered user
+            send_mail(subject_user, message_user, from_email, recipient_list_user)
+
+            return Response({'message': 'Token verified successfully'}, status=status.HTTP_200_OK)
         else:
-            print(f"Token not verified: {token}")
+            print(f"Token not verified: {verification_token}")
             return Response({'message': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
     except ArtistRegister.DoesNotExist:
         return Response({'message': 'Artist registration not found'}, status=status.HTTP_404_NOT_FOUND)
+
 
 
 class UserProfileDetailView(APIView):

@@ -155,6 +155,7 @@ class Contact(models.Model):
       return self.name
   
 class ArtistRegister(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     # Fields you already have
     phone_number = models.IntegerField()
     youtube_link = models.URLField(max_length=200)
@@ -163,5 +164,5 @@ class ArtistRegister(models.Model):
 
     # Define __str__ method to display meaningful representation in the admin panel
     def __str__(self):
-        return f'{self.phone_number} - {self.youtube_link}'
+        return self.user.name
 

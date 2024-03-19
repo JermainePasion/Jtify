@@ -38,7 +38,7 @@ const ArtistRegister = () => {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: font }}>
       <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
-      <div className='artist-register-container' style={{ flex: 1, padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div className='template-background' style={{ flex: 1, padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <div className="form-box" style={{ width: '60%' }}>
           <Form onSubmit={handleSubmit}>
             <h1 style={{ color: '#A020F0', fontSize: '2.5em' }}><span style={{ color: '#0000FF' }}>Register</span> Form</h1>
