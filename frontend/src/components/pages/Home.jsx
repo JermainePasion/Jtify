@@ -146,13 +146,12 @@ function Home() {
   };
 
   return (
-    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
+    <div style={{ display: 'flex', width: '100vw', minHeight: '150vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
       <div className='template-background' style={{ 
         flex: 1, 
         marginLeft: '10px', 
         position: 'relative', 
-        overflowX: 'auto', 
         padding: '10px 20px', // Increase padding for better spacing
         backgroundSize: 'cover',
       }}>

@@ -65,16 +65,15 @@ function Song({ song, playSong }) {
       />
       <div style={cardStyle}>
         <Card.Body>
-          <Link to={`/songs/${id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
             <Card.Title as="div" style={titleStyle}>
               <strong>{name}</strong>
             </Card.Title>
-            </Link>
-            <Link to={`/Artistprofile/${song.user}`} style={{ textDecoration: 'none', color: 'inherit' }}>
             <Card.Text as="div" style={artistStyle}>
-              {artist}  <FontAwesomeIcon icon={liked ? solidHeart : regularHeart} onClick={handleLike} style={{ cursor: 'pointer', color: liked ? '#fff' : '#fff' }} />
-            </Card.Text>
-            </Link>
+        <Link to={`/Artistprofile/${song.user}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+          {artist}
+        </Link>
+        <FontAwesomeIcon icon={liked ? solidHeart : regularHeart} onClick={handleLike} style={{ cursor: 'pointer', color: liked ? '#fff' : '#fff', marginLeft: '10px' }} />
+      </Card.Text>
         </Card.Body>
       </div>
     </Card>
