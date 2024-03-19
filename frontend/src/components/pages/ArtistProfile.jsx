@@ -13,6 +13,7 @@ const UserProfile = () => {
     const dispatch = useDispatch();
     const { id } = useParams();
     const [userData, setUserData] = useState(null);
+    const [profileData, setProfileData] = useState(null);
     const [uploadedSongs, setUploadedSongs] = useState([]);
     const [createdPlaylists, setCreatedPlaylists] = useState([]);
     const [error, setError] = useState(null);
@@ -23,18 +24,20 @@ const UserProfile = () => {
     useEffect(() => {
         // Fetch user data, uploaded songs, and created playlists when component mounts
         dispatch(getUserDetails());
-        const fetchUserData = async () => {
-            try {
-                const userResponse = await axios.get(`/api/user/user-profile/${id}`);
-                const { profile, uploaded_songs, created_playlists } = userResponse.data;
-                setUserData(profile);
-                setUploadedSongs(uploaded_songs);
-                setCreatedPlaylists(created_playlists);
-            } catch (error) {
-                setError(error.message);
-            }
-        };
-
+        dispatch(getUserDetails());
+    const fetchUserData = async () => {
+        try {
+            const userResponse = await axios.get(`/api/user/user-profile/${id}`);
+            const { profile, profile_data, uploaded_songs, created_playlists } = userResponse.data;
+            setUserData(profile);
+            setUploadedSongs(uploaded_songs);
+            setCreatedPlaylists(created_playlists);
+            // Set profile_data in state
+            setProfileData(profile_data);
+        } catch (error) {
+            setError(error.message);
+        }
+    };
         fetchUserData();
 
         // Cleanup function
@@ -57,7 +60,9 @@ const UserProfile = () => {
                 {error && <p>Error: {error}</p>}
                 {userData && (
                     <div>
+                        <Image src={profileData.image} alt={userData.name} rounded style={{ width: '200px', height: '200px', marginRight: '15px' }} />
                         <h2 style={{ color: 'white', textAlign: 'left', fontFamily: selectedFont, fontSize: '40px', marginBottom: '20px' }}>{userData.name}'s Profile</h2>
+                        
                         <h3 style={{ color: 'white', fontFamily: selectedFont, fontSize: '24px', marginBottom: '10px' }}>Songs</h3>
                         <div style={{ marginBottom: '30px' }}>
                             <ListGroup variant="flush">

@@ -465,41 +465,61 @@ export const artistRegister = ( phone_number, youtube_link)  => async (dispatch,
 
 
   
-export const userProfile = {
-    getUserProfile: () => async (dispatch, getState) => {
-      try {
-        dispatch({
-          type: GET_USER_PROFILE_REQUEST,
-        });
-    
-        const {
-          userLogin: { userInfo },
-        } = getState();
-    
-        if (!userInfo?.data?.token?.access) {
-          // If userInfo or its properties are undefined, handle it accordingly
-          throw new Error('User information is missing or incomplete');
-        }
-    
-        const config = {
-          headers: {
-            Authorization: `Bearer ${userInfo.data.token.access}`,
-          },
-        };
-    
-        const { data } = await instance.get(`api/user/user-profile/`, config);
-    
-        dispatch({
-          type: GET_USER_PROFILE_SUCCESS,
-          payload: data,
-        });
-      } catch (error) {
-        dispatch({
-          type: GET_USER_PROFILE_FAILURE,
-          payload: error.response
-            ? error.response.data.message
-            : error.message || 'Error fetching user profile',
-        });
-      }
+  export const userProfile = (userId) => async (dispatch) => {
+    try {
+      dispatch({ type: GET_USER_PROFILE_REQUEST });
+  
+      const { data } = await axios.get(`/api/user/user-profile/${userId}`);
+  
+      dispatch({
+        type: GET_USER_PROFILE_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: GET_USER_PROFILE_FAILURE,
+        payload: error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+      });
     }
   };
+
+  //export const userProfile = {
+    // getUserProfile: () => async (dispatch, getState) => {
+    //   try {
+    //     dispatch({
+    //       type: GET_USER_PROFILE_REQUEST,
+    //     });
+    
+    //     const {
+    //       userLogin: { userInfo },
+    //     } = getState();
+    
+    //     if (!userInfo?.data?.token?.access) {
+    //       // If userInfo or its properties are undefined, handle it accordingly
+    //       throw new Error('User information is missing or incomplete');
+    //     }
+    
+    //     const config = {
+    //       headers: {
+    //         Authorization: `Bearer ${userInfo.data.token.access}`,
+    //       },
+    //     };
+    
+    //     const { data } = await instance.get(`api/user/user-profile/`, config);
+    
+    //     dispatch({
+    //       type: GET_USER_PROFILE_SUCCESS,
+    //       payload: data,
+    //     });
+    //   } catch (error) {
+    //     dispatch({
+    //       type: GET_USER_PROFILE_FAILURE,
+    //       payload: error.response
+    //         ? error.response.data.message
+    //         : error.message || 'Error fetching user profile',
+    //     });
+    //   }
+    // }
+  //};
