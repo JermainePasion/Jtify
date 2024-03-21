@@ -19,4 +19,5 @@ urlpatterns = [
   path('artist-register/', ArtistRegisterView.as_view(), name='artist-register-list-create'),
   path('user-profile/<int:user_id>/', UserProfileDetailView.as_view(), name='user-profile-detail'),
   path('verify-artist/<str:verification_token>/', verify_artist, name='verify_artist'),
+  path('subscriber/', updateSubscriber.as_view(), name = 'update-subscriber'),
 ]

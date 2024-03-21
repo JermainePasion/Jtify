@@ -29,6 +29,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 
 
+
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
     return {
@@ -389,3 +390,16 @@ class UserProfileDetailView(APIView):
             })
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+class updateSubscriber(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            user = request.user
+            user.is_subscriber = True
+            user.save()
+            return Response({'message': 'User is now a subscriber'}, status=status.HTTP_200_OK)
+        except:
+            return Response({'message': 'Something went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            

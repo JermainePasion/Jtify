@@ -23,6 +23,10 @@ const Navbar = () => {
     navigate('/home');
   };
 
+  const goToPlans = () => {
+    navigate('/plans');
+  };
+
   const goToProfile = () => {
     navigate('/profile');
   };
@@ -68,7 +72,7 @@ const Navbar = () => {
 
     
       <Card style={{marginTop: '110px', height: '700px', width: '280px', padding: '20px', borderRadius: '10px', backgroundColor: 'rgba(255, 255, 255, 0.18)', margin: '5px', opacity: 0.9 }}> <h1>
-      <img src="/Jlogo.png" alt="background" width={200} onClick={goToHome} position="fixed"/>
+      {/* <img src="/Jlogo.png" alt="background" width={200} onClick={goToHome} position="fixed"/> */}
           <button className='Navbar-items' onClick={goToHome} style={{ fontFamily: selectedFont }}>
             <FaHome /> Home
           </button>
@@ -109,6 +113,11 @@ const Navbar = () => {
         <h1>
           <button className='Navbar-items' onClick={goToAds} style={{ fontFamily: selectedFont }}>
             <BsList /> Ads
+          </button>
+        </h1>
+        <h1>
+          <button className='Navbar-items' onClick={goToPlans} style={{ fontFamily: selectedFont }}>
+            <BsList /> Plans
           </button>
         </h1>
       </Card>

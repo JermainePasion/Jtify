@@ -40,9 +40,10 @@ class UserManager(BaseUserManager):
           name=name,
           
       )
-      user.is_admin = True
+      user.is_superuser = True
       user.is_active = True
       user.is_artist = True
+      user.is_subscriber = True
       user.save(using=self._db)
       return user
 
@@ -55,7 +56,8 @@ class User(AbstractBaseUser):
   )
   name = models.CharField(max_length=200)
   is_active = models.BooleanField(default=False)
-  is_admin = models.BooleanField(default=False)
+  is_superuser = models.BooleanField(default=False)
+  is_subscriber = models.BooleanField(default=False)
   is_artist = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
@@ -72,7 +74,7 @@ class User(AbstractBaseUser):
   def has_perm(self, perm, obj=None):
       "Does the user have a specific permission?"
       # Simplest possible answer: Yes, always
-      return self.is_admin
+      return self.is_superuser
 
   def has_module_perms(self, app_label):
       "Does the user have permissions to view the app `app_label`?"
@@ -83,7 +85,7 @@ class User(AbstractBaseUser):
   def is_staff(self):
       "Is the user a member of staff?"
       # Simplest possible answer: All admins are staff
-      return self.is_admin
+      return self.is_superuser
 
 # class EmailConfirmationToken(models.Model):
 #   user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -165,4 +167,4 @@ class ArtistRegister(models.Model):
     # Define __str__ method to display meaningful representation in the admin panel
     def __str__(self):
         return self.user.name
-
+    

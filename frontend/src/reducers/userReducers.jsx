@@ -35,7 +35,10 @@ import { USER_LOGIN_REQUEST,
   ARTIST_VERIFY_FAILURE,
   GET_USER_PROFILE_REQUEST,
   GET_USER_PROFILE_SUCCESS,
-  GET_USER_PROFILE_FAILURE
+  GET_USER_PROFILE_FAILURE,
+  USER_UPDATE_SUBSCRIBER_REQUEST,
+  USER_UPDATE_SUBSCRIBER_SUCCESS,
+  USER_UPDATE_SUBSCRIBER_FAIL
 } 
 from '../constants/userConstants';
 
@@ -219,3 +222,15 @@ export const userProfileReducer = (state = {}, action)  => {
   }
 };
 
+export const updateSubscriberReducer = (state = {}, action) => {
+  switch(action.type){
+      case USER_UPDATE_SUBSCRIBER_REQUEST:
+          return {loading: true}
+      case USER_UPDATE_SUBSCRIBER_SUCCESS:
+          return {loading: false, success: true}
+      case USER_UPDATE_SUBSCRIBER_FAIL:
+          return {loading: false, error: action.payload}
+      default:
+          return state
+  }
+}

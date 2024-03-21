@@ -50,7 +50,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'name','id']
+        fields = ['email', 'name','id', 'is_superuser', 'is_active', 'is_artist', 'is_subscriber']
 
 class UserChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255, style = {'input_type': 'password'}, write_only=True)
@@ -145,4 +145,3 @@ class ArtistRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArtistRegister
         fields = '__all__'
-

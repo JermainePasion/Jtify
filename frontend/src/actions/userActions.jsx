@@ -38,6 +38,9 @@ import {
     GET_USER_PROFILE_REQUEST,
     GET_USER_PROFILE_SUCCESS,
     GET_USER_PROFILE_FAILURE,
+    USER_UPDATE_SUBSCRIBER_REQUEST,
+    USER_UPDATE_SUBSCRIBER_SUCCESS,
+    USER_UPDATE_SUBSCRIBER_FAIL
 } from '../constants/userConstants';
 
 
@@ -485,41 +488,71 @@ export const artistRegister = ( phone_number, youtube_link)  => async (dispatch,
     }
   };
 
-  //export const userProfile = {
-    // getUserProfile: () => async (dispatch, getState) => {
-    //   try {
-    //     dispatch({
-    //       type: GET_USER_PROFILE_REQUEST,
-    //     });
+  // export const userProfile = {
+  //   getUserProfile: () => async (dispatch, getState) => {
+  //     try {
+  //       dispatch({
+  //         type: GET_USER_PROFILE_REQUEST,
+  //       });
     
-    //     const {
-    //       userLogin: { userInfo },
-    //     } = getState();
+  //       const {
+  //         userLogin: { userInfo },
+  //       } = getState();
     
-    //     if (!userInfo?.data?.token?.access) {
-    //       // If userInfo or its properties are undefined, handle it accordingly
-    //       throw new Error('User information is missing or incomplete');
-    //     }
+  //       if (!userInfo?.data?.token?.access) {
+  //         // If userInfo or its properties are undefined, handle it accordingly
+  //         throw new Error('User information is missing or incomplete');
+  //       }
     
-    //     const config = {
-    //       headers: {
-    //         Authorization: `Bearer ${userInfo.data.token.access}`,
-    //       },
-    //     };
+  //       const config = {
+  //         headers: {
+  //           Authorization: `Bearer ${userInfo.data.token.access}`,
+  //         },
+  //       };
     
-    //     const { data } = await instance.get(`api/user/user-profile/`, config);
+  //       const { data } = await instance.get(`api/user/user-profile/`, config);
     
-    //     dispatch({
-    //       type: GET_USER_PROFILE_SUCCESS,
-    //       payload: data,
-    //     });
-    //   } catch (error) {
-    //     dispatch({
-    //       type: GET_USER_PROFILE_FAILURE,
-    //       payload: error.response
-    //         ? error.response.data.message
-    //         : error.message || 'Error fetching user profile',
-    //     });
-    //   }
-    // }
-  //};
+  //       dispatch({
+  //         type: GET_USER_PROFILE_SUCCESS,
+  //         payload: data,
+  //       });
+  //     } catch (error) {
+  //       dispatch({
+  //         type: GET_USER_PROFILE_FAILURE,
+  //         payload: error.response
+  //           ? error.response.data.message
+  //           : error.message || 'Error fetching user profile',
+  //       });
+  //     }
+  //   }
+  // };
+
+
+  export const userUpdateSubscriber = (subscriber) => async (dispatch, getState) => {
+    try {
+      dispatch({ type: USER_UPDATE_SUBSCRIBER_REQUEST });
+      
+      const { userLogin: { userInfo } } = getState();
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.data.token.access}`,
+          'Content-Type': 'application/json'
+        }
+      };
+  
+      // Make API call to update user's subscription status
+      const response = await instance.post('api/user/subscriber/', { subscriber }, config);
+  
+      // Dispatch success action with the updated subscriber data
+      dispatch({ type: USER_UPDATE_SUBSCRIBER_SUCCESS, payload: response.data });
+    } catch (error) {
+      // Dispatch fail action if there's an error
+      dispatch({
+        type: USER_UPDATE_SUBSCRIBER_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
