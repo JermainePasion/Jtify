@@ -61,14 +61,14 @@ const Navbar = () => {
 
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', alignItems: 'center', justifyContent: 'center', fontFamily: selectedFont }}>
+    <div style={{display: 'flex', flexDirection: 'column', height: '100vh', alignItems: 'center', justifyContent: 'center', fontFamily: selectedFont,}}>
       <div style={{top: '20px', left: '20px', display:'flex', marginRight: '100px', }}>
-        <img src="/Jlogo.png" alt="background" width={200} onClick={goToHome} />
+      <img src="/Jlogo.png" alt="background" width={200} onClick={goToHome} />
       </div>
 
     
-      <Card style={{marginTop: '110px', height: '600px', width: '280px', padding: '20px', borderRadius: '10px', backgroundColor: 'rgba(255, 255, 255, 0.18)', margin: '5px', opacity: 0.9 }}>
-        <h1>
+      <Card style={{marginTop: '110px', height: '700px', width: '280px', padding: '20px', borderRadius: '10px', backgroundColor: 'rgba(255, 255, 255, 0.18)', margin: '5px', opacity: 0.9 }}> <h1>
+      <img src="/Jlogo.png" alt="background" width={200} onClick={goToHome} position="fixed"/>
           <button className='Navbar-items' onClick={goToHome} style={{ fontFamily: selectedFont }}>
             <FaHome /> Home
           </button>

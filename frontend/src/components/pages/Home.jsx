@@ -154,6 +154,7 @@ function Home() {
         position: 'relative', 
         padding: '10px 20px', // Increase padding for better spacing
         backgroundSize: 'cover',
+
       }}>
         <div style={{ position: 'absolute', top: '10px', right: '30px' }}>
           <div style={{ position: 'absolute', top: '10px', right: '30px', display: 'flex', alignItems: 'center' }}>
@@ -201,7 +202,7 @@ function Home() {
             e.currentTarget.style.overflowX = 'auto';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.overflowX = 'hidden';
+            e.currentTarget.style.overflowX = 'auto';
           }} >
         {loading ? (
           <div>Loading...</div>
@@ -216,12 +217,12 @@ function Home() {
         )}
       </div>
       <h2 style={{ color: 'white', fontFamily: selectedFont, fontSize: '30px' }}>Playlists</h2>
-      <div style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'hidden',  transition: 'overflow-x 0.5s' }}
+      <div className='scroll-playlist' style={{ display: 'flex', flexDirection: 'row', padding: '10px 0', overflowX: 'hidden',  transition: 'overflow-x 0.5s' }}
           onMouseEnter={(e) => {
             e.currentTarget.style.overflowX = 'auto';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.overflowX = 'hidden';
+            e.currentTarget.style.overflowX = 'auto';
           }} >
         {loading ? (
           <div>Loading...</div>
