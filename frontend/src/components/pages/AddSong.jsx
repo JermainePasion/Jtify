@@ -63,7 +63,7 @@ const AddSong = () => {
   ];
 
   return (
-    <div style={{ display: 'flex',  minHeight: '115vh', backgroundColor: color, fontFamily: selectedFont }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
       <div className='template-background' style={{ 
         flex: 1, 

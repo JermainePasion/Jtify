@@ -114,9 +114,27 @@
   transition: all 0.3s ease; /* Add transition for smooth effect */
 }
 
-.Navbar-items:hover {
-  box-shadow: 0px 0 35px 5px rgba(255, 255, 255, 0.7); /* Add softer glow effect */
+.Navbar-items-logout {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 15px ;
+  margin-left: 10px;
+  transition: all 0.3s ease; /* Add transition for smooth effect */
+}
+
+.Navbar-items-logout:hover {
+  box-shadow: 0px 0 35px 5px rgba(194, 8, 8, 0.7); /* Add softer glow effect */
   transform: scale(1.05); /* Slight increase in size */
+  background-color: #d31010;
+}
+
+.Navbar-items:hover {
+  box-shadow: 0px 0 35px 5px #5ACACA; /* Add softer glow effect */
+  transform: scale(1.05); /* Slight increase in size */
+  background-color: #90349C;
 }
 
 /* Navbar design */

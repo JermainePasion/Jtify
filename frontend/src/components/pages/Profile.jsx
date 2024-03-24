@@ -107,7 +107,7 @@ function Profile() {
   };
 
   return (
-    <div style={{ display: 'flex', width: '100vw', minHeight: '180vh', backgroundColor: color, fontFamily: selectedFont }}>
+    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
       <div className='template-background' style={{ 
         flex: 1, 
@@ -119,37 +119,37 @@ function Profile() {
 
       }}>
       <div className='profile-container'>
-          <div>
-            {loading ? (
-              <p>Loading...</p>
-            ) : error ? (
-              <p>Error: {error}</p>
-            ) : (
-              <>
-                {updateSuccess && <p style={{ color: 'green', marginBottom: '15px' }}>Profile updated successfully!</p>}
-                {updateError && <p style={{ color: 'red', marginBottom: '15px' }}>{updateError}</p>}
+  <div>
+    {loading ? (
+      <p>Loading...</p>
+    ) : error ? (
+      <p>Error: {error}</p>
+    ) : (
+      <>
+        {updateSuccess && <p style={{ color: 'green', marginBottom: '15px' }}>Profile updated successfully!</p>}
+        {updateError && <p style={{ color: 'red', marginBottom: '15px' }}>{updateError}</p>}
 
-                {user.data && user.data.profile_data && user.data.profile_data.image && (
-                  <div className='profile-card' style={{backgroundColor: color}}>
-                  <img
-                    src={user.data.profile_data.image}
-                    alt='Profile'
-                  />
-                  <div style={{ marginRight: '20px' }}>
-                  <h1 className='h1'>Profile</h1>
-                  <h1 className='h1'>{name}</h1>
-                  </div>  
-                  </div>
-                )}
-                
-                <form onSubmit={handleSubmit} >
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px', 
-                  borderRadius: '10px', opacity: 0.9, marginTop: '-0.5rem', marginLeft:'-1rem' }}>
-                  <div style={{ display: 'flex', flexDirection: 'row1', justifyContent: 'center' }}>
-                  {/* Name and Email Card  */}
-                  <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '500px', width: '720px', padding: '15px', 
-                  borderRadius: '10px', backgroundColor: color, opacity: 0.9, marginTop: '0.1rem', marginLeft: '1rem', marginRight: '0.5rem'}}>
-                  <div className='name-card'>
+        {user.data && user.data.profile_data && user.data.profile_data.image && (
+          <div className='profile-card' style={{backgroundColor: color}}>
+            <img
+              src={user.data.profile_data.image}
+              alt='Profile'
+            />
+            <div style={{ marginRight: '20px' }}>
+              <h1 className='h1'>Profile</h1>
+              <h1 className='h1'>{name}</h1>
+            </div>  
+          </div>
+        )}
+        
+        <form onSubmit={handleSubmit} >
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '15px', 
+            borderRadius: '10px', opacity: 0.9, marginTop: '-0.5rem', marginLeft:'-1rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'row1', justifyContent: 'center' }}>
+              {/* Name and Email Card  */}
+              <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '350px', width: '520px', padding: '15px', 
+                borderRadius: '10px', backgroundColor: color, opacity: 0.9, marginTop: '0.1rem', marginLeft: '1rem', marginRight: '0.5rem'}}>
+                <div className='name-card'>
                   <div>
                     <label htmlFor="name" style={{ color: 'white', display: 'block', marginBottom: '5px' }}>Name:</label>
                     <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} />
@@ -158,17 +158,17 @@ function Profile() {
                     <label htmlFor="email" style={{ color: 'white', display: 'block', marginBottom: '5px' }}>Email:</label>
                     <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
                   </div>
+                </div>
+              </Card>
+              {/* Profile, Color, and Fonts Card */}
+              <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '350px', width: '520px', padding: '15px', 
+                borderRadius: '10px', backgroundColor: color , opacity: 0.9, marginTop: '0.1rem', marginLeft: '0.1rem'}}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1, alignItems: 'left', position: 'relative'}}>
+                  <div style={{ marginBottom: '15px', marginLeft: '20px', color: 'white' }}>
+                    <label htmlFor="profilePicture" style={{ display: 'block', marginBottom: '5px' }}>Profile Picture:</label>
+                    <input type="file" id="profilePicture" onChange={handleFileChange} style={{ width: '100%', color: 'white' }} />
+                    {fileName && <p style={{ marginTop: '5px' }}></p>} {/* Display file name if a file has been selected */}
                   </div>
-                  </Card>
-                  {/* Profile, Color, and Fonts Card */}
-                  <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '500px', width: '720px', padding: '15px', 
-                  borderRadius: '10px', backgroundColor: color , opacity: 0.9, marginTop: '0.1rem', marginLeft: '0.1rem'}}>
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1, alignItems: 'left', position: 'relative'}}>
-              <div style={{ marginBottom: '15px', marginLeft: '20px', color: 'white' }}>
-                <label htmlFor="profilePicture" style={{ display: 'block', marginBottom: '5px' }}>Profile Picture:</label>
-                <input type="file" id="profilePicture" onChange={handleFileChange} style={{ width: '100%', color: 'white' }} />
-                {fileName && <p style={{ marginTop: '5px' }}></p>} {/* Display file name if a file has been selected */}
-              </div>
                   <div style={{ marginBottom: '15px', position: 'relative', marginLeft: '20px' }}>
                     <label htmlFor="color" style={{ color: 'white', display: 'block', marginBottom: '5px' }}>Profile Color:</label>
                     <div
@@ -180,7 +180,6 @@ function Profile() {
                         <SketchPicker color={color} onChange={handleColorChange} />
                       </div>
                     )}
-                    
                   </div>
                   <div style={{ marginBottom: '15px', marginLeft: '20px'}}>
                     <label htmlFor="font" style={{ color: 'white', display: 'block', marginBottom: '5px' }}>Select Font:</label>
@@ -192,17 +191,17 @@ function Profile() {
                       ))}
                     </select>
                   </div>
-                  </div>
-                  </Card>
-                  </div>
-                  <button className='custom-button' type="submit" style={{alignContent: 'center', padding: '10px',  color: 'white', border: 'none', 
-                  cursor: 'pointer', width: '50%', marginTop: '20px' }}>Update Profile</button>
                 </div>
-                </form>
-              </>
-            )}
+              </Card>
+            </div>
+            <button className='custom-button' type="submit" style={{alignContent: 'center', padding: '10px',  color: 'white', border: 'none', 
+              cursor: 'pointer', width: '50%', marginTop: '20px' }}>Update Profile</button>
           </div>
-        </div>
+        </form>
+      </>
+    )}
+  </div>
+</div>
       </div>
     </div>
 

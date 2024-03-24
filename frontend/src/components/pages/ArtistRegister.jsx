@@ -36,7 +36,7 @@ const ArtistRegister = () => {
   }, [dispatch]);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: font }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: font, minHeight: '100vh' }}>
       <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
       <div className='template-background' style={{ flex: 1, padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <div className="form-box" style={{ width: '60%' }}>

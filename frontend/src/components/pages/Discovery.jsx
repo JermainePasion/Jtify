@@ -174,7 +174,7 @@ const Discovery = () => {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '115vh', backgroundColor: color, fontFamily: selectedFont }}>
+    <div style={{ display: 'flex', minHeight: '115vh', backgroundColor: color, fontFamily: selectedFont, minHeight: '100vh' }}>
       <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
       <div className='template-background' style={{ flex: 1, padding: '20px', color: 'white' }}>
         <h2 style={{ color: 'white', textAlign: 'left', fontFamily: selectedFont, fontSize: '40px' }}>Discovery Page</h2>
