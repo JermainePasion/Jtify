@@ -127,7 +127,7 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
-    color = ColorField(default='#FF0000')
+    color = ColorField(default='#1C295E')
     font = models.CharField(max_length=255, choices=FontChoices, default='Default')
   
     def __str__(self):

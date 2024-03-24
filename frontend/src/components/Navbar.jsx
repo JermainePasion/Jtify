@@ -19,6 +19,9 @@ const Navbar = () => {
   const user = useSelector(state => state.userDetails.user);
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
 
+
+  
+
   const goToHome = () => {
     navigate('/home');
   };
@@ -69,14 +72,18 @@ const Navbar = () => {
 
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', height: '100vh', alignItems: 'center', justifyContent: 'center', fontFamily: selectedFont,}}>
-      <div style={{top: '20px', left: '20px', display:'flex', marginRight: '100px', }}>
-      <img src="/Jlogo.png" alt="background" width={200} onClick={goToHome} />
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', alignItems: 'center', justifyContent: 'flex-start', fontFamily: selectedFont, position: 'relative' }}>
+      
+  <div style={{ position: 'relative', top: '10px', left: '-50px', marginBottom: '20px'}}>
+    
+    <img src="/Jlogo.png" alt="background" width={200} onClick={goToHome} />
+
+  </div>
 
     
-      <Card style={{marginTop: '110px', height: '700px', width: '280px', padding: '20px', borderRadius: '10px', backgroundColor: 'rgba(255, 255, 255, 0.18)', margin: '5px', opacity: 0.9 }}> <h1>
-      {/* <img src="/Jlogo.png" alt="background" width={200} onClick={goToHome} position="fixed"/> */}
+      <Card style={{marginTop: '150px', height: '700px', width: '280px', padding: '20px', borderRadius: '0px', backgroundColor: 'rgba(255, 255, 255, 0.18)', margin: '5px', opacity: 0.9 }}> 
+      <h1>
+      
           <button className='Navbar-items' onClick={goToHome} style={{ fontFamily: selectedFont }}>
             <FaHome /> Home
           </button>
@@ -98,34 +105,42 @@ const Navbar = () => {
           </button>
         </h1>
 
-        <h1>
-          <button className='Navbar-items' onClick={goToAddSong} style={{ fontFamily: selectedFont }}>
-            <BsMusicNoteList /> Add Song
-          </button>
-        </h1>
-
-        <h1>
-          <button className='Navbar-items' onClick={goToMySongs} style={{ fontFamily: selectedFont }}>
-            <BsMusicNoteList /> My Songs
-          </button>
-        </h1>
-        <h1>
-          <button className='Navbar-items' onClick={goToMyPlaylist} style={{ fontFamily: selectedFont }}>
-            <BsFire /> My Playlist
-          </button>
-        </h1>
-        <h1>
+        {(user?.data?.user_data?.is_superuser || user?.data?.user_data?.is_artist) && (
+          <>
+            <h1>
+              <button className='Navbar-items' onClick={goToAddSong} style={{ fontFamily: selectedFont }}>
+                <BsMusicNoteList /> Add Song
+              </button>
+            </h1>
+            <h1>
+              <button className='Navbar-items' onClick={goToMySongs} style={{ fontFamily: selectedFont }}>
+                <BsMusicNoteList /> My Songs
+              </button>
+            </h1>
+            <h1>
+              <button className='Navbar-items' onClick={goToMyPlaylist} style={{ fontFamily: selectedFont }}>
+                <BsFire /> My Playlist
+              </button>
+            </h1>
+          </>
+        )}
+        
+        {(user?.data?.user_data?.is_superuser) && (
+          <> 
+          <h1>
           <button className='Navbar-items' onClick={goToAds} style={{ fontFamily: selectedFont }}>
             <BsList /> Ads
           </button>
         </h1>
+        </> 
+        )}
         <h1>
           <button className='Navbar-items' onClick={goToPlans} style={{ fontFamily: selectedFont }}>
-            <BsList /> Plans
+            <BsList /> Subscription
           </button>
         </h1>
       </Card>
-      <Card style={{ width: '300px', padding: '10px', borderRadius: '5px', backgroundColor: 'rgba(255, 255, 255, 0.18)', margin: '5px', opacity: 0.9, height: '250px' }}>
+      <Card style={{ width: '300px', padding: '10px', borderRadius: '5px', backgroundColor: 'rgba(255, 255, 255, 0.18)', margin: '5px', opacity: 0.9, height: '330px' }}>
         <h1>
           <button className='Navbar-items' onClick={goToProfile} style={{ fontFamily: selectedFont }}>
             <BsPersonSquare /> Profile
@@ -136,11 +151,13 @@ const Navbar = () => {
             <BsFillTelephoneFill /> Contact Us
           </button>
         </h1>
-        <h1>
-          <button className='Navbar-items' onClick={goToAdminPanel} style={{ fontFamily: selectedFont }}>
-          <BsList /> Admin Panel
-          </button>
-        </h1>
+        {user?.data?.user_data?.is_superuser && (
+          <h1>
+            <button className='Navbar-items' onClick={goToAdminPanel} style={{ fontFamily: selectedFont }}>
+              <BsList /> Admin Panel
+            </button>
+          </h1>
+        )}
         <Button className='Navbar-items' onClick={handleLogout} style={{ fontFamily: selectedFont }}>
           <BsDoorOpenFill /> Logout
         </Button>

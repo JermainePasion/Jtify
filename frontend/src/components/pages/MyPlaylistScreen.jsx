@@ -20,7 +20,15 @@ const PlaylistScreen = () => {
       <div style={{ flex: '0 0 auto' }}>
         <Navbar />
       </div>
-      <div  className='template-background' style={{ padding: '20px', flex: '1 1 auto' }}>
+      <div className='template-background' style={{ 
+        flex: 1, 
+        marginLeft: '10px', 
+        position: 'relative', 
+        padding: '10px 20px', // Increase padding for better spacing
+        backgroundSize: '110%',
+        backgroundRepeat: 'no-repeat'
+
+      }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <h2 style={{ color: 'white', fontSize: '32px', marginBottom: '20px' }}>My Playlists</h2> {/* Changed text color to black */}
           <Link to="/add-playlist" style={{ textDecoration: 'none' }}>

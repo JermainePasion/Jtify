@@ -54,7 +54,15 @@ const ContactLoggedIn = () => {
   return (
     <div style={{ display: 'flex', minHeight: '115vh', backgroundColor: color, fontFamily: font }}>
     <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
-    <div className='template-background' style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column' }}>
+    <div className='template-background' style={{ 
+        flex: 1, 
+        marginLeft: '10px', 
+        position: 'relative', 
+        padding: '10px 20px', // Increase padding for better spacing
+        backgroundSize: '110%',
+        backgroundRepeat: 'no-repeat'
+
+      }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
 
           {/* Information Box 1 */}

@@ -130,7 +130,15 @@ const AdminPanel = () => {
   return (
     <div style={{ display: 'flex', minHeight: '115vh', backgroundColor: color, fontFamily: font }}>
       <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
-      <div className='template-background' style={{ flex: 1, padding: '20px', display: 'flex', flexDirection: 'column' }}>
+      <div className='template-background' style={{ 
+        flex: 1, 
+        marginLeft: '10px', 
+        position: 'relative', 
+        padding: '10px 20px', // Increase padding for better spacing
+        backgroundSize: '110%',
+        backgroundRepeat: 'no-repeat'
+
+      }}>
       <h2>Admin Panel</h2>
       {loading ? (
         <div>Loading...</div>
@@ -173,10 +181,8 @@ const AdminPanel = () => {
               onChange={(e) => handleCheckboxChange(user.id, 'is_subscriber', e.target.checked)}
             /> Subscriber
           </td>
-          <td>
-            <div style={{ alignItems: 'center', display: 'flex' }}>
+          <td style={{ textAlign: 'center' }}>
               <button className='admin-button' onClick={() => handleDeleteUser(user.id)}>Delete</button>
-            </div>
           </td>
         </tr>
         {index % 2 === 0 && <tr><td colSpan="5" style={{ height: '1px', backgroundColor: '#ddd' }}></td></tr>}

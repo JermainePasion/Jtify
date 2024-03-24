@@ -164,7 +164,15 @@ const Favorites = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'row', width: '100vw', minHeight: '115vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
-      <div className='template-background' style={{ flex: 1 }}>
+      <div className='template-background' style={{ 
+        flex: 1, 
+        marginLeft: '10px', 
+        position: 'relative', 
+        padding: '10px 20px', // Increase padding for better spacing
+        backgroundSize: '110%',
+        backgroundRepeat: 'no-repeat'
+
+      }}>
         <Container fluid>
           <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
             <Image src={likedImage} alt="Liked" style={{ width: '250px', height: '250px', objectFit: 'contain', marginLeft: '10px' }} />

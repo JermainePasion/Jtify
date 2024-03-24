@@ -63,9 +63,17 @@ const AddSong = () => {
   ];
 
   return (
-    <div style={{ display: 'flex', width: '100vw', minHeight: '115vh', backgroundColor: color, fontFamily: selectedFont }}>
+    <div style={{ display: 'flex',  minHeight: '115vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
-      <div className='template-background' style={{ flex: 1, marginLeft: '10px', padding: '10px 0' }}>
+      <div className='template-background' style={{ 
+        flex: 1, 
+        marginLeft: '10px', 
+        position: 'relative', 
+        padding: '10px 20px', // Increase padding for better spacing
+        backgroundSize: '110%',
+        backgroundRepeat: 'no-repeat'
+
+      }}>
         <div style = {{color: 'white'}} >
           <h1>Add Song</h1>
         </div>

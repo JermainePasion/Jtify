@@ -107,9 +107,17 @@ function Profile() {
   };
 
   return (
-    <div style={{ display: 'flex', width: '100vw', height: '115vh', backgroundColor: color, fontFamily: selectedFont }}>
+    <div style={{ display: 'flex', width: '100vw', minHeight: '180vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
-      <div className='template-background' >
+      <div className='template-background' style={{ 
+        flex: 1, 
+        marginLeft: '10px', 
+        position: 'relative', 
+        padding: '10px 20px', // Increase padding for better spacing
+        backgroundSize: '110%',
+        backgroundRepeat: 'no-repeat'
+
+      }}>
       <div className='profile-container'>
           <div>
             {loading ? (

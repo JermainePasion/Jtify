@@ -29,6 +29,8 @@ import AdDetails from './components/pages/AdDetails';
 import VerifyArtist from './components/pages/VerifyArtist';
 import Plans from './components/pages/Plans';
 import AdminPanel from './components/pages/AdminPanel';
+import { useSelector } from 'react-redux';
+import Errorpage from './components/pages/Errorpage';
 
 
 const isAuthenticated = () => {
@@ -38,6 +40,7 @@ const isAuthenticated = () => {
 
 function App() {
   const dispatch = useDispatch();
+  const user = useSelector(state => state.userDetails.user)
 
   return (
     <Router>
@@ -52,8 +55,7 @@ function App() {
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/discovery" element={<Discovery />} />
         <Route path="/artistregister" element={<ArtistRegister />} />
-        <Route path="/adminpanel" element={<AdminPanel />} />
-        
+
         <Route
           path="/register"
           element={isAuthenticated() ? <Navigate to="/" replace /> : <Register />}
@@ -65,22 +67,56 @@ function App() {
         <Route path="/requestPassword" element={<RequestChangePass />} />
         <Route path="/reset/:uid/:token" element={<ConfirmChangePass />} />
         <Route path="*" element={<Navigate to="/" replace />} />
-        <Route path="/songs/:id" element={<SongDetailView />} />
-        <Route path="/add-songs" element={<AddSong />} />
+
+        <Route path="/playlist/:id" element={<PlaylistDetailView />} />
+        <Route path ="/plans" element = {<Plans/>} />
+        <Route path="/error" element={<Errorpage />} />
+        <Route path ="/verify-artist/:token" element = {<VerifyArtist/>} />
+
+
+        {user?.data?.user_data?.is_superuser ? (
+          <>
+            <Route path="/adminpanel" element={<AdminPanel />} />
+            <Route path="/ads" element={<Ads />} />
+            <Route path="/ads/upload" element={<AdUploadForm />} />
+            <Route path="/ads/edit/:id" element={<AdEditForm />} />
+            <Route path="/ads/:id" element={<AdDetails />} />
+            
+          </>
+        ) : (
+          <>
+            <Route path="/adminpanel" element={<Navigate to="/error" replace />} />
+            <Route path="/ads" element={<Navigate to="/error" replace />} />
+            <Route path="/ads/upload" element={<Navigate to="/error" replace />} />
+            <Route path="/ads/edit/:id" element={<Navigate to="/error" replace />} />
+            <Route path="/ads/:id" element={<Navigate to="/error" replace />} />
+            
+          </>
+        )}
+        
+
+        {user?.data?.user_data?.is_artist ? (
+          <>
+            <Route path="/songs/:id" element={<SongDetailView />} />
+            <Route path="/add-songs" element={<AddSong />} />
+            <Route path="/add-playlist" element={<AddPlaylistScreen />} />
+            <Route path="/myplaylist" element={<MyPlaylistScreen />} />
+            <Route path="/mysongs" element={<MySongsScreen />} />
+          </>
+        ) : (
+          <>
+            <Route path="/songs/:id" element={<Navigate to="/error" replace />} />
+            <Route path="/add-songs" element={<Navigate to="/error" replace />} />
+            <Route path="/add-playlist" element={<Navigate to="/error" replace />} />
+            <Route path="/myplaylist" element={<Navigate to="/error" replace />} />
+            <Route path="/mysongs" element={<Navigate to="/error" replace />} />
+          </>
+        )}
         <Route
           path="/contact"
           element={isAuthenticated() ? <ContactLoggedIn /> : <ContactLoggedOut />}
         />
-        <Route path ="playlist/:id" element={<PlaylistDetailView />} />
-        <Route path ="/add-playlist" element={<AddPlaylistScreen />} />
-        <Route path ="/myplaylist" element={<MyPlaylistScreen/>} />
-        <Route path ="/mysongs" element = {<MySongsScreen/>} />
-        <Route path="/ads" element={<Ads />} />
-        <Route path ="/ads/upload" element = {<AdUploadForm />} />
-        <Route path ="/ads/edit/:id" element = {<AdEditForm />} />
-        <Route path ="/ads/:id" element = {<AdDetails/>} />
-        <Route path ="/verify-artist/:token" element = {<VerifyArtist/>} />
-        <Route path ="/plans" element = {<Plans/>} />
+        
       </Routes>
     </Router>
   );

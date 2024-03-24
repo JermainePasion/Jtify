@@ -30,7 +30,15 @@ const AdComponent = () => {
   return (
     <div style={{ display: 'flex', backgroundColor: color, minHeight: '100vh', color: '#fff', fontFamily: selectedFont }}>
       <Navbar color={color}  />
-      <div className='template-background' style={{ flex: 1, padding: '20px' }}>
+      <div className='template-background' style={{ 
+        flex: 1, 
+        marginLeft: '10px', 
+        position: 'relative', 
+        padding: '10px 20px', // Increase padding for better spacing
+        backgroundSize: '110%',
+        backgroundRepeat: 'no-repeat'
+
+      }}>
         <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>Advertisement</h1>
         <div style={{ marginBottom: '20px' }}>
           {/* Conditionally render the upload form or button based on the state */}

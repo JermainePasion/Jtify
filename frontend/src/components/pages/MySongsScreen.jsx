@@ -18,7 +18,15 @@ const MySongsScreen = () => {
   return (
     <div style={{ display: 'flex', backgroundColor: color, minHeight: '115vh', color: '#fff', fontFamily: selectedFont }}>
       <Navbar />
-      <div className='template-background' style={{ flex: 1, padding: '20px' }}>
+      <div className='template-background' style={{ 
+        flex: 1, 
+        marginLeft: '10px', 
+        position: 'relative', 
+        padding: '10px 20px', // Increase padding for better spacing
+        backgroundSize: '110%',
+        backgroundRepeat: 'no-repeat'
+
+      }}>
         <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>My Songs</h1>
         {loading ? (
           <p>Loading...</p>
