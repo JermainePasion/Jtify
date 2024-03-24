@@ -38,7 +38,16 @@ import { USER_LOGIN_REQUEST,
   GET_USER_PROFILE_FAILURE,
   USER_UPDATE_SUBSCRIBER_REQUEST,
   USER_UPDATE_SUBSCRIBER_SUCCESS,
-  USER_UPDATE_SUBSCRIBER_FAIL
+  USER_UPDATE_SUBSCRIBER_FAIL,
+  GET_USERS_REQUEST,
+  GET_USERS_SUCCESS,
+  GET_USERS_FAILURE,
+  UPDATE_USER_REQUEST,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_FAILURE,
+  DELETE_USER_REQUEST,
+  DELETE_USER_SUCCESS,
+  DELETE_USER_FAILURE,
 } 
 from '../constants/userConstants';
 
@@ -234,3 +243,28 @@ export const updateSubscriberReducer = (state = {}, action) => {
           return state
   }
 }
+
+export const adminPanelReducer = (state = { users: [], loading: false, error: null }, action) => {
+  switch (action.type) {
+    case GET_USERS_REQUEST:
+      return { ...state, loading: true };
+    case GET_USERS_SUCCESS:
+      return { ...state, loading: false, users: action.payload };
+    case GET_USERS_FAILURE:
+      return { ...state, loading: false, error: action.payload };
+    case UPDATE_USER_SUCCESS:
+      return {
+        ...state,
+        users: state.users.map(user =>
+          user.id === action.payload.userId ? { ...user, permissions: action.payload.permissions } : user
+        )
+      };
+    case DELETE_USER_SUCCESS:
+      return {
+        ...state,
+        users: state.users.filter(user => user.id !== action.payload)
+      };
+    default:
+      return state;
+  }
+};

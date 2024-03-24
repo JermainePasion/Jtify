@@ -20,4 +20,7 @@ urlpatterns = [
   path('user-profile/<int:user_id>/', UserProfileDetailView.as_view(), name='user-profile-detail'),
   path('verify-artist/<str:verification_token>/', verify_artist, name='verify_artist'),
   path('subscriber/', updateSubscriber.as_view(), name = 'update-subscriber'),
+  path('adminpanel/', AdminPanelListView.as_view(), name='admin_panel'),
+  path('adminpanel/<int:user_id>/delete/', DeleteUserView.as_view(), name='delete_user'),
+  path('adminpanel/<int:user_id>/update/', UpdateUserView.as_view(), name='update_user'),
 ]

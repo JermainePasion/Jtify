@@ -27,7 +27,7 @@ import { adsUploadReducer } from './reducers/adsReducer';
 import {adslistReducer} from './reducers/adsReducer'; // Import the new reducer
 import {artistVerifyReducer} from './reducers/userReducers';
 import {updateSubscriberReducer} from './reducers/userReducers';
-
+import { adminPanelReducer } from './reducers/userReducers';
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -57,6 +57,8 @@ const reducer = combineReducers({
     adsUpload: adsUploadReducer,
     artistVerify:artistVerifyReducer,
     updateSubscriber: updateSubscriberReducer,
+    adminPanel : adminPanelReducer,
+    adminPanelUsers: adminPanelReducer,
 });
 
 const initialState = {

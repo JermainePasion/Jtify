@@ -40,7 +40,16 @@ import {
     GET_USER_PROFILE_FAILURE,
     USER_UPDATE_SUBSCRIBER_REQUEST,
     USER_UPDATE_SUBSCRIBER_SUCCESS,
-    USER_UPDATE_SUBSCRIBER_FAIL
+    USER_UPDATE_SUBSCRIBER_FAIL,
+    GET_USERS_REQUEST,
+    GET_USERS_SUCCESS,
+    GET_USERS_FAILURE,
+    UPDATE_USER_REQUEST,
+    UPDATE_USER_SUCCESS,
+    UPDATE_USER_FAILURE,
+    DELETE_USER_REQUEST,
+    DELETE_USER_SUCCESS,
+    DELETE_USER_FAILURE,
 } from '../constants/userConstants';
 
 
@@ -488,44 +497,7 @@ export const artistRegister = ( phone_number, youtube_link)  => async (dispatch,
     }
   };
 
-  // export const userProfile = {
-  //   getUserProfile: () => async (dispatch, getState) => {
-  //     try {
-  //       dispatch({
-  //         type: GET_USER_PROFILE_REQUEST,
-  //       });
-    
-  //       const {
-  //         userLogin: { userInfo },
-  //       } = getState();
-    
-  //       if (!userInfo?.data?.token?.access) {
-  //         // If userInfo or its properties are undefined, handle it accordingly
-  //         throw new Error('User information is missing or incomplete');
-  //       }
-    
-  //       const config = {
-  //         headers: {
-  //           Authorization: `Bearer ${userInfo.data.token.access}`,
-  //         },
-  //       };
-    
-  //       const { data } = await instance.get(`api/user/user-profile/`, config);
-    
-  //       dispatch({
-  //         type: GET_USER_PROFILE_SUCCESS,
-  //         payload: data,
-  //       });
-  //     } catch (error) {
-  //       dispatch({
-  //         type: GET_USER_PROFILE_FAILURE,
-  //         payload: error.response
-  //           ? error.response.data.message
-  //           : error.message || 'Error fetching user profile',
-  //       });
-  //     }
-  //   }
-  // };
+
 
 
   export const userUpdateSubscriber = (subscriber) => async (dispatch, getState) => {
@@ -554,5 +526,51 @@ export const artistRegister = ( phone_number, youtube_link)  => async (dispatch,
             ? error.response.data.message
             : error.message,
       });
+    }
+  };
+
+  export const adminPanel = () => async (dispatch) => {
+    try {
+        dispatch({ type: GET_USERS_REQUEST });
+  
+        const { data } = await instance.get('/api/user/adminpanel/');
+  
+        dispatch({
+            type: GET_USERS_SUCCESS,
+            payload: data.users,
+        });
+  
+        // Define and implement deleteUser function directly within the try block
+        const deleteUser = async (userId) => {
+            try {
+                dispatch({ type: DELETE_USER_REQUEST });
+  
+                await instance.delete(`/api/user/adminpanel/${userId}/delete`);
+  
+                dispatch({
+                    type: DELETE_USER_SUCCESS,
+                    payload: userId,
+                });
+            } catch (error) {
+                dispatch({
+                    type: DELETE_USER_FAILURE,
+                    payload: error.response && error.response.data.message
+                        ? error.response.data.message
+                        : error.message,
+                });
+            }
+        };
+  
+        // Return an object containing only the deleteUser function
+        return {
+            deleteUser,
+        };
+    } catch (error) {
+        dispatch({
+            type: GET_USERS_FAILURE,
+            payload: error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message,
+        });
     }
   };

@@ -25,6 +25,7 @@ from songs .models import Song, Playlist
 from django.utils.crypto import get_random_string
 from django.utils import timezone
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from rest_framework.permissions import IsAdminUser
 
 
 
@@ -390,6 +391,81 @@ class UserProfileDetailView(APIView):
             })
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class AdminPanelListView(APIView):
+
+    def get(self, request):
+        try:
+            users = User.objects.all()
+            user_data = []
+            for user in users:
+                user_permissions = {
+                    'is_superuser': user.is_superuser,
+                    'is_artist': user.is_artist,
+                    'is_subscriber': user.is_subscriber
+                }
+                user_data.append({
+                    'id': user.id,
+                    'name': user.name,
+                    'email': user.email,
+                    'permissions': user_permissions
+                })
+            return Response({'users': user_data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def put(self, request, user_id):  # Modify put method to accept user_id
+        try:
+            user = User.objects.get(id=user_id)
+            permissions = request.data.get('permissions', {})
+            user.is_superuser = permissions.get('is_superuser', user.is_superuser)
+            user.is_artist = permissions.get('is_artist', user.is_artist)
+            user.is_subscriber = permissions.get('is_subscriber', user.is_subscriber)
+            user.save()
+            return Response({'message': 'User permissions updated successfully'}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def delete(self, request):
+        try:
+            user_id = request.data.get('id')
+            user = User.objects.get(id=user_id)
+            user.delete()
+            return Response({'message': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class DeleteUserView(APIView):
+    def delete(self, request, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+            user.delete()
+            return Response({'message': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class UpdateUserView(APIView):
+    def put(self, request, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+            permissions = request.data.get('permissions', {})
+            user.is_superuser = permissions.get('is_superuser', user.is_superuser)
+            user.is_artist = permissions.get('is_artist', user.is_artist)
+            user.is_subscriber = permissions.get('is_subscriber', user.is_subscriber)
+            user.save()
+            return Response({'message': 'User permissions updated successfully'}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class updateSubscriber(APIView):
     permission_classes = [IsAuthenticated]

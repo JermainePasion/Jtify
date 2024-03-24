@@ -145,3 +145,8 @@ class ArtistRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArtistRegister
         fields = '__all__'
+
+class AdminPanelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'name', 'email', 'is_admin', 'is_artist']

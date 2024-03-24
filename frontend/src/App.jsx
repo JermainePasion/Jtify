@@ -28,6 +28,7 @@ import AdUploadForm from './components/pages/AdUploadForm';
 import AdDetails from './components/pages/AdDetails';
 import VerifyArtist from './components/pages/VerifyArtist';
 import Plans from './components/pages/Plans';
+import AdminPanel from './components/pages/AdminPanel';
 
 
 const isAuthenticated = () => {
@@ -51,6 +52,7 @@ function App() {
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/discovery" element={<Discovery />} />
         <Route path="/artistregister" element={<ArtistRegister />} />
+        <Route path="/adminpanel" element={<AdminPanel />} />
         
         <Route
           path="/register"

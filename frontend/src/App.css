@@ -400,3 +400,26 @@
   background: #888;
   border-radius: 10px;
 }
+
+/* Admin Panel page design */
+
+.card-container {
+  overflow-x: auto;
+}
+
+.admin-button {
+  padding: 8px 16px;
+  
+  border: none;
+  background-color: #d31010;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.admin-button:hover {
+  background-color: #ff6666;
+}
+
+/* Admin Panel page design */

@@ -59,6 +59,10 @@ const Navbar = () => {
     navigate('/ads');
   }
 
+  const goToAdminPanel = () => {
+    navigate('/adminpanel');
+  };
+
   const goToArtistRegister = () => {
     navigate('/artistregister');
   };
@@ -130,6 +134,11 @@ const Navbar = () => {
         <h1>
           <button className='Navbar-items' onClick={goToContact} style={{ fontFamily: selectedFont }}>
             <BsFillTelephoneFill /> Contact Us
+          </button>
+        </h1>
+        <h1>
+          <button className='Navbar-items' onClick={goToAdminPanel} style={{ fontFamily: selectedFont }}>
+          <BsList /> Admin Panel
           </button>
         </h1>
         <Button className='Navbar-items' onClick={handleLogout} style={{ fontFamily: selectedFont }}>
