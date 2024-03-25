@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FaPlay, FaPause, FaStepForward, FaStepBackward, FaVolumeUp, FaVolumeMute, FaRandom } from 'react-icons/fa';
 import { BiRepeat } from 'react-icons/bi';
 import Slider from '@mui/material/Slider';
+import AdPlayer from './AdPlayer';
 
 function MusicPlayer({
   currentlyPlaying,
@@ -32,15 +33,21 @@ function MusicPlayer({
   const [storedCurrentTime, setStoredCurrentTime] = useState(0);
   const audioPlayerRef = useRef(null);
 
+  const handleSongEnd = () => {
+    if (isRepeat) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else {
+      skipTrack(true);
+    }
+  };
+
   useEffect(() => {
-    // Fetch songs with ads
     fetch('/api/songs/')  // Update the endpoint based on your API
       .then((response) => response.json())
       .then((data) => {
-        // Set songs data
       });
 
-    // Fetch ads
     fetch('/api/ads/list/')  // Update the endpoint based on your API
       .then((response) => response.json())
       .then((data) => {
@@ -50,7 +57,6 @@ function MusicPlayer({
         console.error('Error fetching ads:', error);
       });
 
-    // Set the audio player ref
     audioPlayerRef.current = audioRef.current;
   }, [currentlyPlaying, audioRef]);
 
@@ -135,7 +141,7 @@ function MusicPlayer({
     audioPlayerRef.current.play();
   };
 
-  const togglePlayPause = () => {
+  const togglePlay = () => {
     if (isPlaying) {
       pauseSong();
     } else {
@@ -152,12 +158,35 @@ function MusicPlayer({
 
   const toggleShuffle = () => {
     setIsShuffle(!isShuffle);
-    // Implement shuffle logic here
   };
 
   const toggleRepeat = () => {
-    setIsRepeat(!isRepeat);
-    // Implement repeat logic here
+    if (!isRepeat) {
+      setIsRepeat(true);
+      setIsShuffle(false);
+    } else if (isRepeat && !isShuffle) {
+      setIsRepeat(false);
+    } else {
+      setIsRepeat(false);
+    }
+  };
+
+  const handleBackward = () => {
+    if (isRepeat) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else {
+      skipTrack(false);
+    }
+  };
+  
+  const handleForward = () => {
+    if (isRepeat) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else {
+      skipTrack(true);
+    }
   };
 
   const handleVolumeChange = (event, newValue) => {
@@ -165,26 +194,28 @@ function MusicPlayer({
   };
 
   const handleTimeBarChange = (event, newValue) => {
-    let newTime = (newValue / 100) * duration;
-    if (storedCurrentTime > 0) {
-      newTime = storedCurrentTime;
+    // Check if the slider change is due to user interaction
+    if (event.type === 'mousedown' || event.type === 'touchstart') {
+      const newTime = (newValue / 100) * duration;
+      setStoredCurrentTime(newTime); // Update stored current time
+      audioPlayerRef.current.currentTime = newTime; // Set audio player's current time
     }
-    audioPlayerRef.current.currentTime = newTime;
   };
+
+  useEffect(() => {
+    audioPlayerRef.current.addEventListener('ended', handleSongEnd);
+
+    return () => {
+      audioPlayerRef.current.removeEventListener('ended', handleSongEnd);
+    };
+  }, [currentlyPlaying, skipTrack]);
 
   return (
     <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', backgroundColor: '#282828', color: '#fff', boxShadow: '0px -2px 10px rgba(0, 0, 0, 0.1)' }}>
-      {currentAd && currentAd.audio ? (
-        <div style={{ textAlign: 'center', marginTop: '10px' }}>
-          <img src={currentAd.image} alt="img" style={{ width: '100%', maxHeight: '150px', borderRadius: '4px' }} />
-          <audio key={currentAd.audio} controls autoPlay className="ad-audio" onEnded={handleAdFinish}>
-            <source src={currentAd.audio} type="audio/mp3" />
-            Your browser does not support the audio tag.
-          </audio>
-          <p style={{ color: '#b3b3b3', fontSize: '14px', marginTop: '5px' }}>Ad Progress: {(audioPlayerRef.current.currentTime / audioPlayerRef.current.duration * 100).toFixed(2)}%</p>
-        </div>
+      {currentAd ? (
+        <AdPlayer currentAd={currentAd} handleAdFinish={handleAdFinish} />
       ) : (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px', borderTop: '1px solid #535353' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px', borderTop: '1px solid #535353' }}>          
           {currentlyPlaying && (
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <img src={currentlyPlaying.picture} alt="Album Art" style={{ width: '64px', height: '64px', marginRight: '20px', borderRadius: '4px' }} />
@@ -198,13 +229,13 @@ function MusicPlayer({
             <button onClick={toggleRepeat} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '24px', color: '#fff' }}>
               {isRepeat ? <BiRepeat style={{ color: '#8a63d2' }} /> : <BiRepeat style={{ color: '#fff' }} />}
             </button>
-            <button onClick={() => skipTrack(false)} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '24px', color: '#fff' }}>
+            <button onClick={handleBackward} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '24px', color: '#fff' }}>
               <FaStepBackward />
             </button>
-            <button onClick={togglePlayPause} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '32px', color: '#fff' }}>
+            <button onClick={togglePlay} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '32px', color: '#fff' }}>
               {isPlaying ? <FaPause /> : <FaPlay />}
             </button>
-            <button onClick={() => skipTrack()} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '24px', color: '#fff' }}>
+            <button onClick={handleForward} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '24px', color: '#fff' }}>
               <FaStepForward />
             </button>
             <button onClick={toggleShuffle} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '24px', color: '#fff' }}>
@@ -256,20 +287,20 @@ function MusicPlayer({
             </div>
           )}
           <div style={{ position: 'fixed', right: '20px', bottom: '20px', display: 'flex', alignItems: 'center' }}>
-            <button onClick={toggleMute} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '20px', color: '#fff' }}>
-              {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-            </button>
-            <Slider
-              value={volume}
-              onChange={handleVolumeChange}
-              aria-labelledby="continuous-slider"
-              style={{ color: '#fff', width: '100px', '& .MuiSlider-thumb': { width: 20, height: 20 } }}
-            />
-          </div>
+          <button onClick={toggleMute} style={{ backgroundColor: 'transparent', border: 'none', fontSize: '20px', color: '#fff' }}>
+            {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+          </button>
+          <Slider
+            value={volume}
+            onChange={handleVolumeChange}
+            aria-labelledby="continuous-slider"
+            style={{ color: '#fff', width: '100px', '& .MuiSlider-thumb': { width: 20, height: 20 } }}
+          />
         </div>
-      )}
-    </div>
-  );
+      </div>
+    )}
+  </div>
+);
 }
 
 export default MusicPlayer;

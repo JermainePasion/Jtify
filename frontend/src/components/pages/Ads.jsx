@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { listAds } from '../../actions/adsActions';
 import { Link } from 'react-router-dom'; 
 import Navbar from '../Navbar';
-import AdUploadForm from './AdUploadForm'; // Import the UploadAdForm component
+import AdUploadForm from './AdUploadForm';
 
 const AdComponent = () => {
   const dispatch = useDispatch();
@@ -13,44 +13,25 @@ const AdComponent = () => {
   const selectedFont = user?.data?.profile_data?.font || 'Arial, sans-serif';
   const color = user?.data?.profile_data?.color || '#defaultColor';
 
-  const [showUploadForm, setShowUploadForm] = useState(false); // State to track if upload form should be shown
+  const [showUploadForm, setShowUploadForm] = useState(false);
 
   useEffect(() => {
     dispatch(listAds());
   }, [dispatch]);
 
   const handleShowUploadForm = () => {
-    setShowUploadForm(true); // Set the state to show the upload form when the button is clicked
+    setShowUploadForm(true);
   };
 
   const handleHideUploadForm = () => {
-    setShowUploadForm(false); // Set the state to hide the upload form when the hide button is clicked
+    setShowUploadForm(false);
   };
 
   return (
-    <div style={{ display: 'flex', backgroundColor: color, minHeight: '100vh', color: '#fff', fontFamily: selectedFont }}>
-      <Navbar color={color}  />
-      <div className='template-background' style={{ 
-        flex: 1, 
-        marginLeft: '10px', 
-        position: 'relative', 
-        padding: '10px 20px', // Increase padding for better spacing
-        backgroundSize: '110%',
-        backgroundRepeat: 'no-repeat'
-
-      }}>
+    <div style={{ display: 'flex', backgroundColor: color, minHeight: '115vh', color: '#fff', fontFamily: selectedFont }}>
+      <Navbar />
+      <div className='template-background' style={{ flex: 1, padding: '20px' }}>
         <h1 style={{ fontSize: '24px', marginBottom: '20px' }}>Advertisement</h1>
-        <div style={{ marginBottom: '20px' }}>
-          {/* Conditionally render the upload form or button based on the state */}
-          {showUploadForm ? (
-            <div>
-              <AdUploadForm />
-              <button onClick={handleHideUploadForm}>Hide</button> {/* Button to hide the upload form */}
-            </div>
-          ) : (
-            <button onClick={handleShowUploadForm}>Upload Ad</button>
-          )}
-        </div>
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
@@ -61,20 +42,25 @@ const AdComponent = () => {
               <li key={ad.id} style={{ marginBottom: '20px', borderBottom: '1px solid #444' }}>
                 <div>
                   <Link to={`/ads/${ad.id}`} style={{ textDecoration: 'none', color: '#fff' }}>
+                  {ad.image && <img src={ad.image} alt={ad.title} style={{ width: '64px', height: '64px', marginRight: '10px' }}  />}
                     <h3 style={{ margin: 0 }}>{ad.title}</h3>
                   </Link>
                   <p style={{ margin: '5px 0' }}>{ad.description}</p>
-                  {ad.audio && (
-                    <audio controls>
-                      <source src={ad.audio} type="audio/mp3" />
-                      Your browser does not support the audio tag.
-                    </audio>
-                  )}
                 </div>
               </li>
             ))}
           </ul>
         )}
+        <div style={{ marginBottom: '20px' }}>
+          {showUploadForm ? (
+            <div>
+              <AdUploadForm />
+              <button onClick={handleHideUploadForm}>Hide</button>
+            </div>
+          ) : (
+            <button onClick={handleShowUploadForm}>Upload Ad</button>
+          )}
+        </div>
       </div>
     </div>
   );
