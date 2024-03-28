@@ -122,24 +122,14 @@ const SongDetail = () => {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', fontFamily: selectedFont, backgroundColor: color }}>
-      <div style={{ flex: '0 0 250px', backgroundColor: color, padding: '20px' }}>
-        <Navbar />
-      </div>
-      <div className='template-background' style={{ 
-        flex: 1, 
-        marginLeft: '10px', 
-        position: 'relative', 
-        overflowX: 'auto', 
-        padding: '10px 0',
-        backgroundSize: 'cover',
-      }}>
-        <div className='editsong-container' style={{backgroundColor: color}}>
+      <Navbar />
+        <div className='template-background' style={{ flex: 1, marginLeft: '10px', position: 'relative', overflowX: 'auto', padding: '10px 0',backgroundSize: 'cover',}}>
+        <div className='editsong-container'>
         <Container>
-          <Button variant="secondary" classname="backbutton" style={{ marginBottom: '20px',  backgroundColor: color,  border: 'none', border: '2px solid #000',
-    borderRadius: '30px', padding: '15px 30px', fontSize: '16px', fontWeight: 'bold', cursor: 'pointer', marginLeft: '10px'}} onClick={handleGoBack}>
-            Back
+          <div style={{backgroundColor: color, border: 'none', borderRadius: '30px', padding: '15px 35px', fontSize: '16px', fontWeight: 'bold', marginLeft: '10px'}}>
+          <Button variant="secondary" classname="backbutton" style={{ backgroundColor: color}} onClick={handleGoBack}>
+          Back
           </Button>
-
           {loading ? (
             <Spinner animation="border" role="status">
               <span className="sr-only">Loading...</span>
@@ -149,7 +139,7 @@ const SongDetail = () => {
           ) : song ? (
             <Row>
               <Col>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                   <img src={song.picture} alt="Album Cover" style={{ width: '300px', height: '300px', borderRadius: '15px', marginBottom: '10px' }} />
                   <h2 style={{ marginBottom: '10px', color: '#fff' }}>{song.name}</h2>
                   <p style={{ marginBottom: '20px', color: '#fff' }}>{song.artist}</p>
@@ -173,7 +163,7 @@ const SongDetail = () => {
                       <Form.Group controlId="formSongArtist">
                         <Form.Label style = {{color: 'white', margin: '10px'}}>Edit Artist:</Form.Label>
                         <Form.Control 
-                          style = {{color: 'black', margin: '10px',     width: '100%',
+                          style = {{color: 'black', margin: '10px', width: '100%',
                           padding: '8px',
                           border: '1px solid #ccc',
                           borderRadius: '5px',
@@ -269,8 +259,8 @@ const SongDetail = () => {
                       borderRadius: '5px',
                       cursor: 'pointer',
                       transition: 'background-color 0.3s ease',}}  
-                      onMouseOver={(e) => (e.target.style.backgroundColor = '#28a745')}
-                      onMouseOut={(e) => (e.target.style.backgroundColor = '#218838')}>Save Changes</Button>
+                      onMouseOver={(e) => (e.target.style.backgroundColor = '#218838 ')}
+                      onMouseOut={(e) => (e.target.style.backgroundColor = '#28a745')}>Save Changes</Button>
                       <Button variant="secondary" onClick={handleCancelEdit} style={{
                       marginLeft: '10px',
                       marginBottom:  '10px',
@@ -293,7 +283,9 @@ const SongDetail = () => {
                       border: 'none',
                       borderRadius: '5px',
                       cursor: 'pointer',
-                      transition: 'background-color 0.3s ease'}}>
+                      transition: 'background-color 0.3s ease'}}
+                      onMouseOver={(e) => (e.target.style.backgroundColor = '#218838 ')}
+                      onMouseOut={(e) => (e.target.style.backgroundColor = '#28a745')}>
                         Edit
                       </Button>
                     )}
@@ -314,6 +306,7 @@ const SongDetail = () => {
           ) : (
             <p style={{ color: '#fff' }}>Song details not available</p>
           )}
+          </div>
         </Container>
         </div>
       </div>

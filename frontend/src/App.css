@@ -135,6 +135,7 @@
   box-shadow: 0px 0 35px 5px #5ACACA; /* Add softer glow effect */
   transform: scale(1.05); /* Slight increase in size */
   background-color: #90349C;
+  border-radius: 1rem;
 }
 
 /* Navbar design */
@@ -282,7 +283,7 @@
   background-color: #151616;
 }
 
-/* Discovery page design */
+/* Profile Page*/
 
    .profile-container {
     display: flex;
@@ -373,6 +374,8 @@
   margin-bottom: 10px;
 }
 
+/* Song Detailed View  */
+
 .editsong-container {
   display: flex;
   justify-content: center;
@@ -382,10 +385,35 @@
   overflow-x: hidden;
   min-height: calc(-673px + 173vh);
   margin: 0.5rem;
-  margin-top: -0.1rem;
-  margin-right: 1rem;
   border-radius: 20px;
 }
+
+.editsong-container Button {
+  margin-bottom: 30px;
+  border: none;
+  border: 1px solid #000;
+  border-radius: 30px;
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Add Song  */
+.container-addsong{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  min-height: calc(-673px + 173vh);
+  margin: 0.5rem;
+  border-radius: 20px;
+}
+
+label[for="picture"]:hover > div > button {
+  visibility: visible;
+}
+
 
 /* artistregister */
 

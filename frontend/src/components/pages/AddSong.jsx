@@ -11,6 +11,7 @@ const AddSong = () => {
   const user = useSelector(state => state.userDetails.user);
   const color = user?.data?.profile_data?.color || '#000';
   const selectedFont = user?.data?.profile_data?.font || 'Arial, sans-serif';
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     dispatch(fetchMyPlaylists());
@@ -34,6 +35,18 @@ const AddSong = () => {
   const handlePictureChange = (e) => {
     console.log(e.target.files[0])
     setFormData({ ...formData, picture: e.target.files[0] });
+  };
+
+  const handleRemovePicture = () => {
+    setFormData({ ...formData, picture: '' });
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+  
+  const handleMouseLeave = () => {
+    setIsHovered(false);
   };
 
   const handleFileChange = (e) => {
@@ -65,19 +78,47 @@ const AddSong = () => {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
-      <div className='template-background' style={{ 
-        flex: 1, 
-        marginLeft: '10px', 
-        position: 'relative', 
-        padding: '10px 20px', // Increase padding for better spacing
-        backgroundSize: '110%',
-        backgroundRepeat: 'no-repeat'
-
-      }}>
+      <div className='template-background' style={{ flex: 1, marginLeft: '10px', padding: '10px 0' }}>
+      <div className='container-addsong'>
+        <div style={{backgroundColor: color, border: 'none', borderRadius: '30px', padding: '20px 35px', fontSize: '16px', fontWeight: 'bold', marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
+        <div style={{flexDirection: 'row'}}>
         <div style = {{color: 'white'}} >
           <h1>Add Song</h1>
-        </div>
-        <div >
+          </div>
+          <label htmlFor="picture" style={{ color: '#fff', padding: '8px', cursor: 'pointer' }}>
+            <div
+              style={{
+                position: 'relative',
+                width: '500px',
+                height: '500px',
+                overflow: 'hidden',
+                borderRadius: '10%',
+                backgroundColor: picture ? 'transparent' : '#fff',
+              }}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              {picture && (
+                <>
+                  <img src={URL.createObjectURL(picture)} alt="Selected" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  {isHovered && (
+                    <button onClick={handleRemovePicture} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.5)', 
+                    border: 'none', color: '#fff', cursor: 'pointer', zIndex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '24px', 
+                    transition: 'background 0.3s' }}>Remove Photo</button>
+                  )}
+                </>
+              )}
+              {!picture && (
+                <div style={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <span style={{ color: '#000', fontSize: '24px' }}>+</span>
+                </div>
+              )}
+            </div>
+          </label>
+          <input type="file" id="picture" name="picture" onChange={handlePictureChange} style={{ display: 'none' }} />
+
+          </div>
+          <div style={{flexDirection: 'row'}}>
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '15px' }}>
               <label htmlFor="name" style={{ color: '#fff', marginRight: '10px' }}>Name:</label>
@@ -115,7 +156,9 @@ const AddSong = () => {
             </div>
             <button type="submit" style={{ backgroundColor: '#333', color: '#fff', border: 'none', padding: '10px', cursor: 'pointer' }}>Upload Song</button>
           </form>
+          </div>
         </div>
+      </div>
       </div>
     </div>
   );
