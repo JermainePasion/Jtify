@@ -111,6 +111,10 @@ export const logout = (navigate) => async (dispatch, getState) => {
       }
 
       localStorage.removeItem('userInfo');
+      localStorage.removeItem('adsCounter');
+      localStorage.removeItem('currentCounter');
+      localStorage.removeItem('currentlyPlayingNiMiah');
+      localStorage.removeItem('visibilityNiMiah');
       dispatch({ type: USER_LOGOUT });
       navigate('/');
     }

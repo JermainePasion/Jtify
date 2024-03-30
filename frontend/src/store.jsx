@@ -28,6 +28,7 @@ import {adslistReducer} from './reducers/adsReducer'; // Import the new reducer
 import {artistVerifyReducer} from './reducers/userReducers';
 import {updateSubscriberReducer} from './reducers/userReducers';
 import { adminPanelReducer } from './reducers/userReducers';
+import { playerReducer } from './reducers/musicPlayerReducer';
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -59,16 +60,29 @@ const reducer = combineReducers({
     updateSubscriber: updateSubscriberReducer,
     adminPanel : adminPanelReducer,
     adminPanelUsers: adminPanelReducer,
+    player: playerReducer
 });
 
+const currentlyPlayingFromStorage = localStorage.getItem(
+    "currentlyPlayingNiMiah"
+  );
+const visibilityFromStorage = localStorage.getItem("visibilityNiMiah");
+  
 const initialState = {
     userLogin: {
-        userInfo: localStorage.getItem('userInfo')
-            ? JSON.parse(localStorage.getItem('userInfo'))
-            : null,
+      userInfo: localStorage.getItem("userInfo")
+        ? JSON.parse(localStorage.getItem("userInfo"))
+        : null,
     },
-
-};
+    player: {
+      currentlyPlayingSong: currentlyPlayingFromStorage
+        ? JSON.parse(currentlyPlayingFromStorage)
+        : null,
+      isVisible: visibilityFromStorage
+        ? JSON.parse(visibilityFromStorage)
+        : false, // Default visibility to false if not found in localStorage
+    },
+  };
 
 const middleware = [thunk];
 

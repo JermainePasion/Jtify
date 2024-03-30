@@ -9,6 +9,7 @@ import Song from '../Song';
 import MusicPlayer from '../MusicPlayer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
+import { setCurrentlyPlayingSong, togglePlayerVisibility } from '../../actions/musicPlayerActions';
 
 const PlaylistDetails = () => {
   const dispatch = useDispatch();
@@ -55,19 +56,22 @@ const PlaylistDetails = () => {
   }, [isDragging]);
 
   const playSong = (song) => {
-    if (currentlyPlaying === song && !audioRef.current.paused) {
-      pauseSong();
-    } else {
-      if (currentlyPlaying !== song) {
-        audioRef.current.src = song.file;
-        setCurrentTime(0);
-        setCurrentlyPlaying(song);
-        setIsPlaying(true);
-      } else {
-        audioRef.current.currentTime = currentTime;
-      }
-      audioRef.current.play();
-    }
+    setCurrentlyPlaying(song);
+    dispatch(setCurrentlyPlayingSong(song));
+    dispatch(togglePlayerVisibility());
+    // if (currentlyPlaying === song && !audioRef.current.paused) {
+    //   pauseSong();
+    // } else {
+    //   if (currentlyPlaying !== song) {
+    //     audioRef.current.src = song.file;
+    //     setCurrentTime(0);
+    //     setCurrentlyPlaying(song);
+    //     setIsPlaying(true);
+    //   } else {
+    //     audioRef.current.currentTime = currentTime;
+    //   }
+    //   audioRef.current.play();
+    // }
   };
 
   const pauseSong = () => {
@@ -193,29 +197,7 @@ const PlaylistDetails = () => {
             )
           )}
         </Container>
-        {/* MusicPlayer component with props */}
-        {currentlyPlaying && (
-          <MusicPlayer
-            currentlyPlaying={currentlyPlaying}
-            duration={duration}
-            currentTime={currentTime}
-            isDragging={isDragging}
-            audioRef={audioRef}
-            progressBarRef={progressBarRef}
-            color={color}
-            selectedFont={selectedFont}
-            playSong={playSong}
-            pauseSong={pauseSong}
-            togglePlayPause={togglePlayPause}
-            skipTrack={skipTrack}
-            formatTime={formatTime}
-            handleTimeBarClick={handleTimeBarClick}
-            handleTimeBarMouseDown={handleTimeBarMouseDown}
-            handleTimeBarMouseUp={handleTimeBarMouseUp}
-            calculateTimeBarWidth={calculateTimeBarWidth}
-            isPlaying={isPlaying}
-          />
-        )}
+     
       </div>
     </div>
   );

@@ -31,6 +31,7 @@ import Plans from './components/pages/Plans';
 import AdminPanel from './components/pages/AdminPanel';
 import { useSelector } from 'react-redux';
 import Errorpage from './components/pages/Errorpage';
+import PlayerNiMiah from './components/PlayerNiMiah';
 
 
 const isAuthenticated = () => {
@@ -118,6 +119,7 @@ function App() {
         />
         
       </Routes>
+      {isAuthenticated() && <PlayerNiMiah />}
     </Router>
   );
 }

@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import MusicPlayer from '../MusicPlayer';
 import Song from '../Song';
+import { setCurrentlyPlayingSong, togglePlayerVisibility } from '../../actions/musicPlayerActions';
 
 import likedImage from '../img/liked.png';
 
@@ -86,19 +87,23 @@ const Favorites = () => {
 
   const playSong = (index) => {
     const song = likedSongs[index];
-    if (currentlyPlaying === song && !audioRef.current.paused) {
-      pauseSong();
-    } else {
-      if (currentlyPlaying !== song) {
-        audioRef.current.src = song.file;
-        setCurrentTime(0); // Reset currentTime when switching to a new song
-        setCurrentlyPlaying(song);
-        setIsPlaying(true);
-      } else {
-        audioRef.current.currentTime = currentTime;
-      }
-      audioRef.current.play();
-    }
+
+    setCurrentlyPlaying(song);
+    dispatch(setCurrentlyPlayingSong(song));
+    dispatch(togglePlayerVisibility());
+    // if (currentlyPlaying === song && !audioRef.current.paused) {
+    //   pauseSong();
+    // } else {
+    //   if (currentlyPlaying !== song) {
+    //     audioRef.current.src = song.file;
+    //     setCurrentTime(0); // Reset currentTime when switching to a new song
+    //     setCurrentlyPlaying(song);
+    //     setIsPlaying(true);
+    //   } else {
+    //     audioRef.current.currentTime = currentTime;
+    //   }
+    //   audioRef.current.play();
+    // }
   };
 
   const pauseSong = () => {
@@ -203,7 +208,7 @@ const Favorites = () => {
             ))}
           </ListGroup>
         </Container>
-        {currentlyPlaying && (
+        {/* {currentlyPlaying && (
           <MusicPlayer
             currentlyPlaying={currentlyPlaying}
             duration={duration}
@@ -223,8 +228,8 @@ const Favorites = () => {
             handleTimeBarMouseUp={handleTimeBarMouseUp}
             calculateTimeBarWidth={calculateTimeBarWidth}
             isPlaying={isPlaying}
-          />
-        )}
+          /> */}
+        {/* )} */}
       </div>
     </div>
   );
