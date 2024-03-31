@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { adminPanel } from '../../actions/userActions'; // Import the adminPanel action
 import { useNavigate } from 'react-router-dom';
 import { getUserDetails } from '../../actions/userActions';
+import { listSongs } from "../../actions/songActions";
 import Navbar from '../Navbar';
+import { Pie } from 'react-chartjs-2';
+import {Chart, ArcElement, registerables} from 'chart.js'
 
 const AdminPanel = () => {
   const dispatch = useDispatch();
@@ -12,16 +15,110 @@ const AdminPanel = () => {
   const font = user?.data?.profile_data?.font || 'defaultFont';
   const { users, loading, error } = useSelector(state => state.adminPanelUsers);
   const [permissions, setPermissions] = useState({});
-
+  const { songs, playlists } = useSelector(
+    (state) => state.songList
+  );
+  
+  
+  
   useEffect(() => {
     dispatch(getUserDetails());
   }, [dispatch]);
 
   useEffect(() => {
     dispatch(adminPanel()); // Fetch users on component mount
+    dispatch(listSongs());
   }, [dispatch]);
 
+  Chart.register(ArcElement);
+  Chart.register(...registerables);
+
+  const chartRef = useRef(null);
+  const subscriberChartRef = useRef(null);
+  const songCountRef = useRef(0);
+  const artistCountRef = useRef(0);
+
+  useEffect(() => {
+    if (chartRef && chartRef.current) {
+      const songCount = songs.length;
+      const artistCount = users.filter(user => user.permissions.is_artist).length;
   
+      const chartData = {
+        labels: ['Songs Uploaded', 'Artists'],
+        datasets: [{
+          data: [songCount, artistCount],
+          backgroundColor: ['#9938A3', '#5CCFCF'],
+          hoverBackgroundColor: ['#c74ad4', '#5be3e3']
+        }]
+      };
+      const chartOptions = {
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                let label = '';
+                if (context.datasetIndex === 0) {
+                  label = `${context.dataset.data[context.dataIndex]}`;
+                } else if (context.datasetIndex === 1) {
+                  label = `${context.label}: ${context.dataset.data[context.dataIndex]}`;
+                }
+                return label;
+              }
+            }
+          }
+        }
+      };
+  
+      const chart = new Chart(chartRef.current, {
+        type: 'pie',
+        data: chartData,
+        options: chartOptions
+      });
+  
+      return () => chart.destroy();
+    }
+  }, [songs, users]);
+  
+  useEffect(() => {
+    if (subscriberChartRef && subscriberChartRef.current) {
+      const unsubscribedCount = users.filter(user => !user.permissions.is_subscriber).length;
+      const subscriberCount = users.filter(user => user.permissions.is_subscriber).length;
+  
+      const chartData = {
+        labels: ['Subscribed Users', 'Unsubscribed Users'],
+        datasets: [{
+          data: [unsubscribedCount, subscriberCount],
+          backgroundColor: ['#36A2EB', '#FF6384'],
+          hoverBackgroundColor: ['#1f9df2', '#fa2d58']
+        }]
+      };
+      const chartOptions = {
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                let label = '';
+                if (context.datasetIndex === 0) {
+                  label = `${context.dataset.data[context.dataIndex]}`;
+                } else if (context.datasetIndex === 1) {
+                  label = `${context.dataset.data[context.dataIndex]}`;
+                }
+                return label;
+              }
+            }
+          }
+        }
+      };
+  
+      const chart = new Chart(subscriberChartRef.current, { // Use the new ref here
+        type: 'pie',
+        data: chartData,
+        options: chartOptions
+      });
+  
+      return () => chart.destroy();
+    }
+  }, [users])
 
   // Initialize permissions when users data changes
   useEffect(() => {
@@ -140,13 +237,20 @@ const AdminPanel = () => {
 
       }}>
       <h2>Admin Panel</h2>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '500px' }}>
+      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '500px' }}>
+  <canvas ref={chartRef}></canvas>
+  <canvas ref={subscriberChartRef}></canvas>
+</div>
+</div>
       {loading ? (
         <div>Loading...</div>
       ) : error ? (
         <div>{error}</div>
       ) : (
           
-        <div className="card" style={{ backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '8px', maxHeight: '400px', overflowY: 'auto' }}>
+        
+        <div className="card" style={{ backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '8px', maxHeight: '400px', overflowY: 'auto', marginTop: '20px' }}>
   <table style={{ width: '100%' }}>
     <thead>
       <tr>
