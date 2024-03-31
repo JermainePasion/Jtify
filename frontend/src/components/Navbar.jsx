@@ -137,7 +137,7 @@ const Navbar = () => {
       </h1>
     </Card>
   
-    <Card style={{marginTop: '20px', width: '280px', padding: '20px', borderRadius: '10px', backgroundColor: 'rgba(255, 255, 255, 0.18)', margin: '5px', opacity: 0.9 }}> 
+    <Card style={{marginTop: '20px', width: '280px', padding: '20px', borderRadius: '10px', backgroundColor: 'rgba(255, 255, 255, 0.18)', margin: '5px', opacity: 0.9, marginBottom: '150px' }}> 
       <h1 style={{ direction: 'ltr' }}>
         <button className='Navbar-items' onClick={goToProfile} style={{ fontFamily: selectedFont }}>
           <BsPersonSquare /> Profile

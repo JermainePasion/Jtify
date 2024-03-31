@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { adminPanel } from '../../actions/userActions'; // Import the adminPanel action
+import { adminPanel } from '../../actions/userActions'; 
 import { useNavigate } from 'react-router-dom';
 import { getUserDetails } from '../../actions/userActions';
 import { listSongs } from "../../actions/songActions";
@@ -85,23 +85,31 @@ const AdminPanel = () => {
       const subscriberCount = users.filter(user => user.permissions.is_subscriber).length;
   
       const chartData = {
-        labels: ['Subscribed Users', 'Unsubscribed Users'],
+        labels: ['User Count'], 
         datasets: [{
-          data: [unsubscribedCount, subscriberCount],
-          backgroundColor: ['#36A2EB', '#FF6384'],
-          hoverBackgroundColor: ['#1f9df2', '#fa2d58']
+          label: 'Subscribed Users',
+          data: [subscriberCount],
+          backgroundColor: '#0a99fa',
+          hoverBackgroundColor: '#36A2EB'
+        }, {
+          label: 'Unsubscribed Users',
+          data: [unsubscribedCount],
+          backgroundColor: '#fa2d58',
+          hoverBackgroundColor: '#FF6384'
         }]
       };
+  
       const chartOptions = {
+        indexAxis: 'y', 
         plugins: {
           tooltip: {
             callbacks: {
               label: function(context) {
                 let label = '';
                 if (context.datasetIndex === 0) {
-                  label = `${context.dataset.data[context.dataIndex]}`;
+                  label = ` ${chartData.datasets[0].data[context.dataIndex]}`;
                 } else if (context.datasetIndex === 1) {
-                  label = `${context.dataset.data[context.dataIndex]}`;
+                  label = `${chartData.datasets[1].data[context.dataIndex]}`;
                 }
                 return label;
               }
@@ -111,14 +119,14 @@ const AdminPanel = () => {
       };
   
       const chart = new Chart(subscriberChartRef.current, { // Use the new ref here
-        type: 'pie',
+        type: 'bar', // Change chart type to bar
         data: chartData,
         options: chartOptions
       });
   
       return () => chart.destroy();
     }
-  }, [users])
+  }, [users]);
 
   // Initialize permissions when users data changes
   useEffect(() => {
@@ -231,12 +239,12 @@ const AdminPanel = () => {
         flex: 1, 
         marginLeft: '10px', 
         position: 'relative', 
-        padding: '10px 20px', // Increase padding for better spacing
+        padding: '10px 20px', 
         backgroundSize: '110%',
         backgroundRepeat: 'no-repeat'
 
       }}>
-      <h2>Admin Panel</h2>
+      <h2 style={{ fontSize: '40px', color: 'white', marginBottom: '20px' }}>Admin Panel</h2>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: '500px' }}>
       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', width: '500px' }}>
   <canvas ref={chartRef}></canvas>
@@ -250,7 +258,7 @@ const AdminPanel = () => {
       ) : (
           
         
-        <div className="card" style={{ backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '8px', maxHeight: '400px', overflowY: 'auto', marginTop: '20px' }}>
+        <div className="card" style={{ backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '8px', maxHeight: '400px', overflowY: 'auto', marginTop: '40px' }}>
   <table style={{ width: '100%' }}>
     <thead>
       <tr>
