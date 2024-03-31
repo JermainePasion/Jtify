@@ -42,6 +42,13 @@ function Profile() {
   }, [dispatch]);
 
   useEffect(() => {
+    const storedFont = localStorage.getItem('selectedFont');
+    if (storedFont) {
+      setSelectedFont(storedFont);
+    }
+  }, []);
+
+  useEffect(() => {
     if (updateSuccess) {
       dispatch(resetUpdateProfile());
     }
@@ -89,7 +96,9 @@ function Profile() {
   };
 
   const handleFontChange = (e) => {
-    setSelectedFont(e.target.value);
+    const selectedFont = e.target.value;
+    setSelectedFont(selectedFont);
+    localStorage.setItem('selectedFont', selectedFont);
   };
 
   const handleSubmit = async (e) => {
@@ -159,22 +168,26 @@ function Profile() {
                     <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
                   </div>
                 </div>
+                <div style={{marginBottom: '15px', marginLeft: '20px', color: 'white' }}>
+                    <label htmlFor="profilePicture" style={{ display: 'block', marginBottom: '5px' }}>Profile Picture:</label>
+                    <input type="file" id="profilePicture" onChange={handleFileChange} style={{ width: '100%', color: 'white' }} />
+                    {fileName && <p style={{ marginTop: '5px' }}>{fileName}</p>} {/* Display file name if a file has been selected */}
+                </div>
               </Card>
               {/* Profile, Color, and Fonts Card */}
+              {(user?.data?.user_data?.is_superuser || user?.data?.user_data?.is_artist || user?.data?.user_data?.is_subscriber) && (
               <Card style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', height: '350px', width: '520px', padding: '15px', 
                 borderRadius: '10px', backgroundColor: color , opacity: 0.9, marginTop: '0.1rem', marginLeft: '0.1rem'}}>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1, alignItems: 'left', position: 'relative'}}>
-                  <div style={{ marginBottom: '15px', marginLeft: '20px', color: 'white' }}>
-                    <label htmlFor="profilePicture" style={{ display: 'block', marginBottom: '5px' }}>Profile Picture:</label>
-                    <input type="file" id="profilePicture" onChange={handleFileChange} style={{ width: '100%', color: 'white' }} />
-                    {fileName && <p style={{ marginTop: '5px' }}></p>} {/* Display file name if a file has been selected */}
-                  </div>
                   <div style={{ marginBottom: '15px', position: 'relative', marginLeft: '20px' }}>
                     <label htmlFor="color" style={{ color: 'white', display: 'block', marginBottom: '5px' }}>Profile Color:</label>
+
+                    {(user?.data?.user_data?.is_superuser || user?.data?.user_data?.is_artist || user?.data?.user_data?.is_subscriber) && (
                     <div
                       style={{ backgroundColor: color, width: '30px', height: '30px', cursor: 'pointer', border: '1px solid #fff', marginBottom: '10px' }}
                       onClick={() => setShowColorPicker((prev) => !prev)}
                     ></div>
+                    )}
                     {showColorPicker && (
                       <div style={{ position: 'fixed', zIndex: 1, top: '50%', left: '50%', transform: 'translate(-50%, -50%)', marginTop: '10px' }}>
                         <SketchPicker color={color} onChange={handleColorChange} />
@@ -193,6 +206,7 @@ function Profile() {
                   </div>
                 </div>
               </Card>
+              )}
             </div>
             <button className='custom-button' type="submit" style={{alignContent: 'center', padding: '10px',  color: 'white', border: 'none', 
               cursor: 'pointer', width: '50%', marginTop: '20px' }}>Update Profile</button>

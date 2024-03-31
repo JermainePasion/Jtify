@@ -99,6 +99,7 @@ export const login = (email, password) => async (dispatch) => {
 export const logout = (navigate) => async (dispatch, getState) => {
   const {
     userLogin: { userInfo },
+    player: { currentlyPlayingSong },
   } = getState();
 
   try {
@@ -115,6 +116,18 @@ export const logout = (navigate) => async (dispatch, getState) => {
       localStorage.removeItem('currentCounter');
       localStorage.removeItem('currentlyPlayingNiMiah');
       localStorage.removeItem('visibilityNiMiah');
+      
+      // Pause the currently playing song if it exists
+      if (currentlyPlayingSong && currentlyPlayingSong.audio) {
+        currentlyPlayingSong.audio.pause();
+      }
+
+      // Reset currentCounter to 0
+      dispatch({ type: 'RESET_COUNTER' });
+      
+      // Set NiMiah visibility to false
+      dispatch({ type: 'TOGGLE_PLAYER_VISIBILITY' });
+      
       dispatch({ type: USER_LOGOUT });
       navigate('/');
     }
@@ -122,6 +135,8 @@ export const logout = (navigate) => async (dispatch, getState) => {
     console.error('Error logging out:', error);
   }
 };
+
+
 
 
 
@@ -361,6 +376,7 @@ export const verifyOTP = (user_id, otp_id, otp_code) => async (dispatch) => {
       formData.append('email', updatedUser.email || '');
       formData.append('color', updatedUser.color || '#defaultColor');
       formData.append('font', updatedUser.font || 'defaultFont');
+      
   
       if (profilePicture) {
         formData.append('profile_picture', profilePicture);

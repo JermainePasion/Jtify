@@ -6,12 +6,7 @@ export const setCurrentlyPlayingSong = (song) => {
     };
   };
   
-  export const togglePlayerVisibility = () => {
-    const currentlyPlayingSong = JSON.parse(
-      localStorage.getItem("currentlyPlayingNiMiah")
-    );
-    const visibility = !!currentlyPlayingSong; // Convert to boolean
-  
+  export const togglePlayerVisibility = (visibility) => {
     localStorage.setItem("visibilityNiMiah", JSON.stringify(visibility));
   
     return {
@@ -19,3 +14,5 @@ export const setCurrentlyPlayingSong = (song) => {
       payload: visibility,
     };
   };
+  
+  
