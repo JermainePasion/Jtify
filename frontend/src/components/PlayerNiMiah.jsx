@@ -12,28 +12,16 @@ import { BiRepeat } from "react-icons/bi";
 import Slider from "@mui/material/Slider";
 
 import { useDispatch, useSelector } from "react-redux";
-import { counter } from "@fortawesome/fontawesome-svg-core";
 import { listAds } from "../actions/adsActions";
 
 function PlayerNiMiah() {
   const [currentAd, setCurrentAd] = useState(null);
-
   const [isRepeat, setIsRepeat] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
 
   const dispatch = useDispatch();
-
-  const [totalTimePlayed, setTotalTimePlayed] = useState(() => {
-    const storedTimePlayed = localStorage.getItem("totalTimePlayed");
-    return storedTimePlayed !== null ? parseInt(storedTimePlayed, 10) : 0;
-  });
-
-  const [volume, setVolume] = useState(() => {
-    const storedVolume = localStorage.getItem("volume");
-    return storedVolume !== null ? parseInt(storedVolume, 10) : 50;
-  });
 
   const currentlyPlaying = useSelector(
     (state) => state.player.currentlyPlayingSong
@@ -49,7 +37,7 @@ function PlayerNiMiah() {
     return storedAdsCounter !== null
       ? parseInt(storedAdsCounter, 10)
       : Math.floor(Math.random() * 4);
-  }); //Assign random number between 0 to 3 for adsCounter
+  }); // Assign random number between 0 to 3 for adsCounter
 
   useEffect(() => {
     localStorage.setItem("adsCounter", adsCounter);
@@ -60,13 +48,11 @@ function PlayerNiMiah() {
     return storedCurrentCounter !== null
       ? parseInt(storedCurrentCounter, 10)
       : 0;
-  }); //
+  });
 
   useEffect(() => {
     localStorage.setItem("currentCounter", currentCounter.toString());
   }, [currentCounter]);
-
-  const [adsNaMagPlay, setAdsNaMagPlay] = useState([]);
 
   useEffect(() => {
     if (currentlyPlaying) {
@@ -75,7 +61,13 @@ function PlayerNiMiah() {
         AdsNiMiah();
         console.log("ads na mag play 2", currentAd);
         setAdsCounter(Math.floor(Math.random() * 4));
-        setCurrentCounter(0);
+        setCurrentCounter((prevCounter) => {
+          let newCounter = prevCounter + 1;
+          if (newCounter > 3) {
+            newCounter = 0;
+          }
+          return newCounter;
+        });
       } else {
         loadSong();
         setIsPlaying(false);
@@ -86,7 +78,6 @@ function PlayerNiMiah() {
   const handleAdFinish = () => {
     console.log("Ad finished. Resuming playback...");
     setCurrentAd(null);
-    setTotalTimePlayed(0);
     audio.play();
     setIsPlaying(true);
   };
@@ -94,25 +85,22 @@ function PlayerNiMiah() {
   const loadSong = () => {
     const selectedSong = currentlyPlaying;
     audio.src = selectedSong.file;
-    console.log("Audio Source", audio.src);
     audio.load();
     audio.pause();
-    setIsPlaying(true); // Set isPlaying to false initially
-
-    // Add an event listener to play the audio when it's clicked
+    setIsPlaying(true);
     const playAudio = () => {
       audio.play();
       setIsPlaying(true);
-      setCurrentCounter((prevCounter) => prevCounter + 1);
+      setCurrentCounter((prevCounter) => {
+        let newCounter = prevCounter + 1;
+        if (newCounter > 3) {
+          newCounter = 0;
+        }
+        return newCounter;
+      });
       document.removeEventListener("click", playAudio);
     };
-
-    // Add a click event listener to the document to trigger audio playback
     document.addEventListener("click", playAudio);
-  };
-
-  const handleVolumeChange = (event, newValue) => {
-    setVolume(newValue);
   };
 
   const togglePlayPause = () => {
@@ -137,11 +125,16 @@ function PlayerNiMiah() {
 
   const toggleMute = () => {
     const newVolume = isMuted ? 50 : 0;
+    setIsMuted(!isMuted);
     setVolume(newVolume);
     audioPlayerRef.current.volume = newVolume / 100;
-    setIsMuted(!isMuted);
   };
 
+  const [volume, setVolume] = useState(() => {
+    const storedVolume = localStorage.getItem("volume");
+    return storedVolume !== null ? parseInt(storedVolume, 10) : 50;
+  });
+  
 
   const AdsNiMiah = async () => {
     try {
@@ -150,29 +143,20 @@ function PlayerNiMiah() {
       const adsIndex = Math.floor(Math.random() * adsArray.length);
 
       const nextAd = adsArray[adsIndex];
-      if(nextAd){
-        try{
+      if (nextAd) {
+        try {
           await audio.pause();
-          setCurrentAd(nextAd); // Update state after fetching ads
-        }catch(error){
+          setCurrentAd(nextAd);
+        } catch (error) {
           console.error("Error playing ad:", error);
         }
-      }else{
+      } else {
         console.log("No audio ads available");
       }
     } catch (error) {
       console.error("Error fetching ads:", error);
     }
   };
-
-  // const generateAdsCounter = () => {
-  //   const counter = Math.floor(Math.random() * 3);
-  //   setAdsCounter(counter);
-  // }
-
-  // useEffect(() => {
-  //   console.log("Updated Ads Counter", adsCounter);
-  // }, [adsCounter]);
 
   if (isPlayerVisible === false && !currentlyPlaying) {
     return null;
@@ -199,7 +183,7 @@ function PlayerNiMiah() {
             <audio
               key={currentAd.audio}
               controls
-              autoplay
+              autoPlay
               className="ad-audio"
               onEnded={handleAdFinish}
             >
@@ -284,7 +268,6 @@ function PlayerNiMiah() {
                 )}
               </button>
               <button
-                //   onClick={() => skipTrack(false)}
                 style={{
                   backgroundColor: "transparent",
                   border: "none",
@@ -306,7 +289,6 @@ function PlayerNiMiah() {
                 {isPlaying ? <FaPause /> : <FaPlay />}
               </button>
               <button
-                //   onClick={() => skipTrack()}
                 style={{
                   backgroundColor: "transparent",
                   border: "none",
@@ -328,50 +310,6 @@ function PlayerNiMiah() {
                 <FaRandom style={{ color: isShuffle ? "#8a63d2" : "#fff" }} />
               </button>
             </div>
-            {/* {duration > 0 && (
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: "3px",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    width: "40%",
-                    cursor: "pointer",
-                    margin: "auto",
-                  }}
-                >
-                  <Slider
-                    value={(currentTime / duration) * 100}
-                    onChange={handleTimeBarChange}
-                    aria-labelledby="continuous-slider"
-                    style={{ color: "#fff", width: "100%" }}
-                  />
-                  <div
-                    style={{
-                      color: "#b3b3b3",
-                      fontSize: "14px",
-                      textAlign: "left",
-                      position: "absolute",
-                      left: "0",
-                      top: "-20px",
-                    }}
-                  >
-                    {formatTime(currentTime)}
-                  </div>
-                  <div
-                    style={{
-                      color: "#b3b3b3",
-                      fontSize: "14px",
-                      textAlign: "right",
-                      position: "absolute",
-                      right: "0",
-                      top: "-20px",
-                    }}
-                  >
-                    {formatTime(duration)}
-                  </div>
-                </div>
-              )} */}
             <div
               style={{
                 position: "fixed",
@@ -393,8 +331,8 @@ function PlayerNiMiah() {
                 {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
               </button>
               <Slider
-                value={volume}
-                onChange={handleVolumeChange}
+                // value={volume}
+                // onChange={handleVolumeChange}
                 aria-labelledby="continuous-slider"
                 style={{
                   color: "#fff",
@@ -411,3 +349,5 @@ function PlayerNiMiah() {
 }
 
 export default PlayerNiMiah;
+
+

@@ -32,7 +32,9 @@ export const listAds = () => async (dispatch) => {
     dispatch({
       type: ADS_LIST_SUCCESS,
       payload: data,
-    });
+    });  
+
+    return data
   } catch (error) {
     dispatch({
       type: ADS_LIST_FAILURE,
