@@ -29,6 +29,7 @@ import {artistVerifyReducer} from './reducers/userReducers';
 import {updateSubscriberReducer} from './reducers/userReducers';
 import { adminPanelReducer } from './reducers/userReducers';
 import { playerReducer } from './reducers/musicPlayerReducer';
+import { likedSongListReducer } from './reducers/songReducer';
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -44,6 +45,7 @@ const reducer = combineReducers({
     songEdit: songEditReducer,
     likeSong: likeSongReducer,
     fetchLikedSongs: fetchLikedSongsReducer,
+    likedSongList: likedSongListReducer,
     contactUs: contactUsReducer,
     songGenre: songGenreReducer,
     songSearch: songSearchReducer,

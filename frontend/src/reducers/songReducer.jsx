@@ -45,6 +45,9 @@ import {
   UPLOAD_SONG_TO_PLAYLIST_REQUEST,
   UPLOAD_SONG_TO_PLAYLIST_SUCCESS,
   UPLOAD_SONG_TO_PLAYLIST_FAILURE,
+  FETCH_LIKED_SONG_LIST_REQUEST,
+  FETCH_LIKED_SONG_LIST_SUCCESS,
+  FETCH_LIKED_SONG_LIST_FAILURE
 
 } from '../constants/songConstants';
 // songReducer.jsx
@@ -308,3 +311,38 @@ export const uploadSongToPlaylistReducer = (state = {}, action) => {
       return state;
   }
 }
+
+
+const initialerState = {
+  loading: false,
+  likedSongs: [], // Update to an empty array
+  error: null
+};
+
+export const likedSongListReducer = (state = initialerState, action) => {
+  switch (action.type) {
+    case FETCH_LIKED_SONG_LIST_REQUEST:
+      return {
+        ...state,
+        loading: true
+      };
+    case FETCH_LIKED_SONG_LIST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        likedSongs: action.payload,
+        error: null
+      };
+    case FETCH_LIKED_SONG_LIST_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        likedSongs: [],
+        error: action.payload
+      };
+    default:
+      return state;
+  }
+};
+
+

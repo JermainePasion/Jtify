@@ -1,11 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { adminPanel } from '../../actions/userActions'; 
-import { useNavigate } from 'react-router-dom';
 import { getUserDetails } from '../../actions/userActions';
 import { listSongs } from "../../actions/songActions";
 import Navbar from '../Navbar';
-import { Pie } from 'react-chartjs-2';
 import {Chart, ArcElement, registerables} from 'chart.js'
 
 const AdminPanel = () => {
@@ -15,7 +13,7 @@ const AdminPanel = () => {
   const font = user?.data?.profile_data?.font || 'defaultFont';
   const { users, loading, error } = useSelector(state => state.adminPanelUsers);
   const [permissions, setPermissions] = useState({});
-  const { songs, playlists } = useSelector(
+  const { songs } = useSelector(
     (state) => state.songList
   );
   
@@ -35,8 +33,7 @@ const AdminPanel = () => {
 
   const chartRef = useRef(null);
   const subscriberChartRef = useRef(null);
-  const songCountRef = useRef(0);
-  const artistCountRef = useRef(0);
+ 
 
   useEffect(() => {
     if (chartRef && chartRef.current) {

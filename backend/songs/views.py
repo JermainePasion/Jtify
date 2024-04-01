@@ -13,6 +13,9 @@ from django.utils.datastructures import MultiValueDictKeyError
 import json
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import AllowAny
+from django.utils import timezone
+from datetime import timedelta
+from django.db.models import Count
 
 
 class SongListView(APIView):
@@ -160,6 +163,25 @@ class LikeSongList(APIView):
         serializer = LikeSerializer(liked_songs, many=True)
         
         # Return the serialized data in the response
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class LikedSongListAll(APIView):
+    def get(self, request, format=None):
+        # Retrieve all liked songs within the current 14-day period
+        current_date = timezone.now()
+        start_of_period = current_date - timedelta(days=14)
+        end_of_period = current_date
+
+        # Query to get liked songs within the period and annotate with like count
+        liked_songs = (
+            Song.objects
+            .filter(like__created_at__gte=start_of_period, like__created_at__lt=end_of_period)
+            .annotate(num_likes=Count('like'))
+            .order_by('-num_likes')  # Sort in descending order based on like count
+        )
+
+        serializer = SongSerializer(liked_songs, many=True)
+        
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class unlikeSong(APIView):

@@ -45,6 +45,9 @@ import {
   UPLOAD_SONG_TO_PLAYLIST_REQUEST,
   UPLOAD_SONG_TO_PLAYLIST_SUCCESS,
   UPLOAD_SONG_TO_PLAYLIST_FAILURE,
+  FETCH_LIKED_SONG_LIST_REQUEST,
+  FETCH_LIKED_SONG_LIST_SUCCESS,
+  FETCH_LIKED_SONG_LIST_FAILURE
 
 } from '../constants/songConstants'; 
 
@@ -542,3 +545,22 @@ export const uploadSong = (playlistId, songData) => async (dispatch, getState) =
     dispatch({ type: UPLOAD_SONG_TO_PLAYLIST_FAILURE, payload: error.message });
   }
 }
+
+
+
+export const likedSongList = () => async dispatch => {
+  dispatch({ type: FETCH_LIKED_SONG_LIST_REQUEST });
+
+  try {
+    const res = await axios.get('/api/songs/likes/');
+    dispatch({
+      type: FETCH_LIKED_SONG_LIST_SUCCESS,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: FETCH_LIKED_SONG_LIST_FAILURE,
+      payload: err.response.data
+    });
+  }
+};

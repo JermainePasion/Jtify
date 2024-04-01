@@ -8,7 +8,8 @@ import { getUserDetails } from "../../actions/userActions";
 import { BsSearch } from "react-icons/bs";
 import { playlistView } from "../../actions/songActions";
 import Playlist from "../Playlist"; // Import Playlist component
-import { setCurrentlyPlayingSong, togglePlayerVisibility } from "../../actions/musicPlayerActions"; // Import setCurrentlyPlayingSong and togglePlayerVisibility from musicPlayerActions";
+import { setCurrentlyPlayingSong, togglePlayerVisibility } from "../../actions/musicPlayerActions";
+import { likedSongList } from "../../actions/songActions"; 
 
 
 
@@ -18,10 +19,22 @@ function Home() {
   const { loading, error, songs, playlists } = useSelector(
     (state) => state.songList
   );
+  const { likedSongs } = useSelector(
+    (state) => state.likedSongList // Access likedSongs from the state
+  );
 
   const user = useSelector((state) => state.userDetails.user);
   const color = user?.data?.profile_data?.color || "#defaultColor";
   const selectedFont = user?.data?.profile_data?.font || "defaultFont";
+
+  const uniqueSongNames = new Set();
+const uniqueLikedSongs = likedSongs.filter(song => {
+  if (uniqueSongNames.has(song.name)) {
+    return false; // If the song name is already in the set, filter it out
+  }
+  uniqueSongNames.add(song.name); // Otherwise, add the song name to the set and keep the song
+  return true;
+});
 
   const [query, setQuery] = useState("");
 
@@ -52,10 +65,13 @@ function Home() {
     // }
   };
 
+  
+
 
   useEffect(() => {
     dispatch(getUserDetails());
     dispatch(listSongs());
+    dispatch(likedSongList());
     dispatch(playlistView());
   }, [dispatch]);
   return (
@@ -136,46 +152,48 @@ function Home() {
         <h1
           style={{ color: "white", fontFamily: selectedFont, fontSize: "30px" }}
         >
-          Today's hits
+          Trending Songs
         </h1>
         <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            padding: "10px 0",
-            overflowX: "hidden",
-            transition: "overflow-x 0.5s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.overflowX = "auto";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.overflowX = "hidden";
-          }}
-        >
-          {loading ? (
-            <div>Loading...</div>
-          ) : error ? (
-            <div>Error: {error}</div>
-          ) : (
-            // Filter songs based on the search query and then map
-            songs
-              .filter(
-                (song) =>
-                  song.name.toLowerCase().includes(query.toLowerCase()) ||
-                  song.artist.toLowerCase().includes(query.toLowerCase())
-              )
-              .map((song) => (
-                <Song
-                  key={song.id}
-                  song={song}
-                  playSong={playSong}
-                  isPlaying={currentlyPlaying === song}
-                  selectedFont={selectedFont}
-                />
-              ))
-          )}
-        </div>
+    style={{
+      display: "flex",
+      flexDirection: "row",
+      padding: "10px 0",
+      overflowX: "hidden",
+      transition: "overflow-x 0.5s",
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.overflowX = "auto";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.overflowX = "hidden";
+    }}
+  >
+    {loading ? (
+      <div>Loading...</div>
+    ) : error ? (
+      <div>Error: {error}</div>
+    ) : (
+      <>
+        {/* Filter songs based on the search query */}
+        {uniqueLikedSongs
+          .filter(song =>
+            song.name.toLowerCase().includes(query.toLowerCase()) ||
+            song.artist.toLowerCase().includes(query.toLowerCase())
+          )
+          .map(song => (
+            <Song
+              key={song.id}
+              song={song}
+              playSong={playSong}
+              isPlaying={currentlyPlaying === song}
+              selectedFont={selectedFont}
+            />
+          ))
+        }
+      </>
+    )}
+  </div>
         <h2
           style={{ color: "white", fontFamily: selectedFont, fontSize: "30px" }}
         >
