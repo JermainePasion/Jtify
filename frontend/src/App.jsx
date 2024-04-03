@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getUserDetails } from './actions/userActions';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import SongDetailView from './components/pages/SongDetailView';
-
 import Home from './components/pages/Home';
 import Login from './components/pages/Login';
 import Register from './components/pages/Register';
@@ -34,14 +34,29 @@ import Errorpage from './components/pages/Errorpage';
 import PlayerNiMiah from './components/PlayerNiMiah';
 
 
-const isAuthenticated = () => {
-  return localStorage.getItem('userInfo') !== null;
-};
+
 
 
 function App() {
   const dispatch = useDispatch();
-  const user = useSelector(state => state.userDetails.user)
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const user = useSelector(state => state.userDetails.user);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      await dispatch(getUserDetails()); // Dispatch action to fetch user details
+      setIsLoading(false); // Set loading to false once data is fetched
+    };
+    fetchUserData();
+  }, [dispatch]);
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Render loading indicator while fetching user data
+  }
+
+  const isAuthenticated = () => {
+    return localStorage.getItem('userInfo') !== null;
+  };
 
   return (
     <Router>
