@@ -10,7 +10,7 @@ import { playlistView } from "../../actions/songActions";
 import Playlist from "../Playlist"; // Import Playlist component
 import { setCurrentlyPlayingSong, togglePlayerVisibility } from "../../actions/musicPlayerActions";
 import { likedSongList } from "../../actions/songActions"; 
-
+import { updatePlayCount } from "../../actions/songActions";
 
 
 function Home() {
@@ -23,6 +23,7 @@ function Home() {
     (state) => state.likedSongList // Access likedSongs from the state
   );
 
+  
   const user = useSelector((state) => state.userDetails.user);
   const color = user?.data?.profile_data?.color || "#defaultColor";
   const selectedFont = user?.data?.profile_data?.font || "defaultFont";
@@ -44,25 +45,19 @@ const uniqueLikedSongs = likedSongs.filter(song => {
     setQuery(e.target.value);
   };
 
-  const playSong = (song) => {
-
+  const playSong = async (song, userId) => {
+    try {
+      // Dispatch the updatePlayCount action to update the play count
+      await dispatch(updatePlayCount(song.id, userId));
+    } catch (error) {
+      // Handle any errors
+      console.error('Error updating play count:', error);
+    }
+  
+    // Set the currently playing song
     setCurrentlyPlaying(song);
     dispatch(setCurrentlyPlayingSong(song));
     dispatch(togglePlayerVisibility());
-    // if (currentlyPlaying === song && !audioRef.current.paused) {
-    //   pauseSong();
-    // } else {
-    //   if (currentlyPlaying !== song) {
-    //     audioRef.current.src = song.file;
-    //     setCurrentTime(0);
-    //     setCurrentlyPlaying(song);
-    //     setIsPlaying(true);
-    //     localStorage.setItem('currentlyPlaying', JSON.stringify(song));
-    //   } else {
-    //     audioRef.current.currentTime = currentTime;
-    //   }
-    //   audioRef.current.play();
-    // }
   };
 
   
@@ -185,7 +180,7 @@ const uniqueLikedSongs = likedSongs.filter(song => {
             <Song
               key={song.id}
               song={song}
-              playSong={playSong}
+              playSong={() => playSong(song, user.data.user_data.id)} // Pass user ID to playSong
               isPlaying={currentlyPlaying === song}
               selectedFont={selectedFont}
             />

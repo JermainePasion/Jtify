@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { adminPanel } from '../../actions/userActions'; 
 import { getUserDetails } from '../../actions/userActions';
 import { listSongs } from "../../actions/songActions";
+import { fetchSongPlayCount } from '../../actions/songActions';
 import Navbar from '../Navbar';
 import {Chart, ArcElement, registerables} from 'chart.js'
 
@@ -16,7 +17,7 @@ const AdminPanel = () => {
   const { songs } = useSelector(
     (state) => state.songList
   );
-  
+  const { songPlayCounts } = useSelector(state => state.songPlayCount);
   
   
   useEffect(() => {
@@ -26,6 +27,10 @@ const AdminPanel = () => {
   useEffect(() => {
     dispatch(adminPanel()); // Fetch users on component mount
     dispatch(listSongs());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchSongPlayCount());
   }, [dispatch]);
 
   Chart.register(ArcElement);
@@ -229,7 +234,30 @@ const AdminPanel = () => {
     }
   };
 
+  const calculateRevenue = (playCount) => {
+    if (playCount >= 1000000) {
+      return '₱150,000'; // 1,000,000 clicks
+    } else if (playCount >= 100000) {
+      return '₱15,000'; // 100,000 clicks
+    } else if (playCount >= 10000) {
+      return '₱1,500'; // 10,000 clicks
+    } else if (playCount >= 1000) {
+      const thousands = Math.floor(playCount / 1000);
+      const revenue = thousands * 150;
+      return `₱${revenue.toLocaleString()}`; // For play counts between 1,000 and 999,999, calculate revenue based on multiples of 1,000
+    } else if (playCount >= 100) {
+      const hundreds = Math.floor(playCount / 100);
+      const revenue = hundreds * 15;
+      return `₱${revenue.toLocaleString()}`; // For play counts between 100 and 999, calculate revenue based on multiples of 100
+    } else {
+      return '₱0'; // For play counts less than 100
+    }
+  };
+  
+
   return (
+
+    
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: font }}>
       <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
       <div className='template-background' style={{ 
@@ -248,6 +276,8 @@ const AdminPanel = () => {
   <canvas ref={subscriberChartRef}></canvas>
 </div>
 </div>
+
+
       {loading ? (
         <div>Loading...</div>
       ) : error ? (
@@ -298,17 +328,72 @@ const AdminPanel = () => {
       </React.Fragment>
     ))}
   </tbody>
-</table>
-</div>     
-      )}
-      <div style={{ display: 'flex', justifyContent: 'left', marginTop: '20px' }}>
-      <button className='custom-button' onClick={handleUpdatePermissions}>Save Permissions</button>
-      </div>
+  </table>
+</div>
+)}
+<div style={{ display: 'flex', justifyContent: 'left', marginTop: '20px' }}>
+<button className='custom-button' onClick={handleUpdatePermissions}>Save Permissions</button>
+</div>
+<h2 style={{ fontSize: '40px', color: 'white', marginBottom: '20px' }}>Royalties</h2>
+<div className="card" style={{ backgroundColor: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', marginTop: '40px', marginBottom: '100px', overflowY: 'auto',maxHeight: '400px' }}>
+  <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+    <thead>
+      <tr style={{ borderBottom: '1px solid #ddd' }}>
+        <th style={{ padding: '12px 0', textAlign: 'left', fontWeight: 'bold', color: '#555' }}>ID</th>
+        <th style={{ padding: '12px 0', fontWeight: 'bold', color: '#555' }}>Name</th>
+        <th style={{ padding: '12px 0', fontWeight: 'bold', color: '#555' }}>Play Count</th>
+        <th style={{ padding: '12px 0', fontWeight: 'bold', color: '#555' }}>Revenue</th> {/* Added Revenue column */}
+        <th style={{ padding: '12px 0', fontWeight: 'bold', color: '#555' }}>User</th>
+      </tr>
+    </thead>
+    <tbody>
+      {[...songPlayCounts].sort((a, b) => a.name.localeCompare(b.name)).map((song, index) => (
+        <React.Fragment key={song.id}>
+          <tr style={{ borderBottom: '1px solid #ddd', backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#fff' }}>
+            <td style={{ padding: '12px 0', textAlign: 'left', color: '#333' }}>{song.id}</td>
+            <td style={{ padding: '12px 0', textAlign: 'center', color: '#333' }}>{song.name}</td>
+            <td style={{ padding: '12px 0', textAlign: 'center', color: '#333' }}>{song.play_count}</td>
+            <td style={{ padding: '12px 0', textAlign: 'center', color: '#333' }}>{calculateRevenue(song.play_count)}</td> {/* Added Revenue column */}
+            <td style={{ padding: '12px 0', textAlign: 'center', color: '#333' }}>{song.user}</td>
+          </tr>
+        </React.Fragment>
+      ))}
+    </tbody>
+  </table>
+</div>
+<h2 style={{ fontSize: '40px', color: 'white', marginBottom: '0px' }}>Legend</h2>
+<div className="card" style={{ margin: '0 auto', backgroundColor: '#f0f0f0', padding: '20px', borderRadius: '8px', marginTop: '20px', marginBottom: '200px', maxWidth: '300px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)' }}>
+    <table style={{ width: '100%', textAlign: 'center', fontSize: '16px', borderCollapse: 'collapse' }}>
+      <thead>
+        <tr style={{ backgroundColor: '#e0e0e0', color: '#333', fontWeight: 'bold' }}>
+          <th style={{ padding: '12px 0', borderBottom: '1px solid #ccc' }}>Clicks</th>
+          <th style={{ padding: '12px 0', borderBottom: '1px solid #ccc' }}>Revenue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style={{ backgroundColor: '#f5f5f5' }}>
+          <td style={{ padding: '12px 0', borderBottom: '1px solid #ccc' }}>1,000 clicks</td>
+          <td style={{ padding: '12px 0', borderBottom: '1px solid #ccc' }}>₱150</td>
+        </tr>
+        <tr style={{ backgroundColor: '#f5f5f5' }}>
+          <td style={{ padding: '12px 0', borderBottom: '1px solid #ccc' }}>10,000 clicks</td>
+          <td style={{ padding: '12px 0', borderBottom: '1px solid #ccc' }}>₱1,500</td>
+        </tr>
+        <tr style={{ backgroundColor: '#f5f5f5' }}>
+          <td style={{ padding: '12px 0', borderBottom: '1px solid #ccc' }}>100,000 clicks</td>
+          <td style={{ padding: '12px 0', borderBottom: '1px solid #ccc' }}>₱15,000</td>
+        </tr>
+        <tr style={{ backgroundColor: '#f5f5f5' }}>
+          <td style={{ padding: '12px 0', borderBottom: '1px solid #ccc' }}>1,000,000 clicks</td>
+          <td style={{ padding: '12px 0', borderBottom: '1px solid #ccc' }}>₱150,000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-      </div>
-      
-    </div>
-  );
+</div>
+</div>
+);
 };
 
 export default AdminPanel;

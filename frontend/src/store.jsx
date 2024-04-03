@@ -7,7 +7,7 @@ import {userConfirmChangePasswordReducer} from './reducers/userReducers'; // Cor
 import {userVerifyOtpReducer} from './reducers/userReducers'; // Correct the import statement
 import {userDetailsReducer} from './reducers/userReducers';
 import {userUpdateProfileReducer} from './reducers/userReducers'; // Import the new reducer
-import songListReducer, { songAddReducer } from './reducers/songReducer'; 
+import songListReducer, { songAddReducer, updatePlayCountReducer } from './reducers/songReducer'; 
 import songDetailReducer from './reducers/songReducer'; // Import the new reducer
 import songEditReducer from './reducers/songReducer'; // Import the new reducer
 import { likeSongReducer } from './reducers/songReducer';
@@ -30,6 +30,7 @@ import {updateSubscriberReducer} from './reducers/userReducers';
 import { adminPanelReducer } from './reducers/userReducers';
 import { playerReducer } from './reducers/musicPlayerReducer';
 import { likedSongListReducer } from './reducers/songReducer';
+import { songPlayCountReducer } from './reducers/songReducer';
 
 const reducer = combineReducers({
     userLogin: userLoginReducer,
@@ -62,7 +63,10 @@ const reducer = combineReducers({
     updateSubscriber: updateSubscriberReducer,
     adminPanel : adminPanelReducer,
     adminPanelUsers: adminPanelReducer,
-    player: playerReducer
+    player: playerReducer,
+    updatePlayCount: updatePlayCountReducer,
+    songPlayCount : songPlayCountReducer
+
 });
 
 const currentlyPlayingFromStorage = localStorage.getItem(

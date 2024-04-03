@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
 
+
 function Song({ song, playSong }) {
   const { id, picture, name, artist, } = song;
   const user = useSelector(state => state.userDetails.user);
@@ -54,6 +55,8 @@ function Song({ song, playSong }) {
     }
     setLiked(!liked);
   };
+
+
 
   return (
     <Card className="my-3 p-3 rounded" style={{ color: '#fff', width: '250px', marginRight: '10px', padding: '10px', fontFamily: selectedFont }}>

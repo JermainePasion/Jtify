@@ -10,6 +10,7 @@ import { faHeart } from '@fortawesome/free-solid-svg-icons';
 import MusicPlayer from '../MusicPlayer';
 import Song from '../Song';
 import { setCurrentlyPlayingSong, togglePlayerVisibility } from '../../actions/musicPlayerActions';
+import { updatePlayCount } from "../../actions/songActions";
 
 import likedImage from '../img/liked.png';
 
@@ -85,25 +86,20 @@ const Favorites = () => {
     };
   }, []);
 
-  const playSong = (index) => {
+  const playSong = async (index) => {
     const song = likedSongs[index];
 
+    try {
+      // Dispatch the updatePlayCount action to update the play count
+      await dispatch(updatePlayCount(song.id, user.data.user_data.id));
+    } catch (error) {
+      // Handle any errors
+      console.error('Error updating play count:', error);
+    }
+  
     setCurrentlyPlaying(song);
     dispatch(setCurrentlyPlayingSong(song));
     dispatch(togglePlayerVisibility());
-    // if (currentlyPlaying === song && !audioRef.current.paused) {
-    //   pauseSong();
-    // } else {
-    //   if (currentlyPlaying !== song) {
-    //     audioRef.current.src = song.file;
-    //     setCurrentTime(0); // Reset currentTime when switching to a new song
-    //     setCurrentlyPlaying(song);
-    //     setIsPlaying(true);
-    //   } else {
-    //     audioRef.current.currentTime = currentTime;
-    //   }
-    //   audioRef.current.play();
-    // }
   };
 
   const pauseSong = () => {

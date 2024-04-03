@@ -18,5 +18,7 @@ urlpatterns = [
     path('mySongs/', MySongListView.as_view(), name='my-song-list'),
     path('myPlaylists/', MyPlaylistListView.as_view(), name='my-playlist-list'),
     path('uploadSong/<int:playlist_id>', upload_song_with_specific_playlist, name='upload-song-to-playlist'),
+    path('<int:pk>/update-play-count/', UpdateSongPlayCount.as_view(), name='update_play_count'),
+    path('song-play-count/', SongPlayCountListView.as_view(), name='song_play_count_list'),
 
 ]

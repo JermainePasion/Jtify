@@ -47,7 +47,13 @@ import {
   UPLOAD_SONG_TO_PLAYLIST_FAILURE,
   FETCH_LIKED_SONG_LIST_REQUEST,
   FETCH_LIKED_SONG_LIST_SUCCESS,
-  FETCH_LIKED_SONG_LIST_FAILURE
+  FETCH_LIKED_SONG_LIST_FAILURE,
+  UPDATE_PLAY_COUNT_REQUEST,
+  UPDATE_PLAY_COUNT_SUCCESS,
+  UPDATE_PLAY_COUNT_FAILURE,
+  FETCH_SONG_PLAY_COUNT_REQUEST,
+  FETCH_SONG_PLAY_COUNT_SUCCESS,
+  FETCH_SONG_PLAY_COUNT_FAILURE
 
 } from '../constants/songConstants'; 
 
@@ -562,5 +568,30 @@ export const likedSongList = () => async dispatch => {
       type: FETCH_LIKED_SONG_LIST_FAILURE,
       payload: err.response.data
     });
+  }
+};
+
+export const updatePlayCount = (songId, userId) => async (dispatch) => {
+  dispatch({ type: UPDATE_PLAY_COUNT_REQUEST });
+
+  try {
+    await axios.get(`/api/songs/${songId}/update-play-count/?user_id=${userId}`);
+    dispatch({ type: UPDATE_PLAY_COUNT_SUCCESS });
+  } catch (error) {
+    dispatch({
+      type: UPDATE_PLAY_COUNT_FAILURE,
+      payload: error.message,
+    });
+  }
+};
+
+export const fetchSongPlayCount = () => async (dispatch) => {
+  dispatch({ type: FETCH_SONG_PLAY_COUNT_REQUEST });
+
+  try {
+    const response = await axios.get('/api/songs/song-play-count/');
+    dispatch({ type: FETCH_SONG_PLAY_COUNT_SUCCESS, payload: response.data });
+  } catch (error) {
+    dispatch({ type: FETCH_SONG_PLAY_COUNT_FAILURE, payload: error.message });
   }
 };

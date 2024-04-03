@@ -7,6 +7,7 @@ import { getUserDetails } from '../../actions/userActions';
 import Song from '../Song';
 import MusicPlayer from '../MusicPlayer';
 import { setCurrentlyPlayingSong, togglePlayerVisibility } from '../../actions/musicPlayerActions';
+import { updatePlayCount } from "../../actions/songActions";
 
 const Discovery = () => {
   const dispatch = useDispatch();
@@ -66,23 +67,18 @@ const Discovery = () => {
     };
   }, [isDragging]);
 
-  const playSong = (song) => {
+  const playSong = async (song) => {
     setCurrentlyPlaying(song);
     dispatch(setCurrentlyPlayingSong(song));
     dispatch(togglePlayerVisibility());
-    // if (currentlyPlaying === song && !audioRef.current.paused) {
-    //   pauseSong();
-    // } else {
-    //   if (currentlyPlaying !== song) {
-    //     audioRef.current.src = song.file;
-    //     setCurrentTime(0);
-    //     setCurrentlyPlaying(song);
-    //     setIsPlaying(true);
-    //   } else {
-    //     audioRef.current.currentTime = currentTime;
-    //   }
-    //   audioRef.current.play();
-    // }
+
+    try {
+      // Dispatch the updatePlayCount action to update the play count
+      await dispatch(updatePlayCount(song.id, user.data.user_data.id));
+    } catch (error) {
+      // Handle any errors
+      console.error('Error updating play count:', error);
+    }
   };
 
   const pauseSong = () => {

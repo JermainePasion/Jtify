@@ -47,7 +47,13 @@ import {
   UPLOAD_SONG_TO_PLAYLIST_FAILURE,
   FETCH_LIKED_SONG_LIST_REQUEST,
   FETCH_LIKED_SONG_LIST_SUCCESS,
-  FETCH_LIKED_SONG_LIST_FAILURE
+  FETCH_LIKED_SONG_LIST_FAILURE,
+  UPDATE_PLAY_COUNT_REQUEST,
+  UPDATE_PLAY_COUNT_SUCCESS,
+  UPDATE_PLAY_COUNT_FAILURE,
+  FETCH_SONG_PLAY_COUNT_REQUEST,
+  FETCH_SONG_PLAY_COUNT_SUCCESS,
+  FETCH_SONG_PLAY_COUNT_FAILURE
 
 } from '../constants/songConstants';
 // songReducer.jsx
@@ -345,4 +351,57 @@ export const likedSongListReducer = (state = initialerState, action) => {
   }
 };
 
+export const updatePlayCountReducer = (state = initialState, action) => {
+  switch (action.type) {
+    case UPDATE_PLAY_COUNT_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case UPDATE_PLAY_COUNT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+      };
+    case UPDATE_PLAY_COUNT_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    default:
+      return state;
+  }
+};
 
+
+const initialStatePlayCount = {
+  loading: false,
+  error: null,
+  songPlayCounts: []  // Add songPlayCounts to the initial state
+};
+export const songPlayCountReducer = (state = initialStatePlayCount, action) => {
+  switch (action.type) {
+    case FETCH_SONG_PLAY_COUNT_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: null
+      };
+    case FETCH_SONG_PLAY_COUNT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        songPlayCounts: action.payload  // Update songPlayCounts with fetched data
+      };
+    case FETCH_SONG_PLAY_COUNT_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload
+      };
+    default:
+      return state;
+  }
+};

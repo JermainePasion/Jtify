@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Song, Like, Playlist
+from .models import Song, Like, Playlist, SongPlayCount
 from account.models import User 
 
 class SongSerializer(serializers.ModelSerializer):
@@ -32,3 +32,10 @@ class PlaylistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Playlist
         fields = ['id', 'name',  'songs', 'playlistCover', 'created_at', ]
+
+class SongPlayCountSerializer(serializers.ModelSerializer):
+    play_count = serializers.IntegerField()
+    
+    class Meta:
+        model = Song
+        fields = ['id', 'name', 'play_count', 'user']

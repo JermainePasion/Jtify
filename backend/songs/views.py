@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
 from rest_framework import filters
-from .models import Song, Like
+from .models import Song, Like, SongPlayCount
 from .serializers import *
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -16,6 +16,10 @@ from rest_framework.permissions import AllowAny
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Count
+from django.core.cache import cache
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from rest_framework.throttling import UserRateThrottle
 
 
 class SongListView(APIView):
@@ -349,3 +353,43 @@ def upload_song_with_specific_playlist(request, playlist_id):
     except Exception as e:
         print("Error:", e)  # Debugging statement
         return Response({'error': 'An error occurred while uploading the song'}, status=status.HTTP_400_BAD_REQUEST)
+    
+class MyThrottle(UserRateThrottle):
+    rate = '20/minute'  # Limit the user to 5 requests per minute
+
+class UpdateSongPlayCount(APIView):
+    throttle_classes = [MyThrottle]
+
+    def get(self, request, pk):
+        try:
+            # Get the song object
+            song = Song.objects.get(id=pk)
+            
+            # Get the user's ID
+            user_id = request.GET.get('user_id')
+            
+            if user_id is None:
+                return Response({'error': 'User ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Check if the user has recently played this song
+            cache_key = f'user_{user_id}_song_{pk}'
+            if cache.get(cache_key):
+                return Response({'message': 'Song play count already updated recently'}, status=status.HTTP_200_OK)
+            
+            # Increment the play count for the song
+            song.play_count += 1
+            song.save()
+            
+            # Set a cache key to prevent repeated plays within 3 minutes
+            cache.set(cache_key, True, timeout=180)  # Timeout is in seconds
+            
+            return Response({'message': 'Song play count updated successfully'}, status=status.HTTP_200_OK)
+        except Song.DoesNotExist:
+            return Response({'error': 'Song not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+class SongPlayCountListView(APIView):
+    def get(self, request):
+        # Retrieve all songs with their play counts
+        songs = Song.objects.annotate(num_plays=Count('songplaycount')).order_by('-num_plays')
+        serializer = SongPlayCountSerializer(songs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

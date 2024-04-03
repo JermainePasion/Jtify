@@ -58,6 +58,7 @@ class Song(models.Model):
     playlist = models.ForeignKey(Playlist, related_name='playlist_on_songs', on_delete=models.CASCADE)
     file = models.FileField(upload_to='song_files/')
     genre = models.CharField(max_length=255, choices=genreChoices)
+    play_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(default=timezone.now)
 
 
@@ -72,3 +73,7 @@ class Like(models.Model):
     class Meta:
         unique_together = ['user', 'song']
 
+
+class SongPlayCount(models.Model):
+    song = models.ForeignKey(Song, on_delete=models.CASCADE)
+    play_count = models.PositiveIntegerField(default=0)
