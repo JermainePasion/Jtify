@@ -1,19 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { togglePlayerVisibility } from "../actions/musicPlayerActions";
-import {
-  FaPlay,
-  FaPause,
-  FaStepForward,
-  FaStepBackward,
-  FaVolumeUp,
-  FaVolumeMute,
-  FaRandom,
-} from "react-icons/fa";
+import { FaPlay, FaPause, FaStepForward, FaStepBackward, FaVolumeUp, FaVolumeMute, FaRandom } from "react-icons/fa";
 import { BiRepeat } from "react-icons/bi";
 import Slider from "@mui/material/Slider";
 
 import { useDispatch, useSelector } from "react-redux";
 import { listAds } from "../actions/adsActions";
+import { setCurrentlyPlayingSong, togglePlayerVisibility } from "../actions/musicPlayerActions"; 
 
 function PlayerNiMiah() {
   const [currentAd, setCurrentAd] = useState(null);
@@ -21,10 +13,15 @@ function PlayerNiMiah() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
+  const [currentSongIndex, setCurrentSongIndex] = useState(null);
+  const [totalTimePlayed, setTotalTimePlayed] = useState(() => {
+    const storedTimePlayed = localStorage.getItem('totalTimePlayed');
+    return storedTimePlayed !== null ? parseInt(storedTimePlayed, 10) : 0;
+  });
   const user = useSelector((state) => state.userDetails.user);
-  const isSubscriber =  user?.data?.user_data?.is_subscriber
-  const isArtist = user?.data?.user_data?.is_artist
-  const isSuperuser = user?.data?.user_data?.is_superuser
+  const isSubscriber = user?.data?.user_data?.is_subscriber;
+  const isArtist = user?.data?.user_data?.is_artist;
+  const isSuperuser = user?.data?.user_data?.is_superuser;
 
   const dispatch = useDispatch();
 
@@ -35,7 +32,11 @@ function PlayerNiMiah() {
   const isPlayerVisible = useSelector((state) => state.player.isVisible);
 
   const audioPlayerRef = useRef(null);
-  const [audio] = useState(new Audio());
+  const audioRef = useRef(new Audio());
+  const [volume, setVolume] = useState(() => {
+    const storedVolume = localStorage.getItem("volume");
+    return storedVolume !== null ? parseInt(storedVolume, 10) : 50;
+  });
 
   const [adsCounter, setAdsCounter] = useState(() => {
     const storedAdsCounter = localStorage.getItem("adsCounter");
@@ -87,27 +88,98 @@ function PlayerNiMiah() {
 
   useEffect(() => {
     // Stop the music when the player is not visible
-    if (!isPlayerVisible && audio.paused === false) {
-      audio.pause();
+    if (!isPlayerVisible && audioRef.current && !audioRef.current.paused) {
+      audioRef.current.pause();
       setIsPlaying(false);
     }
   }, [isPlayerVisible]);
 
+  useEffect(() => {
+    // Set the volume when the audio element is mounted
+    if (audioRef.current) {
+      audioRef.current.volume = volume / 100;
+      setIsMuted(volume === 0);
+    }
+  }, [volume]);
+
+  useEffect(() => {
+    // Load the song when currentlyPlaying changes
+    if (currentlyPlaying) {
+      loadSong();
+    }
+  }, [currentlyPlaying]);
+
+  useEffect(() => {
+    // Show the player when a song starts playing
+    if (currentlyPlaying && !isPlayerVisible) {
+      dispatch(togglePlayerVisibility(true));
+    }
+  }, [currentlyPlaying]);
+
+  const [sliderValue, setSliderValue] = useState(0);
+
+  useEffect(() => {
+    // Update the slider value based on the current time of the audio
+    const intervalId = setInterval(() => {
+      if (audioRef.current && !audioRef.current.paused) {
+        const currentTime = audioRef.current.currentTime;
+        const duration = audioRef.current.duration;
+        const progress = (currentTime / duration) * 100;
+        setSliderValue(progress);
+      }
+    }, 100);
+  
+    return () => clearInterval(intervalId);
+  }, [currentlyPlaying, sliderValue]);
+
+
+  const songs = []; // Define songs array
+  const playSong = (index) => {}; // Define playSong function
+
+  const skipTrack = (forward = true) => {
+    let newIndex = currentSongIndex + (forward ? 1 : -1);
+    if (newIndex < 0) {
+      newIndex = songs.length - 1;
+    } else if (newIndex >= songs.length) {
+      newIndex = 0;
+    }
+    setCurrentSongIndex(newIndex);
+    playSong(newIndex);
+  };
+  
+  useEffect(() => {
+    audioRef.current.addEventListener('ended', handleSongEnd);
+
+    return () => {
+      audioRef.current.removeEventListener('ended', handleSongEnd);
+    };
+  }, [currentlyPlaying, skipTrack]);
+
+  const handleSongEnd = () => {
+    if (isRepeat) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else {
+      skipTrack(true);
+    }
+  };
+
   const handleAdFinish = () => {
     console.log("Ad finished. Resuming playback...");
     setCurrentAd(null);
-    audio.play();
+    audioRef.current.play();
     setIsPlaying(true);
   };
 
   const loadSong = () => {
     const selectedSong = currentlyPlaying;
-    audio.src = selectedSong.file;
-    audio.load();
-    audio.pause();
+    audioRef.current.src = selectedSong.file;
+    audioRef.current.load();
+    audioRef.current.pause();
     setIsPlaying(true);
+
     const playAudio = () => {
-      audio.play();
+      audioRef.current.play();
       setIsPlaying(true);
       setCurrentCounter((prevCounter) => {
         let newCounter = prevCounter + 1;
@@ -122,11 +194,11 @@ function PlayerNiMiah() {
   };
 
   const togglePlayPause = () => {
-    if (audio.paused) {
-      audio.play();
+    if (audioRef.current.paused) {
+      audioRef.current.play();
       setIsPlaying(true);
     } else {
-      audio.pause();
+      audioRef.current.pause();
       setIsPlaying(false);
     }
   };
@@ -137,28 +209,35 @@ function PlayerNiMiah() {
   };
 
   const toggleRepeat = () => {
-    setIsRepeat(!isRepeat);
-    // Implement repeat logic here
+    if (!isRepeat) {
+      setIsRepeat(true);
+      setIsShuffle(false);
+    } else if (isRepeat && !isShuffle) {
+      setIsRepeat(false);
+    } else {
+      setIsRepeat(false);
+    }
   };
 
   const toggleMute = () => {
     const newVolume = isMuted ? 50 : 0;
     setIsMuted(!isMuted);
     setVolume(newVolume);
-    audioPlayerRef.current.volume = newVolume / 100;
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume / 100;
+    }
   };
 
-  const [volume, setVolume] = useState(() => {
-    const storedVolume = localStorage.getItem("volume");
-    return storedVolume !== null ? parseInt(storedVolume, 10) : 50;
-  });
+  const handleVolumeChange = (event, newValue) => {
+    setVolume(newValue);
+    if (audioRef.current) {
+      audioRef.current.volume = newValue / 100;
+      setIsMuted(newValue === 0);
+    }
+  };
 
   const AdsNiMiah = async () => {
     try {
-      // const isSubscriber =  (user?.data?.user_data?.is_superuser || user?.data?.user_data?.is_artist) && user?.data?.user_data?.is_subscriber};
-      // if (isSubscriber) {
-      //   return;
-      
       const ads = await dispatch(listAds());
       const adsArray = Array.from(ads);
       const adsIndex = Math.floor(Math.random() * adsArray.length);
@@ -166,7 +245,7 @@ function PlayerNiMiah() {
       const nextAd = adsArray[adsIndex];
       if (nextAd) {
         try {
-          await audio.pause();
+          await audioRef.current.pause();
           setCurrentAd(nextAd);
         } catch (error) {
           console.error("Error playing ad:", error);
@@ -179,14 +258,45 @@ function PlayerNiMiah() {
     }
   };
 
-  // Ensure player visibility remains consistent when selecting a new song
-  useEffect(() => {
-    if (currentlyPlaying && !isPlayerVisible) {
-      dispatch(togglePlayerVisibility(true));
+  const handleBackward = () => {
+    if (isRepeat) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else {
+      skipTrack(false);
     }
-  }, [currentlyPlaying]);
+  };
+  
+  const handleForward = () => {
+    if (isRepeat) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else {
+      skipTrack(true);
+    }
+  };
 
-  if (!isPlayerVisible) {
+  const handleTimeBarChange = (event, newValue) => {
+    // Check if the slider change is due to user interaction
+    if (event.type === 'mousedown' || event.type === 'touchstart') {
+      const newTime = (newValue / 100) * audioRef.current.duration;
+      // Update the audio player's current time
+      audioRef.current.currentTime = newTime;
+      // Update the slider value to reflect the change
+      setSliderValue(newValue);
+    }
+  };
+  
+
+  const formatTime = (time) => {
+    // Implement time formatting logic here
+    // Example: Convert time in seconds to 'mm:ss' format
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
+  if (!user) {
     return null;
   }
 
@@ -256,7 +366,6 @@ function PlayerNiMiah() {
                   style={{
                     margin: 0,
                     fontWeight: "bold",
-                    // fontFamily: selectedFont,
                     fontSize: "16px",
                     maxWidth: "200px",
                     overflow: "hidden",
@@ -297,6 +406,7 @@ function PlayerNiMiah() {
               )}
             </button>
             <button
+              onClick={handleBackward}
               style={{
                 backgroundColor: "transparent",
                 border: "none",
@@ -318,6 +428,7 @@ function PlayerNiMiah() {
               {isPlaying ? <FaPause /> : <FaPlay />}
             </button>
             <button
+              onClick={handleForward}
               style={{
                 backgroundColor: "transparent",
                 border: "none",
@@ -360,8 +471,8 @@ function PlayerNiMiah() {
               {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
             </button>
             <Slider
-              // value={volume}
-              // onChange={handleVolumeChange}
+              value={volume}
+              onChange={handleVolumeChange}
               aria-labelledby="continuous-slider"
               style={{
                 color: "#fff",
@@ -372,8 +483,51 @@ function PlayerNiMiah() {
           </div>
         </div>
       )}
+      {audioRef.current && audioRef.current.duration > 0 && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '3px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '40%',
+            cursor: 'pointer',
+            margin: 'auto',
+          }}
+        >
+          <Slider
+            value={sliderValue}
+            onChange={handleTimeBarChange}
+            aria-labelledby="continuous-slider"
+            style={{ color: '#fff', width: '100%' }}
+          />
+          <div
+            style={{
+              color: '#b3b3b3',
+              fontSize: '14px',
+              textAlign: 'left',
+              position: 'absolute',
+              left: '0',
+              top: '-20px',
+            }}
+          >
+            {formatTime(audioRef.current.currentTime)}
+          </div>
+          <div
+            style={{
+              color: '#b3b3b3',
+              fontSize: '14px',
+              textAlign: 'right',
+              position: 'absolute',
+              right: '0',
+              top: '-20px',
+            }}
+          >
+            {formatTime(audioRef.current.duration)}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
 export default PlayerNiMiah;
