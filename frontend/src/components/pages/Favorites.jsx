@@ -161,6 +161,23 @@ const Favorites = () => {
     }
   };
 
+  const playNextSong = () => {
+    let nextIndex = currentSongIndex + 1;
+    if (nextIndex >= likedSongs.length) {
+      nextIndex = 0;
+    }
+    setCurrentSongIndex(nextIndex);
+    playSong(nextIndex);
+  };
+  const playPreviousSong = () => {
+    let previousIndex = currentSongIndex - 1;
+    if (previousIndex < 0) {
+      previousIndex = likedSongs.length - 1;
+    }
+    setCurrentSongIndex(previousIndex);
+    playSong(previousIndex);
+  };
+
   
   return (
     <div style={{ display: 'flex', flexDirection: 'row', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
@@ -184,6 +201,7 @@ const Favorites = () => {
               <p style={{ color: 'white', position: 'absolute', fontSize: '20px', top: '200px', fontFamily: selectedFont }}>{likedSongs.length} songs</p>
             </div>
           </div>
+    
           <ListGroup variant="flush">
             {likedSongs.map((likedSong, index) => (
               <ListGroup.Item key={index} className="position-relative" style={{ backgroundColor: 'transparent', color: '#ffffff', fontFamily: selectedFont, border: 'none', position: 'relative', marginBottom: '10px', marginLeft: '10px' }}>
@@ -203,7 +221,13 @@ const Favorites = () => {
               
             ))}
           </ListGroup>
-        </Container>
+
+{/* Add buttons here */}
+<div>
+  <button onClick={playPreviousSong}>Previous</button>
+  <button onClick={playNextSong}>Next</button>
+</div>
+</Container>
         {/* {currentlyPlaying && (
           <MusicPlayer
             currentlyPlaying={currentlyPlaying}
