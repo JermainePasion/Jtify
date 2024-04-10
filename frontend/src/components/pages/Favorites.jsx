@@ -7,6 +7,7 @@ import { fetchLikedSongs, unlikeSong } from '../../actions/songActions';
 import { getUserDetails } from '../../actions/userActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 import MusicPlayer from '../MusicPlayer';
 import Song from '../Song';
 import { setCurrentlyPlayingSong, togglePlayerVisibility } from '../../actions/musicPlayerActions';
@@ -30,7 +31,7 @@ const Favorites = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(new Audio());
   const progressBarRef = useRef(null);
-
+  const [showNavbar, setShowNavbar] = useState(true);
   const handleSongClick = (index) => {
     if (currentSongIndex === index) {
       setCurrentSongIndex(null);
@@ -178,30 +179,31 @@ const Favorites = () => {
     playSong(previousIndex);
   };
 
+  const toggleNavbar = () => {
+    setShowNavbar(!showNavbar);
+  };
   
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
-      <Navbar />
-      <div className='template-background' style={{ 
-        flex: 1, 
-        marginLeft: '10px', 
-        position: 'relative', 
-        padding: '10px 20px', // Increase padding for better spacing
-        backgroundSize: '110%',
-        backgroundRepeat: 'no-repeat'
-
-      }}>
-        <Container fluid>
-          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-            <Image src={likedImage} alt="Liked" style={{ width: '250px', height: '250px', objectFit: 'contain', marginLeft: '10px' }} />
-            <div style={{ marginLeft: '10px' }}>
-              <p style={{ color: 'white', position: 'absolute', fontFamily: selectedFont }}>Playlist</p>
-              <h2 className="mt-3 mb-3" style={{ color: 'white', fontSize: '50px', fontFamily: selectedFont }}>Liked Songs</h2>
-              <p style={{ color: 'white', position: 'absolute', top: '162px', fontFamily: selectedFont }}>Songs that you like in Jtify app will be shown here.</p>
-              <p style={{ color: 'white', position: 'absolute', fontSize: '20px', top: '200px', fontFamily: selectedFont }}>{likedSongs.length} songs</p>
-            </div>
-          </div>
-    
+    <div style={{ display: 'flex', minHeight: '150vh', backgroundColor: color, fontFamily: selectedFont }}>
+  {showNavbar && <Navbar />}
+  <div className='template-background' style={{ 
+    flex: 1, 
+    position: 'relative', 
+    padding: '10px', // Adjust padding for better spacing
+    backgroundSize: 'cover', // Use 'cover' to fill the container
+    backgroundPosition: 'center', // Center the background image
+    overflow: 'auto' // Add overflow for content that exceeds the container
+  }}>
+         <Container fluid>
+      <div className="playlist-header-container" style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', position: 'relative' }}>
+        <Image src={likedImage} alt="Liked" className="playlist-image" />
+        <div className="text-container" style={{ marginLeft: '10px' }}>
+          <p style={{ color: 'white', fontFamily: selectedFont }}>Playlist</p>
+          <h2 className="mt-3 mb-3" style={{ color: 'white', fontSize: '50px', fontFamily: selectedFont }}>Liked Songs</h2>
+          <p style={{ color: 'white', fontFamily: selectedFont }}>Songs that you like in Jtify app will be shown here.</p>
+          <p style={{ color: 'white', fontSize: '20px', fontFamily: selectedFont }}>{likedSongs.length} songs</p>
+        </div>
+      </div>
           <ListGroup variant="flush">
             {likedSongs.map((likedSong, index) => (
               <ListGroup.Item key={index} className="position-relative" style={{ backgroundColor: 'transparent', color: '#ffffff', fontFamily: selectedFont, border: 'none', position: 'relative', marginBottom: '10px', marginLeft: '10px' }}>
@@ -227,29 +229,21 @@ const Favorites = () => {
   <button onClick={playPreviousSong}>Previous</button>
   <button onClick={playNextSong}>Next</button>
 </div>
+<div style={{ position: 'absolute', top: '10px', left: '0px' }}>
+      <FontAwesomeIcon
+        icon={faBars}
+        style={{
+          cursor: 'pointer',
+          color: '#fff',
+          fontSize: '20px',
+          transform: showNavbar ? 'rotate(0deg)' : 'rotate(90deg)',
+          transition: 'transform 0.3s ease',
+        }}
+        onClick={toggleNavbar}
+      />
+    </div>
 </Container>
-        {/* {currentlyPlaying && (
-          <MusicPlayer
-            currentlyPlaying={currentlyPlaying}
-            duration={duration}
-            currentTime={currentTime}
-            isDragging={isDragging}
-            audioRef={audioRef}
-            progressBarRef={progressBarRef}
-            color={color}
-            selectedFont={selectedFont}
-            playSong={playSong}
-            pauseSong={pauseSong}
-            togglePlayPause={togglePlayPause}
-            skipTrack={skipTrack}
-            formatTime={formatTime}
-            handleTimeBarClick={handleTimeBarClick}
-            handleTimeBarMouseDown={handleTimeBarMouseDown}
-            handleTimeBarMouseUp={handleTimeBarMouseUp}
-            calculateTimeBarWidth={calculateTimeBarWidth}
-            isPlaying={isPlaying}
-          /> */}
-        {/* )} */}
+        
       </div>
     </div>
   );

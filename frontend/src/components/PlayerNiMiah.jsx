@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { listAds } from "../actions/adsActions";
 import { setCurrentlyPlayingSong, togglePlayerVisibility } from "../actions/musicPlayerActions"; 
 
+
 function PlayerNiMiah() {
   const [currentAd, setCurrentAd] = useState(null);
   const [isRepeat, setIsRepeat] = useState(false);
@@ -22,9 +23,10 @@ function PlayerNiMiah() {
   const isSubscriber = user?.data?.user_data?.is_subscriber;
   const isArtist = user?.data?.user_data?.is_artist;
   const isSuperuser = user?.data?.user_data?.is_superuser;
-
+  
   const dispatch = useDispatch();
-
+  const isMobileResolution = window.innerWidth <= 768
+  
   const currentlyPlaying = useSelector(
     (state) => state.player.currentlyPlayingSong
   );
@@ -351,22 +353,25 @@ function PlayerNiMiah() {
         >
           {currentlyPlaying && (
             <div style={{ display: "flex", alignItems: "center" }}>
-              <img
-                src={currentlyPlaying.picture}
-                alt="Album Art"
-                style={{
-                  width: "64px",
-                  height: "64px",
-                  marginRight: "20px",
-                  borderRadius: "4px",
-                }}
-              />
+            <img
+              src={currentlyPlaying.picture}
+              alt="Album Art"
+              style={{
+                width: "10vw", // Adjusted to be 10% of the viewport width
+                height: "10vw", // Adjusted to maintain aspect ratio
+                maxWidth: "64px", // Maximum width of 64px
+                maxHeight: "64px", // Maximum height of 64px
+                marginRight: "20px",
+                borderRadius: "4px",
+              }}
+            />
               <div>
                 <p
                   style={{
-                    margin: 0,
+                    margin:  0,
+                    marginLeft: "-10px",
                     fontWeight: "bold",
-                    fontSize: "16px",
+                    fontSize: "2vw", // Adjusted to be 2% of the viewport width
                     maxWidth: "200px",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -375,42 +380,51 @@ function PlayerNiMiah() {
                 >
                   {currentlyPlaying.name}
                 </p>
-                <p style={{ margin: 0, fontSize: "14px", color: "#b3b3b3" }}>
+                <p
+                  style={{
+                    margin: 0,
+                    marginLeft: "-10px",
+                    fontSize: "1.2vw", // Adjusted to be 1.2% of the viewport width
+                    color: "#b3b3b3",
+                  }}
+                >
                   {currentlyPlaying.artist}
                 </p>
               </div>
             </div>
           )}
           <div
-            style={{
-              position: "fixed",
-              left: "50%",
-              transform: "translateX(-50%)",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
+  style={{
+    position: "fixed",
+    left: "50%",
+    transform: "translateX(-50%)",
+    display: "flex",
+    alignItems: "center",
+  }}
+>
             <button
               onClick={toggleRepeat}
               style={{
                 backgroundColor: "transparent",
+                marginBottom: "20px",
                 border: "none",
-                fontSize: "24px",
+                fontSize: "max(2vw, 18px)", // Adjust the font size to be 2% of the viewport width or 18px (whichever is larger)
                 color: "#fff",
               }}
             >
-              {isRepeat ? (
-                <BiRepeat style={{ color: "#8a63d2" }} />
-              ) : (
-                <BiRepeat style={{ color: "#fff" }} />
-              )}
-            </button>
+            {isRepeat ? (
+              <BiRepeat style={{ color: "#8a63d2" }} />
+            ) : (
+              <BiRepeat style={{ color: "#fff" }} />
+            )}
+          </button>
             <button
               onClick={handleBackward}
               style={{
                 backgroundColor: "transparent",
+                marginBottom: "20px",
                 border: "none",
-                fontSize: "24px",
+                fontSize: "max(2vw, 18px)",
                 color: "#fff",
               }}
             >
@@ -419,10 +433,12 @@ function PlayerNiMiah() {
             <button
               onClick={togglePlayPause}
               style={{
+                marginBottom: "20px",
                 backgroundColor: "transparent",
                 border: "none",
-                fontSize: "32px",
+                fontSize: "max(2vw, 18px)",
                 color: "#fff",
+                zIndex: '10'
               }}
             >
               {isPlaying ? <FaPause /> : <FaPlay />}
@@ -430,9 +446,10 @@ function PlayerNiMiah() {
             <button
               onClick={handleForward}
               style={{
+                marginBottom: "20px",
                 backgroundColor: "transparent",
                 border: "none",
-                fontSize: "24px",
+                fontSize: "max(2vw, 18px)",
                 color: "#fff",
               }}
             >
@@ -441,9 +458,10 @@ function PlayerNiMiah() {
             <button
               onClick={toggleShuffle}
               style={{
+                marginBottom: "20px",
                 backgroundColor: "transparent",
                 border: "none",
-                fontSize: "24px",
+                fontSize: "max(2vw, 18px)",
                 color: "#fff",
               }}
             >
@@ -462,69 +480,86 @@ function PlayerNiMiah() {
             <button
               onClick={toggleMute}
               style={{
+                marginBottom: "5px",
                 backgroundColor: "transparent",
                 border: "none",
-                fontSize: "20px",
+                fontSize: "max(2vw, 18px)",
                 color: "#fff",
               }}
             >
               {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
             </button>
-            <Slider
+              <Slider
               value={volume}
               onChange={handleVolumeChange}
               aria-labelledby="continuous-slider"
               style={{
+                marginBottom: "5px",
                 color: "#fff",
-                width: "100px",
-                "& .MuiSlider-thumb": { width: 20, height: 20 },
+                width: "max(5vw, 60px)", // Adjusted to be 5% of the viewport width or 60px (whichever is larger)
+                "& .MuiSlider-thumb": { width: "max(1.5vw, 15px)", height: "max(1.5vw, 15px)" }, // Adjusted to be 1.5% of the viewport width or 15px (whichever is larger)
               }}
             />
           </div>
         </div>
       )}
       {audioRef.current && audioRef.current.duration > 0 && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '3px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '40%',
-            cursor: 'pointer',
-            margin: 'auto',
-          }}
-        >
+  <div
+    style={{
+      position: 'absolute',
+      bottom: '0px', // Adjusted bottom position
+      left: '50%',
+      transform: 'translateX(-50%)',
+      width: 'max(30%, 200px)', // Adjusted to be 30% of the viewport width or 200px (whichever is larger)
+      cursor: 'pointer',
+       // Adjusted margin to bring it closer to the slider
+    }}
+  >
           <Slider
-            value={sliderValue}
-            onChange={handleTimeBarChange}
-            aria-labelledby="continuous-slider"
-            style={{ color: '#fff', width: '100%' }}
-          />
-          <div
-            style={{
-              color: '#b3b3b3',
-              fontSize: '14px',
-              textAlign: 'left',
-              position: 'absolute',
-              left: '0',
-              top: '-20px',
-            }}
-          >
-            {formatTime(audioRef.current.currentTime)}
-          </div>
-          <div
-            style={{
-              color: '#b3b3b3',
-              fontSize: '14px',
-              textAlign: 'right',
-              position: 'absolute',
-              right: '0',
-              top: '-20px',
-            }}
-          >
-            {formatTime(audioRef.current.duration)}
-          </div>
+  value={sliderValue}
+  onChange={handleTimeBarChange}
+  aria-labelledby="continuous-slider"
+  className="slider-container"
+  style={{ 
+    color: '#fff', 
+    width: '100%', 
+    height: '0.2rem', // Adjusted height for more precise clicking
+    marginTop: '0.5vh', // Adjusted marginTop for more space between elements
+    position: 'relative', 
+    zIndex: '0' 
+  }}
+/>
+
+<div>
+  {!isMobileResolution && (
+    <div
+      style={{
+        color: '#b3b3b3',
+        fontSize: 'calc(0.8vw + 10px)',
+        textAlign: 'left',
+        position: 'absolute',
+        left: '0',
+        top: '-10px',
+      }}
+    >
+      {formatTime(audioRef.current.currentTime)}
+    </div>
+  )}
+  {!isMobileResolution && (
+    <div
+      style={{
+        color: '#b3b3b3',
+        fontSize: 'calc(0.8vw + 10px)',
+        textAlign: 'right',
+        position: 'absolute',
+        right: '0',
+        top: '-10px',
+      }}
+    >
+      {formatTime(audioRef.current.duration)}
+    </div>
+  )}
+</div>
         </div>
       )}
     </div>
