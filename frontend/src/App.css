@@ -374,47 +374,6 @@
   margin-bottom: 10px;
 }
 
-/* Song Detailed View  */
-
-.editsong-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  overflow-x: hidden;
-  min-height: calc(-673px + 173vh);
-  margin: 0.5rem;
-  border-radius: 20px;
-}
-
-.editsong-container Button {
-  margin-bottom: 30px;
-  border: none;
-  border: 1px solid #000;
-  border-radius: 30px;
-  padding: 15px 30px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-/* Add Song  */
-.container-addsong{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow-x: hidden;
-  min-height: calc(-673px + 173vh);
-  margin: 0.5rem;
-  border-radius: 20px;
-}
-
-label[for="picture"]:hover > div > button {
-  visibility: visible;
-}
-
-
 /* artistregister */
 
 .artist-register-container {

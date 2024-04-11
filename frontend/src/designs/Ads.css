@@ -1,0 +1,53 @@
+.card-ads{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    top: -0.5rem;
+    min-height: calc(-2rem + 90vh);
+    width: 99%;
+    margin: 0.5rem;
+    }
+
+    .ad-upload-form {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      
+      .form-group {
+        margin-bottom: 1rem;
+      }
+      
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+      
+      input[type="text"],
+      textarea,
+      input[type="file"] {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+      }
+      
+      button {
+        padding: 0.5rem 1rem;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      
+      button:hover {
+        background-color: #0056b3;
+      }
+      
+
+
+      /* // AdUploadForm.js */
+
+

@@ -1,0 +1,25 @@
+
+.card-addsong{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  top: -0.5rem;
+  min-height: calc(-2rem + 90vh);
+  width: 99%;
+  margin: 0.5rem;
+  /* background-color: #ff0000; */
+  }
+
+
+.form-control{
+    color: black;
+    margin-left: 1rem;
+    width: 90%;
+    padding: 1rem;
+    border: 1px solid #cccccc;
+    border-radius: 6.25rem;
+    box-sizing: border-box;
+    margin: 1rem;
+    margin-top: 0em;
+}

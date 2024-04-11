@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uploadSong } from '../../actions/songActions';
 import { fetchMyPlaylists } from '../../actions/songActions';
 import Navbar from '../Navbar';
 import { getUserDetails } from '../../actions/userActions';
+import '../../designs/AddSong.css';
 
 const AddSong = () => {
   const dispatch = useDispatch();
@@ -51,7 +53,10 @@ const AddSong = () => {
 
   const handleFileChange = (e) => {
     console.log(e.target.files[0])
-    setFormData({ ...formData, file: e.target.files[0] });
+    const file = e.target.files[0];
+    const fileName = `${formData.artist} - ${formData.name}`; // Construct the new file name using formData
+    const renamedFile = new File([file], fileName, { type: file.type }); // Create a new File object with the new name
+    setFormData({ ...formData, file: renamedFile });
   };
 
   const handleSubmit = (e) => {
@@ -79,33 +84,22 @@ const AddSong = () => {
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
       <Navbar />
       <div className='template-background' style={{ flex: 1, marginLeft: '10px', padding: '10px 0' }}>
-      <div className='container-addsong'>
-        <div style={{backgroundColor: color, border: 'none', borderRadius: '30px', padding: '20px 35px', fontSize: '16px', fontWeight: 'bold', marginLeft: '10px', display: 'flex', alignItems: 'center' }}>
-        <div style={{flexDirection: 'row'}}>
+      <div className='card-addsong'>
+        <div style={{backgroundColor: color, border: 'none', borderRadius: '2.5rem', padding: '1rem 3rem', fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+        <div>
         <div style = {{color: 'white'}} >
           <h1>Add Song</h1>
           </div>
           <label htmlFor="picture" style={{ color: '#fff', padding: '8px', cursor: 'pointer' }}>
-            <div
-              style={{
-                position: 'relative',
-                width: '500px',
-                height: '500px',
-                overflow: 'hidden',
-                borderRadius: '10%',
-                backgroundColor: picture ? 'transparent' : '#fff',
-              }}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
+            <div style={{position: 'relative', width: '500px', height: '500px', overflow: 'hidden', borderRadius: '10%', backgroundColor: picture ? 'transparent' : '#fff',}}
+              onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
               {picture && (
                 <>
                   <img src={URL.createObjectURL(picture)} alt="Selected" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   {isHovered && (
                     <button onClick={handleRemovePicture} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.5)', 
                     border: 'none', color: '#fff', cursor: 'pointer', zIndex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '24px', 
-                    transition: 'background 0.3s' }}>Remove Photo</button>
-                  )}
+                    transition: 'background 0.3s' }}>Remove Photo</button>)}
                 </>
               )}
               {!picture && (
@@ -115,10 +109,9 @@ const AddSong = () => {
               )}
             </div>
           </label>
-          <input type="file" id="picture" name="picture" onChange={handlePictureChange} style={{ display: 'none' }} />
-
+          <input type="file" id="picture" name="picture" onChange={handlePictureChange} style={{ display: 'none'}} />
           </div>
-          <div style={{flexDirection: 'row'}}>
+          <div style={{flexDirection: 'row', marginLeft: '1rem'}}>
           <form onSubmit={handleSubmit}>
             <div style={{ marginBottom: '15px' }}>
               <label htmlFor="name" style={{ color: '#fff', marginRight: '10px' }}>Name:</label>
@@ -137,15 +130,19 @@ const AddSong = () => {
                 ))}
               </select>
             </div>
-            <div style={{ marginBottom: '15px' }}>
-              <label htmlFor="file" style={{ color: '#fff', marginRight: '10px' }}>File:</label>
-              <input type="file" id="file" name="file" onChange={handleFileChange} style={{ color: '#fff', padding: '8px' }} />
+            <div style={{ position: 'relative', marginBottom: '15px'}}>
+              <label htmlFor="file" style={{ color: '#fff', marginRight: '10px', backgroundColor: '#333', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer', marginBottom: '15px' }}>
+                {file ? 'Change Audio File' : 'Choose Audio File'}
+              </label>
+              <span style={{ color: '#fff', marginLeft: '10px' }}></span>
+              {file && (
+                <span style={{ color: '#fff', marginLeft: '10px' }}>
+                  {`${formData.artist} - ${formData.name}`}
+                </span>
+              )}
+              <input type="file" id="file" name="file" onChange={handleFileChange} accept="audio/*"style={{ display: 'none'}}/>
             </div>
-            <div style={{ marginBottom: '15px' }}>
-              <label htmlFor="picture" style={{ color: '#fff', marginRight: '10px' }}>Picture:</label>
-              <input type="file" id="picture" name="picture" onChange={handlePictureChange} style={{ color: '#fff', padding: '8px' }} />
-            </div>
-            <div style={{ marginBottom: '15px' }}>
+            <div style={{ marginBottom: '15px'}}>
               <label htmlFor="playlistId" style={{ color: '#fff', marginRight: '10px' }}>Select Playlist:</label>
               <select id="playlistId" name="playlistId" value={playlistId} onChange={handleChange} style={{ padding: '8px' }}>
                 <option value="">Select Playlist</option>
@@ -154,7 +151,10 @@ const AddSong = () => {
                 ))}
               </select>
             </div>
-            <button type="submit" style={{ backgroundColor: '#333', color: '#fff', border: 'none', padding: '10px', cursor: 'pointer' }}>Upload Song</button>
+            <button type="submit" style={{ backgroundColor: '#4CAF50', color: '#fff', border: 'none', padding: '10px', cursor: 'pointer',
+            borderRadius: '5px',transition: 'background-color 0.3s',float: 'right'}}
+            onMouseOver={(e) => { e.target.style.backgroundColor = '#45a049'; }}
+            onMouseOut={(e) => { e.target.style.backgroundColor = '#4CAF50'; }}>Upload Song</button>
           </form>
           </div>
         </div>

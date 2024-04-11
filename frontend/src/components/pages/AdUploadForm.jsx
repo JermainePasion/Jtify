@@ -1,8 +1,7 @@
-// AdUploadForm.js
-
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { adsUpload } from '../../actions/adsActions';
+import '../../designs/Ads.css'
 
 const AdUploadForm = () => {
   const dispatch = useDispatch();
@@ -38,32 +37,30 @@ const AdUploadForm = () => {
   };
 
   return (
-    <div className="ad-upload-form">
-      <h3>Upload Your Ad</h3>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Title:
-          <input type="text" name="title" onChange={handleChange} />
-        </label>
-        <br />
-        <label>
-          Description:
-          <textarea name="description" onChange={handleChange}></textarea>
-        </label>
-        <br />
-        <label>
-          Image:
-          <input type="file" name="image" accept="image/*" onChange={handleImageChange} />
-        </label>
-        <br />
-        <label>
-          Audio:
-          <input type="file" name="audio" accept="audio/*" onChange={handleAudioChange} />
-        </label>
-        <br />
-        <button type="submit">Submit</button>
-      </form>
-    </div>
+<div className="card-ads">
+  <div className="ad-upload-form">
+    <h3>Upload Your Ad</h3>
+    <form onSubmit={handleSubmit}>
+      <div className="form-group">
+        <label htmlFor="title">Title:</label>
+        <input type="text" id="title" name="title" onChange={handleChange} />
+      </div>
+      <div className="form-group">
+        <label htmlFor="description">Description:</label>
+        <textarea id="description" name="description" onChange={handleChange}></textarea>
+      </div>
+      <div className="form-group">
+        <label htmlFor="image">Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" onChange={handleImageChange} />
+      </div>
+      <div className="form-group">
+        <label htmlFor="audio">Audio:</label>
+        <input type="file" id="audio" name="audio" accept="audio/*" onChange={handleAudioChange} />
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
   );
 };
 

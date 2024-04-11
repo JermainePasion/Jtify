@@ -5,6 +5,7 @@ import { Container, Row, Col, Button, Form, Spinner } from 'react-bootstrap';
 import { useParams, Link,  } from 'react-router-dom'; // Import useHistory hook
 import Navbar from '../Navbar';
 import { getUserDetails } from '../../actions/userActions';
+import '../../designs/SongDetailView.css';
 
 const SongDetail = () => {
   const dispatch = useDispatch();
@@ -123,13 +124,11 @@ const SongDetail = () => {
   return (
     <div style={{ display: 'flex', minHeight: '100vh', fontFamily: selectedFont, backgroundColor: color }}>
       <Navbar />
-        <div className='template-background' style={{ flex: 1, marginLeft: '10px', position: 'relative', overflowX: 'auto', padding: '10px 0',backgroundSize: 'cover',}}>
-        <div className='editsong-container'>
+        <div className='template-background' style={{ flex: 1, position: 'relative', overflowX: 'auto', padding: '0.9rem 0',backgroundSize: 'cover',}}>
+        <div className='card-container'>
         <Container>
-          <div style={{backgroundColor: color, border: 'none', borderRadius: '30px', padding: '15px 35px', fontSize: '16px', fontWeight: 'bold', marginLeft: '10px'}}>
-          <Button variant="secondary" classname="backbutton" style={{ backgroundColor: color}} onClick={handleGoBack}>
-          Back
-          </Button>
+          <div style={{backgroundColor: color, border: 'none', borderRadius: '2.5rem', padding: '1rem 3rem', fontSize: '16px', fontWeight: 'bold', marginLeft: '10px'}}>
+          <Button variant="secondary" classname="backbutton" style={{ backgroundColor: color}} onClick={handleGoBack}>Back</Button>
           {loading ? (
             <Spinner animation="border" role="status">
               <span className="sr-only">Loading...</span>
@@ -146,71 +145,34 @@ const SongDetail = () => {
                   {isEditing && (
                     <Form>
                       <Form.Group controlId="formSongName">
-                        <Form.Label style = {{color: 'white', margin: '10px'}}>Edit Name:</Form.Label>
-                        <Form.Control 
-                          style = {{color: 'black', margin: '10px', width: '100%',
-                          padding: '8px',
-                          border: '1px solid #ccc',
-                          borderRadius: '5px',
-                          boxSizing: 'border-box',
-                          marginTop: '5px',}}
-                          type="text" 
-                          placeholder="Enter new name" 
-                          value={editedSong.name || ''}
-                          onChange={(e) => setEditedSong({ ...editedSong, name: e.target.value })}
-                        />
+                      <div className="form-row">
+                        <Form.Label style = {{color: 'white', marginLeft: '2rem'}}>Name:</Form.Label>
+                        <Form.Control classname="form-sdvcontrol" type="text" placeholder="Enter new name" value={editedSong.name || ''}
+                        onChange={(e) => setEditedSong({ ...editedSong, name: e.target.value })}/>
+                      </div>
                       </Form.Group>
                       <Form.Group controlId="formSongArtist">
-                        <Form.Label style = {{color: 'white', margin: '10px'}}>Edit Artist:</Form.Label>
-                        <Form.Control 
-                          style = {{color: 'black', margin: '10px', width: '100%',
-                          padding: '8px',
-                          border: '1px solid #ccc',
-                          borderRadius: '5px',
-                          boxSizing: 'border-box',
-                          marginTop: '5px',}}
-                          type="text" 
-                          placeholder="Enter new artist" 
-                          value={editedSong.artist || ''}
-                          onChange={(e) => setEditedSong({ ...editedSong, artist: e.target.value })}
-                        />
+                      <div className="form-row">
+                        <Form.Label style = {{color: 'white', marginLeft: '2rem'}}>Artist:</Form.Label>
+                        <Form.Control classname="form-sdvcontrol" type="text" placeholder="Enter new artist" value={editedSong.artist || ''}
+                          onChange={(e) => setEditedSong({ ...editedSong, artist: e.target.value })}/>
+                      </div>
                       </Form.Group>
                       <Form.Group controlId="formSongGenre">
-                      <Form.Label style = {{color: 'white', margin: '10px'}}>Edit Genre:</Form.Label>
-                      <select
-                        id="genre"
-                        name='genre'
-                        value={editedSong.genre || ''} // Set the value of the select to editedSong.genre
-                        onChange={(e) => setEditedSong({ ...editedSong, genre: e.target.value })} // Update genre in state
-                        required
-                        style={{
-                          width: '30%',
-                          padding: '8px',
-                          border: '1px solid #ccc',
-                          borderRadius: '5px',
-                          boxSizing: 'border-box',
-                          marginTop: '5px',
-                        }}
-                      >
-                        <option value='' disabled>Select Genre</option>
-                        {genres && genres.map(([value, label], index) => (
-                          <option key={index} value={value}>{label}</option>
+                      <Form.Label style = {{color: 'white', marginLeft: '2rem'}}>Genre:</Form.Label>
+                      <select id="genre" name='genre' value={editedSong.genre || ''} onChange={(e) => setEditedSong({ ...editedSong, genre: e.target.value })}
+                        required style={{margin: '1rem', width: '90%', padding: '1rem', borderRadius: '6.25rem', marginTop: '0.5em', marginBottom: '1.5rem'  }}> 
+                        <option value='' disabled>Select Genre</option> {genres && genres.map(([value, label], index) => (<option key={index} value={value}>{label}</option>
                         ))}
                       </select>
-                      <Form.Label style = {{color: 'white', margin: '10px', marginLeft: '20px'}}>Edit Playlist:</Form.Label>
+                      <Form.Label style = {{color: 'white', marginLeft: '2rem'}}>Playlist:</Form.Label>
                       <select
                         id="playlist"
                         name='playlist'
                         value={editedSong.playlist || ''} // Set the value of the select to editedSong.playlist
                         onChange={(e) => setEditedSong({ ...editedSong, playlist: e.target.value })} // Update playlist in state
                         required
-                        style={{
-                          width: '28%',
-                          padding: '10px',
-                          borderRadius: '5px',
-                          marginTop: '5px',
-                        }}
-                      >
+                        style={{margin: '1rem', width: '90%', padding: '1rem', borderRadius: '6.25rem', marginTop: '0.5em', marginBottom: '1.5rem'}}>
                         <option value='' disabled>Select Playlist</option>
                         {Array.isArray(playlists) && playlists.map(playlist => {
                             return (
@@ -220,8 +182,9 @@ const SongDetail = () => {
                       </select>
                     </Form.Group>
                       <Form.Group controlId="formPicture">
-                        <Form.Label style={{ color: '#fff', marginLeft: '10px' }}>Edit Album Cover:</Form.Label>
+                        <Form.Label style={{ color: '#fff', marginLeft: '2rem' }}>Album Cover:</Form.Label>
                         <Form.Control
+                          style={{marginTop: '0.5rem', marginBottom: '1.5rem'}}
                           type="file"
                           accept="image/*"
                           onChange={(e) => {
@@ -232,11 +195,11 @@ const SongDetail = () => {
                             e.target.value = null;
                           }}
                         />
-                        <p style={{ color: '#fff', display: 'flex', marginLeft: '10px' }}> Chosen File: {fileNames.picture}</p>
                       </Form.Group>
                       <Form.Group controlId="formAudioFile">
-                        <Form.Label style={{ color: '#fff', marginLeft: '10px' }}>Edit Audio File:</Form.Label>
+                        <Form.Label style={{ color: '#fff', marginLeft: '2rem' }}>Audio File:</Form.Label>
                         <Form.Control
+                          style={{marginTop: '0.5rem', marginBottom: '1.5rem'}}
                           type="file"
                           accept="audio/*"
                           onChange={(e) => {
@@ -245,9 +208,7 @@ const SongDetail = () => {
                           }}
                           onClick={(e) => {
                             e.target.value = null;
-                          }}
-                        />
-                        <p style={{ color: '#fff', display:'flex', marginLeft: '10px'}}> Chosen File: {fileNames.audio}</p>
+                          }}/>
                       </Form.Group>
                       <Button variant="primary" onClick={handleEdit}  style={{
                       marginLeft: '150px',
@@ -271,7 +232,7 @@ const SongDetail = () => {
                       borderRadius: '5px',
                       cursor: 'pointer',
                       transition: 'background-color 0.3s ease',}}  
-                      onMouseOver={(e) => (e.target.style.backgroundColor = '#FF6347')}
+                      onMouseOver={(e) => (e.target.style.backgroundColor = '#c9302c')}
                       onMouseOut={(e) => (e.target.style.backgroundColor = '#D9534F')}>Cancel</Button>
                     </Form>
                   )}
@@ -297,7 +258,7 @@ const SongDetail = () => {
                       borderRadius: '5px',
                       cursor: 'pointer',
                       transition: 'background-color 0.3s ease',}}  
-                      onMouseOver={(e) => (e.target.style.backgroundColor = '#c9302c')}
+                      onMouseOver={(e) => (e.target.style.backgroundColor = '#ff0000')}
                       onMouseOut={(e) => (e.target.style.backgroundColor = '#d9534f')}>Delete</Button>
                   </div>
                 </div>

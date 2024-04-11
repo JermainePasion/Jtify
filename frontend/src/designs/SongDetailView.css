@@ -1,0 +1,104 @@
+/* Song Detailed View  */
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  top: -0.5rem;
+  min-height: calc(-2rem + 90vh);
+  width: 99%;
+  margin: 0.5rem;
+  /* background-color: #ff0000; */
+}
+
+.card-container Button {
+  margin-bottom: 2rem;
+  border: 1px solid #000;
+  border-radius: 6.25rem;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.form-control{
+  color: black;
+  margin-left: 1rem;
+  width: 90%;
+  padding: 1rem;
+  border: 1px solid #cccccc;
+  border-radius: 6.25rem;
+  box-sizing: border-box;
+  margin: 1rem;
+  margin-top: 0em;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-select{
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  margin-top: 5px;  
+}
+
+
+
+/* class="form-control" */
+/* .form-control {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bs-body-color);
+  appearance: none;
+  background-color: transparent;
+  background-clip: padding-box;
+  border: 1px solid rgba(255, 255, 255, .4);
+  border-radius: var(--bs-border-radius);
+  transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #e83283;
+  --bs-btn-border-color: #e83283;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #c52b6f;
+  --bs-btn-hover-border-color: #ba2869;
+  --bs-btn-focus-shadow-rgb: 235, 81, 150;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #ba2869;
+  --bs-btn-active-border-color: #ae2662;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+  --bs-btn-disabled-bg: #e83283;
+  --bs-btn-disabled-border-color: #e83283;
+}
+
+.mb-3 {
+  margin-bottom: 2rem !important;
+}
+
+.card-body {
+  flex: 1 1 auto;
+  padding: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
+  color: var(--bs-card-color);
+}
+
+*, ::after, ::before {
+  box-sizing: border-box;
+}
+
+.form-label {
+  margin-bottom: 0.5rem;
+} */
