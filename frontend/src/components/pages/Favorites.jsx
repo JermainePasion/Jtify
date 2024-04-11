@@ -32,6 +32,7 @@ const Favorites = () => {
   const audioRef = useRef(new Audio());
   const progressBarRef = useRef(null);
   const [showNavbar, setShowNavbar] = useState(true);
+  
   const handleSongClick = (index) => {
     if (currentSongIndex === index) {
       setCurrentSongIndex(null);
@@ -223,12 +224,6 @@ const Favorites = () => {
               
             ))}
           </ListGroup>
-
-{/* Add buttons here */}
-<div>
-  <button onClick={playPreviousSong}>Previous</button>
-  <button onClick={playNextSong}>Next</button>
-</div>
 <div style={{ position: 'absolute', top: '10px', left: '0px' }}>
       <FontAwesomeIcon
         icon={faBars}

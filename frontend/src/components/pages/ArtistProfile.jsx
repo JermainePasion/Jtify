@@ -9,6 +9,8 @@ import Song from '../Song';
 import Playlist from '../Playlist';
 import axios from 'axios';
 import VerifiedIcon from '../img/VerifiedIcon.png';
+import { updatePlayCount } from '../../actions/songActions';
+import { setCurrentlyPlayingSong, togglePlayerVisibility } from '../../actions/musicPlayerActions';
 
 const UserProfile = () => {
     const dispatch = useDispatch();
@@ -23,6 +25,7 @@ const UserProfile = () => {
     const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
     const [scrollPosition, setScrollPosition] = useState(0);
     const [showMinimizedProfile, setShowMinimizedProfile] = useState(false);
+    const Songs = useSelector((state) => state.songList.songs);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -35,11 +38,9 @@ const UserProfile = () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
-    
 
     useEffect(() => {
         // Fetch user data, uploaded songs, and created playlists when component mounts
-        dispatch(getUserDetails());
         dispatch(getUserDetails());
 
         const fetchUserData = async () => {
@@ -70,6 +71,28 @@ const UserProfile = () => {
             setShowMinimizedProfile(false);
         }
     }, [scrollPosition]);
+    const playSong = async (index) => {
+        const song = Songs[index];
+        console.log("Playing song:", song);
+        try {
+          // Dispatch the updatePlayCount action to update the play count
+          await dispatch(updatePlayCount(song.id, user.data.user_data.id));
+        } catch (error) {
+          // Handle any errors
+          console.error('Error updating play count:', error);
+        }
+      
+        setCurrentlyPlayingSong(song);
+        dispatch(setCurrentlyPlayingSong(song));
+        dispatch(togglePlayerVisibility());
+      };
+
+      const handleSongClick = (index) => {
+        console.log("Clicked song index:", index);
+        // Play the clicked song
+        playSong(index);
+    };
+    
 
     return (
         <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
@@ -102,7 +125,7 @@ const UserProfile = () => {
                                 <div style={{ marginBottom: '30px' }}>
                                     <ListGroup variant="flush">
                                         {uploadedSongs.map((uploadedSong, index) => (
-                                            <ListGroup.Item key={index} className="position-relative" style={{ backgroundColor: 'transparent', color: '#ffffff', fontFamily: selectedFont, border: 'none', position: 'relative', marginBottom: '10px',marginLeft:'10px', borderRadius: '8px', padding: '15px' }}>
+                                            <ListGroup.Item key={index} className="position-relative" style={{ backgroundColor: 'transparent', color: '#ffffff', fontFamily: selectedFont, border: 'none', position: 'relative', marginBottom: '10px',marginLeft:'10px', borderRadius: '8px', padding: '15px' }} onClick={() => handleSongClick(index)}>
                                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                                     <div style={{ marginRight: '15px', fontSize: '16px', fontWeight: 'bold' }}>{index + 1}</div> {/* Added line to display the index + 1 */}
                                                     <Image src={uploadedSong.picture} alt={uploadedSong.name} rounded style={{ width: '64px', height: '64px', marginRight: '15px' }} />
@@ -121,12 +144,12 @@ const UserProfile = () => {
                                         <Playlist key={playlist.id} playlist={playlist} />
                                     ))}
                                 </div>
-                            </div>    
-                    </div>
-                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
-    </div>
 );
 
 }
