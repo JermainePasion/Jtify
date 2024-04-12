@@ -12,7 +12,7 @@ import MusicPlayer from '../MusicPlayer';
 import Song from '../Song';
 import { setCurrentlyPlayingSong, togglePlayerVisibility } from '../../actions/musicPlayerActions';
 import { updatePlayCount } from "../../actions/songActions";
-
+import { FaStepForward, FaStepBackward } from "react-icons/fa";
 import likedImage from '../img/liked.png';
 
 const Favorites = () => {
@@ -21,7 +21,7 @@ const Favorites = () => {
   const color = user?.data?.profile_data?.color || '#defaultColor';
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
   const likedSongs = useSelector((state) => state.fetchLikedSongs.songs);
-  const [currentSongIndex, setCurrentSongIndex] = useState(null);
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const navigate = useNavigate();
   const { loading, error, songs } = useSelector(state => state.songList);
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
@@ -32,7 +32,6 @@ const Favorites = () => {
   const audioRef = useRef(new Audio());
   const progressBarRef = useRef(null);
   const [showNavbar, setShowNavbar] = useState(true);
-  
   const handleSongClick = (index) => {
     if (currentSongIndex === index) {
       setCurrentSongIndex(null);
@@ -87,6 +86,14 @@ const Favorites = () => {
       setIsPlaying(false);
     };
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("currentSongIndex", currentSongIndex);
+  }, [currentSongIndex]);
+
+  useEffect(() => {
+    localStorage.setItem("likedSongs", JSON.stringify(likedSongs));
+  }, [likedSongs]);
 
   const playSong = async (index) => {
     const song = likedSongs[index];
@@ -163,48 +170,51 @@ const Favorites = () => {
     }
   };
 
+  const toggleNavbar = () => {
+    setShowNavbar(!showNavbar);
+  };
+  
   const playNextSong = () => {
     let nextIndex = currentSongIndex + 1;
     if (nextIndex >= likedSongs.length) {
       nextIndex = 0;
     }
     setCurrentSongIndex(nextIndex);
+    localStorage.setItem("currentSongIndex", nextIndex); // Store the next index in local storage
     playSong(nextIndex);
   };
+  
   const playPreviousSong = () => {
     let previousIndex = currentSongIndex - 1;
     if (previousIndex < 0) {
       previousIndex = likedSongs.length - 1;
     }
     setCurrentSongIndex(previousIndex);
+    localStorage.setItem("currentSongIndex", previousIndex); // Store the previous index in local storage
     playSong(previousIndex);
   };
 
-  const toggleNavbar = () => {
-    setShowNavbar(!showNavbar);
-  };
-  
   return (
     <div style={{ display: 'flex', minHeight: '150vh', backgroundColor: color, fontFamily: selectedFont }}>
-  {showNavbar && <Navbar />}
-  <div className='template-background' style={{ 
-    flex: 1, 
-    position: 'relative', 
-    padding: '10px', // Adjust padding for better spacing
-    backgroundSize: 'cover', // Use 'cover' to fill the container
-    backgroundPosition: 'center', // Center the background image
-    overflow: 'auto' // Add overflow for content that exceeds the container
-  }}>
-         <Container fluid>
-      <div className="playlist-header-container" style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', position: 'relative' }}>
-        <Image src={likedImage} alt="Liked" className="playlist-image" />
-        <div className="text-container" style={{ marginLeft: '10px' }}>
-          <p style={{ color: 'white', fontFamily: selectedFont }}>Playlist</p>
-          <h2 className="mt-3 mb-3" style={{ color: 'white', fontSize: '50px', fontFamily: selectedFont }}>Liked Songs</h2>
-          <p style={{ color: 'white', fontFamily: selectedFont }}>Songs that you like in Jtify app will be shown here.</p>
-          <p style={{ color: 'white', fontSize: '20px', fontFamily: selectedFont }}>{likedSongs.length} songs</p>
-        </div>
-      </div>
+      {showNavbar && <Navbar />}
+      <div className='template-background' style={{ 
+        flex: 1, 
+        position: 'relative', 
+        padding: '10px', // Adjust padding for better spacing
+        backgroundSize: 'cover', // Use 'cover' to fill the container
+        backgroundPosition: 'center', // Center the background image
+        overflow: 'auto' // Add overflow for content that exceeds the container
+      }}>
+        <Container fluid>
+          <div className="playlist-header-container" style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', position: 'relative' }}>
+            <Image src={likedImage} alt="Liked" className="playlist-image" />
+            <div className="text-container" style={{ marginLeft: '10px' }}>
+              <p style={{ color: 'white', fontFamily: selectedFont }}>Playlist</p>
+              <h2 className="mt-3 mb-3" style={{ color: 'white', fontSize: '50px', fontFamily: selectedFont }}>Liked Songs</h2>
+              <p style={{ color: 'white', fontFamily: selectedFont }}>Songs that you like in Jtify app will be shown here.</p>
+              <p style={{ color: 'white', fontSize: '20px', fontFamily: selectedFont }}>{likedSongs.length} songs</p>
+            </div>
+          </div>
           <ListGroup variant="flush">
             {likedSongs.map((likedSong, index) => (
               <ListGroup.Item key={index} className="position-relative" style={{ backgroundColor: 'transparent', color: '#ffffff', fontFamily: selectedFont, border: 'none', position: 'relative', marginBottom: '10px', marginLeft: '10px' }}>
@@ -219,26 +229,52 @@ const Favorites = () => {
                   <FontAwesomeIcon icon={faHeart} style={{ cursor: 'pointer', color: '#fff', fontSize: '20px' }} onClick={() => handleUnlike(likedSong.id)} />
                 </div>
                 {index !== likedSongs.length - 1 && <div style={{ position: 'absolute', bottom: '-1px', left: '0', width: '100%', height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.3)' }}></div>}
-                
               </ListGroup.Item>
-              
             ))}
           </ListGroup>
-<div style={{ position: 'absolute', top: '10px', left: '0px' }}>
-      <FontAwesomeIcon
-        icon={faBars}
-        style={{
-          cursor: 'pointer',
-          color: '#fff',
-          fontSize: '20px',
-          transform: showNavbar ? 'rotate(0deg)' : 'rotate(90deg)',
-          transition: 'transform 0.3s ease',
-        }}
-        onClick={toggleNavbar}
-      />
-    </div>
-</Container>
-        
+          <div>
+            <div style={{ position: 'fixed', top: '91.8%', left: '46.4%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+              <button
+                onClick={playPreviousSong}
+                style={{
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                }}
+              >
+                <FaStepBackward />
+              </button>
+            </div>
+            <div style={{ position: 'fixed', top: '93%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+              <button
+                onClick={playNextSong}
+                style={{
+                  marginBottom: "20px",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                }}
+              >
+                <FaStepForward />
+              </button>
+            </div>
+          </div>
+          <div style={{ position: 'absolute', top: '10px', left: '0px' }}>
+            <FontAwesomeIcon
+              icon={faBars}
+              style={{
+                cursor: 'pointer',
+                color: '#fff',
+                fontSize: '20px',
+                transform: showNavbar ? 'rotate(0deg)' : 'rotate(90deg)',
+                transition: 'transform 0.3s ease',
+              }}
+              onClick={toggleNavbar}
+            />
+          </div>
+        </Container>
       </div>
     </div>
   );
