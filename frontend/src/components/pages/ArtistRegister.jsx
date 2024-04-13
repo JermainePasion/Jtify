@@ -5,6 +5,8 @@ import { getUserDetails } from '../../actions/userActions';
 import { artistRegister } from '../../actions/userActions';
 import Navbar from '../Navbar';
 import { FaStepBackward, FaStepForward } from 'react-icons/fa';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ArtistRegister = ({ playNextSong, playPreviousSong }) => {
   const dispatch = useDispatch();
@@ -31,40 +33,55 @@ const ArtistRegister = ({ playNextSong, playPreviousSong }) => {
   const font = user?.data?.profile_data?.font || 'defaultFont';
   const userName = user?.data?.user_data?.name || '';
   const userEmail = user?.data?.user_data?.email || '';
+  const [showNavbar, setShowNavbar] = useState(true);
 
   useEffect(() => {
     dispatch(getUserDetails());
   }, [dispatch]);
 
-  
+  const toggleNavbar = () => {
+    setShowNavbar(!showNavbar);
+  };
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: font, minHeight: '100vh' }}>
-      <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
+     {showNavbar && <Navbar />}
+     
       <div className='template-background' style={{ flex: 1, padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         {/* Playback control buttons */}
-        <div style={{ position: 'fixed', top: '93%', left: '46.4%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+        <div style={{ position: 'absolute', top: '10px', left: '5px' }}>
+            <FontAwesomeIcon
+              icon={faBars}
+              style={{
+                cursor: 'pointer',
+                color: '#fff',
+                fontSize: '20px',
+                transform: showNavbar ? 'rotate(0deg)' : 'rotate(90deg)',
+                transition: 'transform 0.3s ease',
+              }}
+              onClick={toggleNavbar}
+            />
+          </div>
+        <div style={{ position: 'fixed', top: '95%', left: '48%', transform: 'translate(-100%, -105%)', zIndex: '9999', display: 'flex' }}>
           <button
-            onClick={playPreviousSong}
             style={{
               backgroundColor: "transparent",
               border: "none",
               fontSize: "max(2vw, 18px)",
-              color: "#fff",
+              color: "#9d9fa3",
             }}
           >
             <FaStepBackward />
           </button>
         </div>
-        <div style={{ position: 'fixed', top: '94%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+        <div style={{ position: 'fixed', top: '92.5%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
           <button
-            onClick={playNextSong}
             style={{
               marginBottom: "20px",
               backgroundColor: "transparent",
               border: "none",
               fontSize: "max(2vw, 18px)",
-              color: "#fff",
+              color: "#9d9fa3",
             }}
           >
             <FaStepForward />

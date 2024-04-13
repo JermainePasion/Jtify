@@ -154,7 +154,7 @@ const Navbar = () => {
       </h1>
     </Card>
   
-    <Card className="navbar-card">
+    <Card className="navbar-card" style={{ marginBottom: '120px'}}>
       <h1 style={{ direction: 'ltr' }}>
         <button className='Navbar-items' onClick={goToProfile} style={{ fontFamily: selectedFont }}>
           <BsPersonSquare /> Profile

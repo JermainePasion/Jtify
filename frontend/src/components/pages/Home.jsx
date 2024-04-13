@@ -11,7 +11,9 @@ import Playlist from "../Playlist"; // Import Playlist component
 import { setCurrentlyPlayingSong, togglePlayerVisibility } from "../../actions/musicPlayerActions";
 import { likedSongList } from "../../actions/songActions"; 
 import { updatePlayCount } from "../../actions/songActions";
-
+import { FaStepForward, FaStepBackward } from "react-icons/fa";
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function Home() {
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
@@ -27,7 +29,7 @@ function Home() {
   const user = useSelector((state) => state.userDetails.user);
   const color = user?.data?.profile_data?.color || "#defaultColor";
   const selectedFont = user?.data?.profile_data?.font || "defaultFont";
-
+  const [showNavbar, setShowNavbar] = useState(true);
   const uniqueSongNames = new Set();
 const uniqueLikedSongs = likedSongs.filter(song => {
   if (uniqueSongNames.has(song.name)) {
@@ -45,17 +47,14 @@ const uniqueLikedSongs = likedSongs.filter(song => {
     setQuery(e.target.value);
   };
 
-  const playSong = async (song, userId) => {
+  const playSong = async (index) => {
+    const song = uniqueLikedSongs[index];
     try {
-      // Dispatch the updatePlayCount action to update the play count
-      await dispatch(updatePlayCount(song.id, userId));
+      await dispatch(updatePlayCount(song.id, user.data.user_data.id));
     } catch (error) {
-      // Handle any errors
       console.error('Error updating play count:', error);
     }
-  
-    // Set the currently playing song
-    setCurrentlyPlaying(song);
+    setCurrentlyPlaying(index);
     dispatch(setCurrentlyPlayingSong(song));
     dispatch(togglePlayerVisibility());
   };
@@ -69,38 +68,55 @@ const uniqueLikedSongs = likedSongs.filter(song => {
     dispatch(likedSongList());
     dispatch(playlistView());
   }, [dispatch]);
+
+  const playPreviousSong = () => {
+    let previousIndex = currentlyPlaying - 1;
+    if (previousIndex < 0) {
+      previousIndex = uniqueLikedSongs.length - 1;
+    }
+    playSong(previousIndex);
+  };
+
+  const playNextSong = () => {
+    let nextIndex = currentlyPlaying + 1;
+    if (nextIndex >= uniqueLikedSongs.length) {
+      nextIndex = 0;
+    }
+    playSong(nextIndex);
+  };
+
+  const toggleNavbar = () => {
+    setShowNavbar(!showNavbar);
+  };
   return (
     <div
       style={{
         display: "flex",
         width: "100vw",
-        minHeight: "100vh",
+        minHeight: "120vh",
         backgroundColor: color,
         fontFamily: selectedFont,
+        overflowx: "auto",
       }}
     >
-      <Navbar />
-      <div
-        className="template-background"
-        style={{
-          flex: 1,
-          marginLeft: "10px",
-          position: "relative",
-          overflowX: "auto",
-          padding: "10px 20px", // Increase padding for better spacing
-          backgroundSize: "cover",
-        }}
-      >
+     {showNavbar && <Navbar />}
+     
+     <div className='template-background' style={{ 
+        flex: 1, 
+        position: 'relative', 
+        padding: '10px', // Adjust padding for better spacing
+        backgroundSize: 'cover', // Use 'cover' to fill the container
+        backgroundPosition: 'center', // Center the background image
+        overflow: 'auto' // Add overflow for content that exceeds the container
+      }}>
         <div style={{ position: "absolute", top: "10px", right: "30px" }}>
-          <div
-            style={{
-              position: "absolute",
-              top: "10px",
-              right: "30px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
+  <div
+    style={{
+      position: "relative",
+      display: "flex",
+      
+    }}
+  >
             <div className="input-group rounded">
               <input
                 type="search"
@@ -119,28 +135,7 @@ const uniqueLikedSongs = likedSongs.filter(song => {
                 onFocus={(e) => (e.target.style.width = "600px")}
                 onBlur={(e) => (e.target.style.width = "300px")}
               />
-              <div className="input-group-append">
-                <span className="input-group-text border-0" id="search-addon">
-                  <BsSearch
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="icon icon-tabler icon-tabler-search"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    style={{
-                      position: "absolute",
-                      left: "5px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                    }}
-                  />
-                </span>
-              </div>
+              
             </div>
           </div>
         </div>
@@ -170,25 +165,23 @@ const uniqueLikedSongs = likedSongs.filter(song => {
       <div>Error: {error}</div>
     ) : (
       <>
-        {/* Filter songs based on the search query */}
-        {uniqueLikedSongs
-          .filter(song =>
-            song.name.toLowerCase().includes(query.toLowerCase()) ||
-            song.artist.toLowerCase().includes(query.toLowerCase())
-          )
-          .map(song => (
-            <Song
-              key={song.id}
-              song={song}
-              playSong={() => playSong(song, user.data.user_data.id)} // Pass user ID to playSong
-              isPlaying={currentlyPlaying === song}
-              selectedFont={selectedFont}
-            />
-          ))
-        }
-      </>
-    )}
-  </div>
+              {uniqueLikedSongs
+                .filter(song => song.name.toLowerCase().includes(query.toLowerCase())) // Filter songs based on search query
+                .map((song, index) => (
+                  <Song
+                    key={song.id}
+                    song={song}
+                    playSong={() => playSong(index)}
+                    isPlaying={currentlyPlaying === index}
+                    selectedFont={selectedFont}
+                  />
+                ))
+              }
+            </>
+          )}
+        </div>
+        
+
         <h2
           style={{ color: "white", fontFamily: selectedFont, fontSize: "30px" }}
         >
@@ -224,6 +217,46 @@ const uniqueLikedSongs = likedSongs.filter(song => {
               ))
           )}
         </div>
+        <div style={{ position: 'absolute', top: '10px', left: '5px' }}>
+            <FontAwesomeIcon
+              icon={faBars}
+              style={{
+                cursor: 'pointer',
+                color: '#fff',
+                fontSize: '20px',
+                transform: showNavbar ? 'rotate(0deg)' : 'rotate(90deg)',
+                transition: 'transform 0.3s ease',
+              }}
+              onClick={toggleNavbar}
+            />
+          </div>
+          <div style={{ position: 'fixed', top: '91%', left: '46.2%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+              <button
+                onClick={playPreviousSong}
+                style={{
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                }}
+              >
+                <FaStepBackward />
+              </button>
+            </div>
+            <div style={{ position: 'fixed', top: '91%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+              <button
+                onClick={playNextSong}
+                style={{
+                  
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                }}
+              >
+                <FaStepForward />
+              </button>
+            </div>
       </div>
     </div>
   );

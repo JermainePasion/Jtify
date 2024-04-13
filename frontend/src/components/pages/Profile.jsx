@@ -5,6 +5,9 @@ import { getUserDetails, updateUserProfile } from '../../actions/userActions';
 import { resetUpdateProfile } from '../../actions/userActions';
 import { SketchPicker } from 'react-color';
 import { Card } from 'react-bootstrap';
+import { FaStepBackward, FaStepForward } from 'react-icons/fa';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const FontChoices = [
   ['Default', 'Default'],
@@ -36,6 +39,8 @@ function Profile() {
   const [selectedFont, setSelectedFont] = useState(user?.data?.profile_data?.font);
 
   const [showColorPicker, setShowColorPicker] = useState(false);
+  
+  const [showNavbar, setShowNavbar] = useState(true);
 
   useEffect(() => {
     dispatch(getUserDetails());
@@ -115,18 +120,37 @@ function Profile() {
     dispatch(getUserDetails());
   };
 
+  const toggleNavbar = () => {
+    setShowNavbar(!showNavbar);
+  };
+
+
   return (
-    <div style={{ display: 'flex', width: '100vw', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
-      <Navbar />
+    <div style={{ display: 'flex', width: '100vw', minHeight: '120vh', backgroundColor: color, fontFamily: selectedFont }}>
+      {showNavbar && <Navbar />}
       <div className='template-background' style={{ 
         flex: 1, 
         marginLeft: '10px', 
         position: 'relative', 
         padding: '10px 20px', // Increase padding for better spacing
-        backgroundSize: '110%',
-        backgroundRepeat: 'no-repeat'
+        backgroundSize: '130%',
+        backgroundRepeat: 'no-repeat',
+        minHeight: '120vh'
 
       }}>
+        <div style={{ position: 'absolute', top: '10px', left: '5px' }}>
+            <FontAwesomeIcon
+              icon={faBars}
+              style={{
+                cursor: 'pointer',
+                color: '#fff',
+                fontSize: '20px',
+                transform: showNavbar ? 'rotate(0deg)' : 'rotate(90deg)',
+                transition: 'transform 0.3s ease',
+              }}
+              onClick={toggleNavbar}
+            />
+          </div>
       <div className='profile-container'>
   <div>
     {loading ? (
@@ -217,6 +241,32 @@ function Profile() {
   </div>
 </div>
       </div>
+      <div style={{ position: 'fixed', top: '95%', left: '48%', transform: 'translate(-100%, -105%)', zIndex: '9999', display: 'flex' }}>
+          <button
+            style={{
+              backgroundColor: "transparent",
+              border: "none",
+              fontSize: "max(2vw, 18px)",
+              color: "#9d9fa3",
+            }}
+          >
+            <FaStepBackward />
+          </button>
+        </div>
+        <div style={{ position: 'fixed', top: '92.5%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+          <button
+            style={{
+              marginBottom: "20px",
+              backgroundColor: "transparent",
+              border: "none",
+              fontSize: "max(2vw, 18px)",
+              color: "#9d9fa3",
+            }}
+          >
+            <FaStepForward />
+          </button>
+        </div>
+
     </div>
 
   );

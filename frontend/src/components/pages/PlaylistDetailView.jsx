@@ -12,6 +12,12 @@ import { faClock } from '@fortawesome/free-solid-svg-icons';
 import { setCurrentlyPlayingSong, togglePlayerVisibility } from '../../actions/musicPlayerActions';
 import { updatePlayCount } from "../../actions/songActions";
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { FaStepForward, FaStepBackward } from "react-icons/fa";
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { likeSong, unlikeSong } from '../../actions/songActions';
+import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
+
 
 const PlaylistDetails = () => {
   const dispatch = useDispatch();
@@ -20,6 +26,11 @@ const PlaylistDetails = () => {
   const user = useSelector(state => state.userDetails.user);
   const color = user?.data?.profile_data?.color || '#defaultColor';
   const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [showNavbar, setShowNavbar] = useState(true);
+  const likedSongs = useSelector(state => state.fetchLikedSongs.songs);
+  const isLiked = likedSongs ? likedSongs.some(likedSong => likedSong.id === id) : false;
+  const [liked, setLiked] = useState(isLiked);
 
   // State declarations moved inside the functional component
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
@@ -71,84 +82,76 @@ const PlaylistDetails = () => {
     }
   };
 
-  const pauseSong = () => {
-    audioRef.current.pause();
-    setIsPlaying(false);
-  };
-
-  const togglePlayPause = () => {
-    if (!currentlyPlaying || audioRef.current.paused) {
-      if (!currentlyPlaying) {
-        playSong(playlist.songs[0]); // Changed songs to playlist.songs
-      } else {
-        playSong(currentlyPlaying);
-      }
-    } else {
-      pauseSong();
+  
+  const playPreviousSong = () => {
+    if (currentSongIndex > 0) {
+      const newIndex = currentSongIndex - 1;
+      setCurrentSongIndex(newIndex);
+      playSong(playlist.songs[newIndex]);
     }
   };
   
-  const skipTrack = (forward = true) => {
-    const currentIndex = playlist.songs.findIndex(song => song === currentlyPlaying); // Changed songs to playlist.songs
-    let newIndex = currentIndex + (forward ? 1 : -1);
-    if (newIndex < 0) {
-      newIndex = playlist.songs.length - 1; // Changed songs to playlist.songs
-    } else if (newIndex >= playlist.songs.length) {
-      newIndex = 0;
+  const playNextSong = () => {
+    if (currentSongIndex < playlist.songs.length - 1) {
+      const newIndex = currentSongIndex + 1;
+      setCurrentSongIndex(newIndex);
+      playSong(playlist.songs[newIndex]);
     }
-    playSong(playlist.songs[newIndex]); // Changed songs to playlist.songs
-  };
-  
-
-  const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
-  const handleTimeBarClick = (e) => {
-    const clickedPosition = e.clientX - progressBarRef.current.getBoundingClientRect().left;
-    const timePerPixel = duration / progressBarRef.current.offsetWidth;
-    const newCurrentTime = clickedPosition * timePerPixel;
-    audioRef.current.currentTime = newCurrentTime;
-    setCurrentTime(newCurrentTime);
+
+  const toggleNavbar = () => {
+    setShowNavbar(!showNavbar);
   };
 
-  const handleTimeBarMouseDown = () => {
-    setIsDragging(true);
-  };
-
-  const handleTimeBarMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const calculateTimeBarWidth = () => {
-    if (duration) {
-      return (currentTime / duration) * 100 + '%';
+  const handleLike = () => {
+    if (liked) {
+      dispatch(unlikeSong(id));
     } else {
-      return '0%';
+      dispatch(likeSong(id));
     }
+    setLiked(!liked);
   };
 
-  const handleGoBack = () => {
-    window.history.back(); // Go back to the previous page
-  }
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
-    <div style={{ display: 'flex', minHeight: '110vh', backgroundColor: color, fontFamily: selectedFont }}>
-      <Navbar />
-      <div style={{ flex: 1, padding: '20px', color: 'white' }}>
+    
+    <div
+      style={{
+        display: "flex",
+        width: "100vw",
+        minHeight: "120vh",
+        backgroundColor: color,
+        fontFamily: selectedFont,
+        overflowx: "auto",
+      }}
+    >
+      
+      
+          {showNavbar && <Navbar />}
+          <div style={{ position: 'relative', zIndex: '9999' }}>
+          <div style={{ position: 'absolute', top: '10px', left: '5px', zIndex: '9999' }}>
+            <FontAwesomeIcon
+              icon={faBars}
+              style={{
+                cursor: 'pointer',
+                color: '#fff',
+                fontSize: '20px',
+                transform: showNavbar ? 'rotate(0deg)' : 'rotate(90deg)',
+                transition: 'transform 0.3s ease',
+              }}
+              onClick={toggleNavbar}
+            />
+          </div>
+          {/* Your other component content here */}
+        </div>
+          
+      <div className='template-background-wrapper' style={{ overflowY: 'auto', flex: 1 }}>
+      
+        
         <Container>
-              {/* <Link to="/home" style={{ textDecoration: 'none' }}>
-               <div className="back-to-home" onClick={handleGoBack}>
-              <span className="arrow-icon" style={{ marginRight: '5px', fontSize: '25px' }}>&#8592;</span>
-              <span className="button-text">Back to Home</span>
-            </div>
-             </Link> */}
+              
 
           {loading ? (
             <Spinner animation="border" role="status">
@@ -186,8 +189,7 @@ const PlaylistDetails = () => {
                     <div style={{ fontSize: '16px', fontWeight: 'bold' }}>{song.name}</div>
                     <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center' }}>
                       <span style={{ marginRight: '10px', fontWeight: 'normal' }}>{song.name}</span>
-                      {/* Heart icon */}
-                      <FontAwesomeIcon icon={faHeart} style={{ color: '#FFFFFF', marginLeft: '1120px', fontSize: '20px', marginTop: '-20px' }} />
+                      <FontAwesomeIcon icon={liked ? solidHeart : regularHeart} onClick={handleLike} style={{ cursor: 'pointer', color: liked ? '#fff' : '#fff', marginLeft: '1000px', position: 'absolute' }} />
                     </div>
                   </div>
                 </div>
@@ -195,9 +197,40 @@ const PlaylistDetails = () => {
               </div>
             )
           )}
+          
+          <div style={{ position: 'fixed', top: '91.8%', left: '46.4%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+              <button
+                onClick={playPreviousSong}
+                style={{
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                }}
+              >
+                <FaStepBackward />
+              </button>
+            </div>
+            <div style={{ position: 'fixed', top: '93%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+              <button
+                onClick={playNextSong}
+                style={{
+                  marginBottom: "20px",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                }}
+              >
+                <FaStepForward />
+              </button>
+              
+            </div>
         </Container>
      
       </div>
+      
+      
     </div>
   );
 };

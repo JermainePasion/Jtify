@@ -8,7 +8,9 @@ import Song from '../Song';
 import MusicPlayer from '../MusicPlayer';
 import { setCurrentlyPlayingSong, togglePlayerVisibility } from '../../actions/musicPlayerActions';
 import { updatePlayCount } from "../../actions/songActions";
-
+import { FaStepForward, FaStepBackward } from "react-icons/fa";
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 const Discovery = () => {
   const dispatch = useDispatch();
   const [selectedGenre, setSelectedGenre] = useState('');
@@ -23,6 +25,7 @@ const Discovery = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [query, setQuery] = useState('');
+  const [showNavbar, setShowNavbar] = useState(true);
   const audioRef = useRef(new Audio());
   const progressBarRef = useRef(null);
 
@@ -40,7 +43,6 @@ const Discovery = () => {
     setSelectedGenre(genre);
     setShowGenres(false); 
   };
-
   const handleGoBack = () => {
     setSelectedGenre(''); 
     setShowGenres(true); 
@@ -67,6 +69,9 @@ const Discovery = () => {
     };
   }, [isDragging]);
 
+  
+
+
   const playSong = async (song) => {
     setCurrentlyPlaying(song);
     dispatch(setCurrentlyPlayingSong(song));
@@ -86,50 +91,34 @@ const Discovery = () => {
     setIsPlaying(false);
   };
 
-  const togglePlayPause = () => {
-    if (!currentlyPlaying || audioRef.current.paused) {
-      if (!currentlyPlaying) {
-        playSong(genreSongs[0]);
-      } else {
-        playSong(currentlyPlaying);
-      }
-    } else {
-      pauseSong();
+  
+
+  const playPreviousSong = () => {
+    let previousIndex = genreSongs.findIndex(song => song === currentlyPlaying) - 1;
+    if (previousIndex < 0) {
+      previousIndex = genreSongs.length - 1;
     }
+    playSong(genreSongs[previousIndex]);
   };
-
-  const skipTrack = (forward = true) => {
-    const currentIndex = genreSongs.findIndex(song => song === currentlyPlaying);
-    let newIndex = currentIndex + (forward ? 1 : -1);
-    if (newIndex < 0) {
-      newIndex = genreSongs.length - 1;
-    } else if (newIndex >= genreSongs.length) {
-      newIndex = 0;
+  
+  const playNextSong = () => {
+    let nextIndex = genreSongs.findIndex(song => song === currentlyPlaying) + 1;
+    if (nextIndex >= genreSongs.length) {
+      nextIndex = 0;
     }
-    playSong(genreSongs[newIndex]);
+    playSong(genreSongs[nextIndex]);
   };
 
-  const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.addEventListener('ended', playNextSong);
+      return () => {
+        audioRef.current.removeEventListener('ended', playNextSong);
+      };
+    }
+  }, [currentlyPlaying, playNextSong]);
+  
 
-  const handleTimeBarClick = (e) => {
-    const clickedPosition = e.clientX - progressBarRef.current.getBoundingClientRect().left;
-    const timePerPixel = duration / progressBarRef.current.offsetWidth;
-    const newCurrentTime = clickedPosition * timePerPixel;
-    audioRef.current.currentTime = newCurrentTime;
-    setCurrentTime(newCurrentTime);
-  };
-
-  const handleTimeBarMouseDown = () => {
-    setIsDragging(true);
-  };
-
-  const handleTimeBarMouseUp = () => {
-    setIsDragging(false);
-  };
 
   const calculateTimeBarWidth = () => {
     if (duration) {
@@ -167,16 +156,43 @@ const Discovery = () => {
     ['Afrobeat', 'Afrobeat'],
     ['Highlife', 'Highlife']
   ];
+  
 
   function getStripeColor(index) {
     const colors = ['#FF5733', '#33FFA8', '#3366FF', '#FF33EB', '#FFD933', '#33FFFA', '#B33AFF', '#FF334D']; // Example colors
     return colors[index % colors.length]; 
   }
 
+  const toggleNavbar = () => {
+    setShowNavbar(!showNavbar);
+  };
+
   return (
-    <div style={{ display: 'flex', minHeight: '115vh', backgroundColor: color, fontFamily: selectedFont, minHeight: '100vh' }}>
-      <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
+    <div
+      style={{
+        display: "flex",
+        width: "100vw",
+        minHeight: "120vh",
+        backgroundColor: color,
+        fontFamily: selectedFont,
+        overflowx: "auto",
+      }}
+    >
+      {showNavbar && <Navbar />}
       <div className='template-background' style={{ flex: 1, padding: '20px', color: 'white' }}>
+      <div style={{ position: 'absolute', top: '10px', left: '5px' }}>
+            <FontAwesomeIcon
+              icon={faBars}
+              style={{
+                cursor: 'pointer',
+                color: '#fff',
+                fontSize: '20px',
+                transform: showNavbar ? 'rotate(0deg)' : 'rotate(90deg)',
+                transition: 'transform 0.3s ease',
+              }}
+              onClick={toggleNavbar}
+            />
+          </div>
         <h2 style={{ color: 'white', textAlign: 'left', fontFamily: selectedFont, fontSize: '40px' }}>Discovery Page</h2>
 
         {selectedGenre && (
@@ -211,10 +227,42 @@ const Discovery = () => {
                 ))
               )
             )}
+            
           </div>
         )}
       </div>
+      
+      <div style={{ position: 'fixed', top: '91.4%', left: '46.4%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+              <button
+                onClick={playPreviousSong}
+                style={{
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                }}
+              >
+                <FaStepBackward />
+              </button>
+            </div>
+            <div style={{ position: 'fixed', top: '92.8%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+              <button
+                onClick={playNextSong}
+                style={{
+                  marginBottom: "20px",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                }}
+              >
+                <FaStepForward />
+              </button>
+              
+            </div>
+           
     </div>
+    
   );
 };
 

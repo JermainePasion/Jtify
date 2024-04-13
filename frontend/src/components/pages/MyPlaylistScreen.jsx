@@ -1,8 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMyPlaylists } from '../../actions/songActions';
 import Navbar from '../Navbar';
 import { Link } from 'react-router-dom';
+import { FaStepBackward, FaStepForward } from 'react-icons/fa';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const PlaylistScreen = () => {
   const dispatch = useDispatch();
@@ -10,15 +13,21 @@ const PlaylistScreen = () => {
   const userDetails = useSelector((state) => state.userDetails);
   const color = userDetails?.user?.data?.profile_data?.color || '#CCC'; // Adjusted color to off light gray
   const selectedFont = userDetails?.user?.data?.profile_data?.font || 'defaultFont';
+  const [showNavbar, setShowNavbar] = useState(true);
 
   useEffect(() => {
     dispatch(fetchMyPlaylists());
   }, [dispatch]);
 
+  const toggleNavbar = () => {
+    setShowNavbar(!showNavbar);
+  };
+
   return (
     <div style={{ fontFamily: selectedFont, display: 'flex', backgroundColor: color, minHeight: '100vh', color: '#000' }}> {/* Changed text color to black */}
       <div style={{ flex: '0 0 auto' }}>
-        <Navbar />
+      {showNavbar && <Navbar />}
+      
       </div>
       <div className='template-background' style={{ 
         flex: 1, 
@@ -29,6 +38,19 @@ const PlaylistScreen = () => {
         backgroundRepeat: 'no-repeat'
 
       }}>
+        <div style={{ position: 'absolute', top: '10px', left: '5px' }}>
+            <FontAwesomeIcon
+              icon={faBars}
+              style={{
+                cursor: 'pointer',
+                color: '#fff',
+                fontSize: '20px',
+                transform: showNavbar ? 'rotate(0deg)' : 'rotate(90deg)',
+                transition: 'transform 0.3s ease',
+              }}
+              onClick={toggleNavbar}
+            />
+          </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <h2 style={{ color: 'white', fontSize: '32px', marginBottom: '20px' }}>My Playlists</h2> {/* Changed text color to black */}
           <Link to="/add-playlist" style={{ textDecoration: 'none' }}>
@@ -57,6 +79,31 @@ const PlaylistScreen = () => {
           </div>
         )}
       </div>
+      <div style={{ position: 'fixed', top: '95%', left: '48%', transform: 'translate(-100%, -105%)', zIndex: '9999', display: 'flex' }}>
+          <button
+            style={{
+              backgroundColor: "transparent",
+              border: "none",
+              fontSize: "max(2vw, 18px)",
+              color: "#9d9fa3",
+            }}
+          >
+            <FaStepBackward />
+          </button>
+        </div>
+        <div style={{ position: 'fixed', top: '92.5%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+          <button
+            style={{
+              marginBottom: "20px",
+              backgroundColor: "transparent",
+              border: "none",
+              fontSize: "max(2vw, 18px)",
+              color: "#9d9fa3",
+            }}
+          >
+            <FaStepForward />
+          </button>
+        </div>
     </div>
   );
 };

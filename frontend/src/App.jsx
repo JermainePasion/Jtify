@@ -134,7 +134,7 @@ function App() {
         />
         
       </Routes>
-      {isAuthenticated() && <PlayerNiMiah />}
+      {isAuthenticated() && !['/', '/register', '/verify-otp', '/requestPassword', '/reset/:uid/:token'].includes(window.location.pathname) && <PlayerNiMiah />}
     </Router>
   );
 }

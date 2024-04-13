@@ -261,7 +261,7 @@ const Favorites = () => {
               </button>
             </div>
           </div>
-          <div style={{ position: 'absolute', top: '10px', left: '0px' }}>
+          <div style={{ position: 'absolute', top: '10px', left: '5px' }}>
             <FontAwesomeIcon
               icon={faBars}
               style={{

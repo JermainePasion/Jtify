@@ -11,6 +11,10 @@ import axios from 'axios';
 import VerifiedIcon from '../img/VerifiedIcon.png';
 import { updatePlayCount } from '../../actions/songActions';
 import { setCurrentlyPlayingSong, togglePlayerVisibility } from '../../actions/musicPlayerActions';
+import { FaStepForward, FaStepBackward } from "react-icons/fa";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 const UserProfile = () => {
     const dispatch = useDispatch();
@@ -25,7 +29,9 @@ const UserProfile = () => {
     const selectedFont = user?.data?.profile_data?.font || 'defaultFont';
     const [scrollPosition, setScrollPosition] = useState(0);
     const [showMinimizedProfile, setShowMinimizedProfile] = useState(false);
+    const [currentSongIndex, setCurrentSongIndex] = useState(0);
     const Songs = useSelector((state) => state.songList.songs);
+    const [showNavbar, setShowNavbar] = useState(true);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -72,41 +78,90 @@ const UserProfile = () => {
         }
     }, [scrollPosition]);
     const playSong = async (index) => {
-        const song = Songs[index];
+        const song = uploadedSongs[index];
         console.log("Playing song:", song);
         try {
-          // Dispatch the updatePlayCount action to update the play count
-          await dispatch(updatePlayCount(song.id, user.data.user_data.id));
+            // Dispatch the updatePlayCount action to update the play count
+            await dispatch(updatePlayCount(song.id, user.data.user_data.id));
         } catch (error) {
-          // Handle any errors
-          console.error('Error updating play count:', error);
+            // Handle any errors
+            console.error('Error updating play count:', error);
         }
-      
-        setCurrentlyPlayingSong(song);
+
         dispatch(setCurrentlyPlayingSong(song));
         dispatch(togglePlayerVisibility());
-      };
-
-      const handleSongClick = (index) => {
-        console.log("Clicked song index:", index);
-        // Play the clicked song
-        playSong(index);
     };
-    
 
+    const handleSongClick = (index) => {
+        if (currentSongIndex === index) {
+          setCurrentSongIndex(null);
+        } else {
+          setCurrentSongIndex(index);
+          playSong(index); // Play the clicked song
+        }
+      };
+    
+    const playPreviousSong = () => {
+        if (currentSongIndex > 0) {
+            const newIndex = currentSongIndex - 1;
+            setCurrentSongIndex(newIndex);
+            playSong(newIndex);
+        }
+    };
+
+    const playNextSong = () => {
+        if (currentSongIndex < uploadedSongs.length - 1) {
+            const newIndex = currentSongIndex + 1;
+            setCurrentSongIndex(newIndex);
+            playSong(newIndex);
+        }
+    };
+
+    const toggleNavbar = () => {
+        setShowNavbar(!showNavbar);
+      };
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
-            <Navbar />
+        <div
+      style={{
+        display: "flex",
+        width: "100vw",
+        minHeight: "120vh",
+        backgroundColor: color,
+        fontFamily: selectedFont,
+        overflowx: "auto",
+      }}
+    >
+            {showNavbar && <Navbar />}
+            
             <div className='template-background-wrapper' style={{ overflowY: 'auto', flex: 1 }}>
+            
+                
+                
                 <div className='template-background' style={{
                     marginLeft: '10px',
                     position: 'relative',
                     padding: '10px 20px', // Increase padding for better spacing
                     backgroundSize: 'cover',
                 }}>
+                
+                    <div style={{ position: 'absolute', top: '10px', left: '5px', zIndex: 9999 }}>
+                        <FontAwesomeIcon
+                            icon={faBars}
+                            style={{
+                                cursor: 'pointer',
+                                color: '#fff',
+                                fontSize: '20px',
+                                transform: showNavbar ? 'rotate(0deg)' : 'rotate(90deg)',
+                                transition: 'transform 0.3s ease',
+                            }}
+                            onClick={toggleNavbar}
+                        />
+                    </div>
+                     
                     {error && <p>Error: {error}</p>}
                     {userData && (
-                        <div>
+                        
+                        <div>               
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <div style={{ flex: '1', backgroundImage: `url(${profileData.image})`, backgroundSize: 'cover', backgroundPosition: 'center', height: '250px', marginRight: '-20px', marginLeft: '-20px', marginTop: '-10px', borderRadius: '15px', position: 'relative' }}>
                                     <h2 style={{ color: 'white', textAlign: 'left', fontFamily: selectedFont, fontSize: '20px', marginTop: showMinimizedProfile ? '10px' : '110px', marginBottom: '1px', marginLeft: '75px', transition: 'margin-top 0.5s' }}><img src={VerifiedIcon} alt="Verified Icon" style={{ width: '30px', height: '30px', marginTop:'-140px', marginLeft: '-30px', }} />Verified Artist</h2>
@@ -115,8 +170,8 @@ const UserProfile = () => {
                             </div>
                             {showMinimizedProfile && (
                                 <div style={{ display: 'flex', position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 999 }}>
-                                    <div style={{ flex: '1', backgroundImage: `url(${profileData.image})`, backgroundSize: 'cover', backgroundPosition: 'center', height: '70px', marginRight: '10px', marginLeft: '350px', marginTop: '0px', borderRadius: '15px', position: 'relative', mixBlendMode: 'darken'  }}>
-                                    <strong style={{ color: 'white', textAlign: 'left', fontFamily: selectedFont, fontSize: '50px', marginTop: showMinimizedProfile ? '10px' : '5px', marginLeft: '50px', transition: 'margin-top 0.5s' }}>{userData.name}'s Profile</strong>
+                                    <div style={{ flex: '1', backgroundImage: `url(${profileData.image})`, backgroundSize: 'cover', backgroundPosition: 'center', height: '70px', marginRight: '10px', marginLeft: showNavbar ? '355px' : '20px', marginTop: '0px', borderRadius: '15px', position: 'relative', mixBlendMode: 'darken'  }}>
+                                        <strong style={{ color: 'white', textAlign: 'left', fontFamily: selectedFont, fontSize: '50px', marginTop: showMinimizedProfile ? '10px' : '5px', marginLeft: '50px', transition: 'margin-top 0.5s' }}>{userData.name}'s Profile</strong>
                                     </div>
                                 </div>
                             )}
@@ -138,6 +193,33 @@ const UserProfile = () => {
                                         ))}
                                     </ListGroup>
                                 </div>
+                                <div style={{ position: 'fixed', top: '91.8%', left: '46.4%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+              <button
+                onClick={playPreviousSong}
+                style={{
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                }}
+              >
+                <FaStepBackward />
+              </button>
+            </div>
+            <div style={{ position: 'fixed', top: '93%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+              <button
+                onClick={playNextSong}
+                style={{
+                  marginBottom: "20px",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                }}
+              >
+                <FaStepForward />
+              </button>
+            </div>
                                 <h3 style={{ color: 'white', fontFamily: selectedFont, fontSize: '24px', marginBottom: '10px' }}>Created Playlists</h3>
                                 <div style={{ display: 'flex', flexDirection: 'row', overflowX: 'auto' }}>
                                     {createdPlaylists.map(playlist => (

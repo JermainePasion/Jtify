@@ -149,22 +149,7 @@ function PlayerNiMiah() {
     playSong(newIndex);
   };
   
-  useEffect(() => {
-    audioRef.current.addEventListener('ended', handleSongEnd);
-
-    return () => {
-      audioRef.current.removeEventListener('ended', handleSongEnd);
-    };
-  }, [currentlyPlaying, skipTrack]);
-
-  const handleSongEnd = () => {
-    if (isRepeat) {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play();
-    } else {
-      skipTrack(true);
-    }
-  };
+  
 
   const handleAdFinish = () => {
     console.log("Ad finished. Resuming playback...");
@@ -434,7 +419,7 @@ function PlayerNiMiah() {
             <button
               onClick={togglePlayPause}
               style={{
-                marginBottom: "20px",
+                marginBottom: "35px",
                 backgroundColor: "transparent",
                 border: "none",
                 fontSize: "max(2vw, 18px)",

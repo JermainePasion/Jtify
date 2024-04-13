@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { contactUs, getUserDetails } from '../../actions/userActions';
 import Navbar from '../Navbar';
 import { FaEnvelope, FaMapMarker, FaPhone } from 'react-icons/fa';
+import { FaStepBackward, FaStepForward } from 'react-icons/fa';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ContactLoggedIn = () => {
   const [formData, setFormData] = useState({
@@ -23,6 +26,7 @@ const ContactLoggedIn = () => {
   const isAuthenticated = user !== null; // Check if user is authenticated
   const color = user?.data?.profile_data?.color || '#defaultColor';
   const font = user?.data?.profile_data?.font || 'defaultFont';
+  const [showNavbar, setShowNavbar] = useState(true);
 
   useEffect(() => {
     dispatch(getUserDetails());
@@ -34,6 +38,10 @@ const ContactLoggedIn = () => {
       ...prevData,
       [name]: value,
     }));
+  };
+
+  const toggleNavbar = () => {
+    setShowNavbar(!showNavbar);
   };
 
   const handleSubmit = async (e) => {
@@ -52,17 +60,30 @@ const ContactLoggedIn = () => {
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: font }}>
-    <Navbar style={{ flex: '0 0 auto', width: '200px', backgroundColor: 'black', color: 'white' }} />
+    <div style={{ display: 'flex', minHeight: '120vh', backgroundColor: color, fontFamily: font }}>
+    {showNavbar && <Navbar />}
     <div className='template-background' style={{ 
         flex: 1, 
         marginLeft: '10px', 
         position: 'relative', 
         padding: '10px 20px', // Increase padding for better spacing
-        backgroundSize: '110%',
+        backgroundSize: '120%',
         backgroundRepeat: 'no-repeat'
 
       }}>
+         <div style={{ position: 'absolute', top: '10px', left: '5px' }}>
+            <FontAwesomeIcon
+              icon={faBars}
+              style={{
+                cursor: 'pointer',
+                color: '#fff',
+                fontSize: '20px',
+                transform: showNavbar ? 'rotate(0deg)' : 'rotate(90deg)',
+                transition: 'transform 0.3s ease',
+              }}
+              onClick={toggleNavbar}
+            />
+          </div>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
 
           {/* Information Box 1 */}
@@ -149,6 +170,31 @@ const ContactLoggedIn = () => {
           </p>
         )}
       </div>
+      <div style={{ position: 'fixed', top: '95%', left: '48%', transform: 'translate(-100%, -105%)', zIndex: '9999', display: 'flex' }}>
+          <button
+            style={{
+              backgroundColor: "transparent",
+              border: "none",
+              fontSize: "max(2vw, 18px)",
+              color: "#9d9fa3",
+            }}
+          >
+            <FaStepBackward />
+          </button>
+        </div>
+        <div style={{ position: 'fixed', top: '92.5%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+          <button
+            style={{
+              marginBottom: "20px",
+              backgroundColor: "transparent",
+              border: "none",
+              fontSize: "max(2vw, 18px)",
+              color: "#9d9fa3",
+            }}
+          >
+            <FaStepForward />
+          </button>
+        </div>
     </div>
   );
 };

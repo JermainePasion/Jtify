@@ -6,6 +6,9 @@ import { fetchMyPlaylists } from '../../actions/songActions';
 import Navbar from '../Navbar';
 import { getUserDetails } from '../../actions/userActions';
 import '../../designs/AddSong.css';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FaStepBackward, FaStepForward } from 'react-icons/fa';
 
 const AddSong = () => {
   const dispatch = useDispatch();
@@ -14,7 +17,7 @@ const AddSong = () => {
   const color = user?.data?.profile_data?.color || '#000';
   const selectedFont = user?.data?.profile_data?.font || 'Arial, sans-serif';
   const [isHovered, setIsHovered] = useState(false);
-
+  const [showNavbar, setShowNavbar] = useState(true);
   useEffect(() => {
     dispatch(fetchMyPlaylists());
   }, [dispatch]);
@@ -80,12 +83,30 @@ const AddSong = () => {
     'EDM'
   ];
 
+  const toggleNavbar = () => {
+    setShowNavbar(!showNavbar);
+  };
+
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: color, fontFamily: selectedFont }}>
-      <Navbar />
-      <div className='template-background' style={{ flex: 1, marginLeft: '10px', padding: '10px 0' }}>
+     <div style={{ display: 'flex', minHeight: '120vh', backgroundColor: color, fontFamily: selectedFont, minHeight: '100vh' }}>
+     {showNavbar && <Navbar />}
+     
+     <div className='template-background' style={{ flex: 1, padding: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center',minHeight: '120vh' }}>
+      <div style={{ position: 'absolute', top: '10px', left: '5px' }}>
+            <FontAwesomeIcon
+              icon={faBars}
+              style={{
+                cursor: 'pointer',
+                color: '#fff',
+                fontSize: '20px',
+                transform: showNavbar ? 'rotate(0deg)' : 'rotate(90deg)',
+                transition: 'transform 0.3s ease',
+              }}
+              onClick={toggleNavbar}
+            />
+          </div>
       <div className='card-addsong'>
-        <div style={{backgroundColor: color, border: 'none', borderRadius: '2.5rem', padding: '1rem 3rem', fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+        <div style={{backgroundColor: color, border: 'none', borderRadius: '2.5rem', padding: '1rem 3rem', fontSize: '16px', fontWeight: 'bold', display: 'flex', alignItems: 'center', flexDirection: 'row', marginTop: '-250px' }}>
         <div>
         <div style = {{color: 'white'}} >
           <h1>Add Song</h1>
@@ -159,6 +180,33 @@ const AddSong = () => {
           </div>
         </div>
       </div>
+      <div style={{ position: 'fixed', top: '95.2%', left: '48%', transform: 'translate(-100%, -105%)', zIndex: '9999', display: 'flex' }}>
+          <button
+           
+            style={{
+              backgroundColor: "transparent",
+              border: "none",
+              fontSize: "max(2vw, 18px)",
+              color: "#9d9fa3",
+            }}
+          >
+            <FaStepBackward />
+          </button>
+        </div>
+        <div style={{ position: 'fixed', top: '92.5%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
+          <button
+            
+            style={{
+              marginBottom: "20px",
+              backgroundColor: "transparent",
+              border: "none",
+              fontSize: "max(2vw, 18px)",
+              color: "#9d9fa3",
+            }}
+          >
+            <FaStepForward />
+          </button>
+        </div>
       </div>
     </div>
   );
