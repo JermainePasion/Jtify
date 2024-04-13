@@ -167,6 +167,7 @@ const uniqueLikedSongs = likedSongs.filter(song => {
       <>
               {uniqueLikedSongs
                 .filter(song => song.name.toLowerCase().includes(query.toLowerCase())) // Filter songs based on search query
+                .slice(0, 10) // Limit to 10 songs
                 .map((song, index) => (
                   <Song
                     key={song.id}
