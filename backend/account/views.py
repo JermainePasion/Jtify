@@ -472,10 +472,15 @@ class updateSubscriber(APIView):
 
     def post(self, request):
         try:
-            user = request.user
-            user.is_subscriber = True
-            user.save()
-            return Response({'message': 'User is now a subscriber'}, status=status.HTTP_200_OK)
+            q = request.data
+            end_date_from_paypal = q['subscriber']['next_billing_time'].split('T')[0]
+            user = q['user']['data']['user_data']['email']
+            qs = User.objects.filter(email__iexact=user)
+            if qs.exists():
+                qs.update(is_subscriber=True, subscription_end_date=end_date_from_paypal)
+                return Response({'message': 'User is now a subscriber'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'message': 'No User Found'}, status=status.HTTP_404_NOT_FOUND)
         except:
             return Response({'message': 'Something went wrong'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             

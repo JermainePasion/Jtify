@@ -525,6 +525,7 @@ export const artistRegister = ( phone_number, youtube_link)  => async (dispatch,
       dispatch({ type: USER_UPDATE_SUBSCRIBER_REQUEST });
       
       const { userLogin: { userInfo } } = getState();
+      const { userDetails: { user } } = getState();
       const config = {
         headers: {
           Authorization: `Bearer ${userInfo.data.token.access}`,
@@ -533,7 +534,7 @@ export const artistRegister = ( phone_number, youtube_link)  => async (dispatch,
       };
   
       // Make API call to update user's subscription status
-      const response = await instance.post('api/user/subscriber/', { subscriber }, config);
+      const response = await instance.post('api/user/subscriber/', { subscriber, user }, config);
   
       // Dispatch success action with the updated subscriber data
       dispatch({ type: USER_UPDATE_SUBSCRIBER_SUCCESS, payload: response.data });

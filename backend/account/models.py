@@ -61,6 +61,7 @@ class User(AbstractBaseUser):
   is_artist = models.BooleanField(default=False)
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
+  subscription_end_date = models.DateField(null=True, blank=True)
 #   is_email_verified = models.BooleanField(default=False)
 
   objects = UserManager()

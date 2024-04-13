@@ -147,11 +147,14 @@ const Navbar = () => {
       </h1>
       </> 
       )}
+
+      {(!user?.data?.user_data?.is_superuser || !user?.data?.user_data?.is_artist || !user?.data?.user_data?.is_subscriber) &&
       <h1 style={{ direction: 'ltr' }}>
         <button className='Navbar-items' onClick={goToPlans} style={{ fontFamily: selectedFont }}>
           <BsList /> Subscription
         </button>
       </h1>
+      }
     </Card>
   
     <Card className="navbar-card" style={{ marginBottom: '120px'}}>

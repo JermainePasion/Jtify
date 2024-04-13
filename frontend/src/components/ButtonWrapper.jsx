@@ -22,12 +22,12 @@ function ButtonWrapper({ type, plan }) {
   const { userInfo } = userLogin;
   const dispatchUpdateSubscriber = useDispatch();
 
-  const approveHandler = ({ data, actions }) => {
-    console.log('Approved');
-    setSubscriptionApproved(true); 
-    dispatchUpdateSubscriber(userUpdateSubscriber(userInfo));
-    
+  const approveHandler = (data, actions) => {
+    actions.subscription.get().then(function (subscription) {
+      dispatchUpdateSubscriber(userUpdateSubscriber(subscription.billing_info));
+    })
   };
+
 
   return (
     <PayPalButtons
