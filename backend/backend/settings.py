@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'songs',
     'colorfield',
     'ads',
+    'storages',
 ]
 
 REST_FRAMEWORK = {
@@ -197,3 +198,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media_root')
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_TIMEZONE = "Asia/Manila"
+
+
+#S3 BUCKETS CONFIG
+
+AWS_ACCESS_KEY_ID = 'AKIA3FEX7TKV3YKQCDAM'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'jtify-bucket'
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
