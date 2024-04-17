@@ -5,6 +5,7 @@ import { register } from '../../actions/userActions';
 import FormContainer from '../FormContainer';
 import { useNavigate, Link } from 'react-router-dom';
 import Footer from '../Footer';
+import JTIFY from '../img/JTIFY.png'
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -47,8 +48,8 @@ const submitHandler = async (e) => {
 };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
-            <Card style={{ width: '400px', padding: '20px', border: '2px solid white', borderRadius: '10px'}}>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#000000'}}>
+            <Card style={{ width: '400px', padding: '20px', border: '2px solid white', borderRadius: '10px', zIndex: '2'}}>
                 <FormContainer>
                     <h1 style={{ textAlign: 'center', color: 'white' }}>Sign Up</h1>
 
@@ -106,12 +107,30 @@ const submitHandler = async (e) => {
                 </div>
             </Card>
             <Footer/>
-            <div className="background">
+            <div className="background" style={{
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    right: '0',
+    bottom: '0',
+    overflow: 'hidden', /* To ensure the image doesn't overflow */
+    zIndex:'1'
+}}>
+    <img src={JTIFY} style={{
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover', /* This will make the image cover the entire container */
+        zIndex:'2'
+    }} />
+</div>
                 <div className="logo-image">
                      <img src="Jlogo.png" alt="background" width={200} />
                 </div>
             </div>
-        </div>
+        
   );
 }
 

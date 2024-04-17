@@ -14,6 +14,7 @@ import { updatePlayCount } from "../../actions/songActions";
 import { FaStepForward, FaStepBackward } from "react-icons/fa";
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import transbg from '../img/transparentBackground.png'
 
 function Home() {
   const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
@@ -99,16 +100,20 @@ const uniqueLikedSongs = likedSongs.filter(song => {
         overflowx: "auto",
       }}
     >
+      
      {showNavbar && <Navbar />}
      
-     <div className='template-background' style={{ 
+     <div  style={{ 
         flex: 1, 
+        backgroundColor: 'rgba(8, 8, 8, 0.8)',
         position: 'relative', 
         padding: '10px', // Adjust padding for better spacing
         backgroundSize: 'cover', // Use 'cover' to fill the container
         backgroundPosition: 'center', // Center the background image
         overflow: 'auto' // Add overflow for content that exceeds the container
       }}>
+        
+        
         <div style={{ position: "absolute", top: "10px", right: "30px" }}>
   <div
     style={{

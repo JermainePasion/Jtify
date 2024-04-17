@@ -6,6 +6,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import FormContainer from '../FormContainer';
 import Footer from '../Footer';
 import Jlogo from '../img/Jlogo.png'
+import JTIFY from '../img/JTIFY.png'
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -30,8 +31,8 @@ function Login() {
 
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <Card style={{ width: '400px', padding: '20px', border: '2px solid white', borderRadius: '10px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#000000'}}>
+      <Card style={{ width: '400px', padding: '20px', border: '2px solid white', borderRadius: '10px', zIndex: '2'}}>
         <FormContainer>
           <h1 style={{ textAlign: 'center', color: 'white' }}>Sign In</h1>
 
@@ -84,13 +85,31 @@ function Login() {
         </div>
       </Card>
       <Footer />
-
-      <div className="background">
-        <div className="logo-image">
+      <div className="background" style={{
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    right: '0',
+    bottom: '0',
+    overflow: 'hidden', /* To ensure the image doesn't overflow */
+    zIndex:'1'
+}}>
+    <img src={JTIFY} style={{
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover', /* This will make the image cover the entire container */
+        zIndex:'2'
+    }} />
+</div>
+      <div className="background" style={{zIndex:'1', position:'absolute'}}>
+       
           <img src={Jlogo} alt="background" width={200} />
         </div>
       </div>
-    </div>
+    
   );
 }
 

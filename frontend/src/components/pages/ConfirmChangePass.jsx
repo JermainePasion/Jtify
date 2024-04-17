@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Card, Form, Button } from 'react-bootstrap'; // Add missing imports
+import JTIFY from '../img/JTIFY.png';
 
 function ConfirmChangePass() {
   const { uid, token } = useParams();
@@ -44,8 +45,8 @@ function ConfirmChangePass() {
   }, [navigate]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
-      <Card style={{ width: '400px', padding: '20px', border: '2px solid white', borderRadius: '10px'}}>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#000000'}}>
+      <Card style={{ width: '400px', padding: '20px', border: '2px solid white', borderRadius: '10px', zIndex: '2'}}>
         <Form onSubmit={submitHandler}>
           <h1 style={{ textAlign: 'center', color: 'white' }}>Confirm Change Password</h1>
 
@@ -75,11 +76,29 @@ function ConfirmChangePass() {
           </Button>
         </Form>
 
-        <div className="background">
+        <div className="background" style={{
+    position: 'absolute',
+    top: '0',
+    left: '0',
+    right: '0',
+    bottom: '0',
+    overflow: 'hidden', /* To ensure the image doesn't overflow */
+    zIndex:'1'
+}}>
+    <img src={JTIFY} style={{
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover', /* This will make the image cover the entire container */
+        zIndex:'2'
+    }} />
+</div>
           <div className="logo-image">
             <img src="Jlogo.png" alt="background" width={200} />
           </div>
-        </div>
+        
       </Card>
     </div>
   );

@@ -11,7 +11,7 @@ from django.views.generic import TemplateView
 from . import views
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='index.html'), name='home'),
+    path('', TemplateView.as_view(template_name='build/index.html'), name='home'),
     path('admin/', admin.site.urls),
     # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # new
     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), # new

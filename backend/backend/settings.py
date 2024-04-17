@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-1c$e&2#ari&@+z@a1k9gbs@hoyw+rwi_#8&vv=ax-sr%ezk+ax
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.herokuapp.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -75,7 +75,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, '..', 'frontend', 'build')],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -186,11 +186,11 @@ AUTH_USER_MODEL = 'account.User' # new
 
 
 #for songs
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static_my_project',
-    os.path.join(BASE_DIR, '../frontend/build/static')
+    BASE_DIR / 'templates'/'build'
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static', 'static_root')

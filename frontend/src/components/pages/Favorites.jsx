@@ -170,7 +170,7 @@ const Favorites = () => {
       }}>
         <Container fluid>
           <div className="playlist-header-container" style={{ display: 'flex', alignItems: 'center', marginBottom: '20px', position: 'relative' }}>
-            <Image src={likedImage} alt="Liked" className="playlist-image" />
+            <img src={likedImage} alt="Liked" className="playlist-image" />
             <div className="text-container" style={{ marginLeft: '10px' }}>
               <p style={{ color: 'white', fontFamily: selectedFont }}>Playlist</p>
               <h2 className="mt-3 mb-3" style={{ color: 'white', fontSize: '50px', fontFamily: selectedFont }}>Liked Songs</h2>
