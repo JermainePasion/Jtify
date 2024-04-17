@@ -231,33 +231,7 @@ const uniqueLikedSongs = likedSongs.filter(song => {
               onClick={toggleNavbar}
             />
           </div>
-          <div style={{ position: 'fixed', top: '91%', left: '46.2%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
-              <button
-                onClick={playPreviousSong}
-                style={{
-                  backgroundColor: "transparent",
-                  border: "none",
-                  fontSize: "max(2vw, 18px)",
-                  color: "#fff",
-                }}
-              >
-                <FaStepBackward />
-              </button>
-            </div>
-            <div style={{ position: 'fixed', top: '91%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
-              <button
-                onClick={playNextSong}
-                style={{
-                  
-                  backgroundColor: "transparent",
-                  border: "none",
-                  fontSize: "max(2vw, 18px)",
-                  color: "#fff",
-                }}
-              >
-                <FaStepForward />
-              </button>
-            </div>
+          
       </div>
     </div>
   );

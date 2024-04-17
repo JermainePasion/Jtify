@@ -5,7 +5,7 @@ import Slider from "@mui/material/Slider";
 
 import { useDispatch, useSelector } from "react-redux";
 import { listAds } from "../actions/adsActions";
-import { setCurrentlyPlayingSong, togglePlayerVisibility } from "../actions/musicPlayerActions"; 
+import { setCurrentlyPlayingSong, togglePlayerVisibility } from "../actions/musicPlayerActions";
 
 
 function PlayerNiMiah() {
@@ -15,6 +15,8 @@ function PlayerNiMiah() {
   const [isMuted, setIsMuted] = useState(false);
   const [isShuffle, setIsShuffle] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(null);
+  const [tracks, setTracks] = useState([]); 
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [totalTimePlayed, setTotalTimePlayed] = useState(() => {
     const storedTimePlayed = localStorage.getItem('totalTimePlayed');
     return storedTimePlayed !== null ? parseInt(storedTimePlayed, 10) : 0;
@@ -23,10 +25,18 @@ function PlayerNiMiah() {
   const isSubscriber = user?.data?.user_data?.is_subscriber;
   const isArtist = user?.data?.user_data?.is_artist;
   const isSuperuser = user?.data?.user_data?.is_superuser;
-  
+  const uniqueLikedSongs = []; // Define uniqueLikedSongs array
+  const currentlyPlayingNiMiah = useSelector(
+    (state) => state.player.currentlyPlaying
+  )
+  const playlist = useSelector((state) => state.playlistView);
+  const { playlists } = playlist;
+  const songList = useSelector((state) => state.songList);
+  const { songs } = songList;
+
   const dispatch = useDispatch();
   const isMobileResolution = window.innerWidth <= 768
-  
+
   const currentlyPlaying = useSelector(
     (state) => state.player.currentlyPlayingSong
   );
@@ -45,7 +55,7 @@ function PlayerNiMiah() {
     return storedAdsCounter !== null
       ? parseInt(storedAdsCounter, 10)
       : Math.floor(Math.random() * 4);
-  }); // Assign random number between 0 to 3 for adsCounter
+  });
 
   useEffect(() => {
     localStorage.setItem("adsCounter", adsCounter);
@@ -89,7 +99,6 @@ function PlayerNiMiah() {
   }, [currentlyPlaying, adsCounter]);
 
   useEffect(() => {
-    // Stop the music when the player is not visible
     if (!isPlayerVisible && audioRef.current && !audioRef.current.paused) {
       audioRef.current.pause();
       setIsPlaying(false);
@@ -97,7 +106,6 @@ function PlayerNiMiah() {
   }, [isPlayerVisible]);
 
   useEffect(() => {
-    // Set the volume when the audio element is mounted
     if (audioRef.current) {
       audioRef.current.volume = volume / 100;
       setIsMuted(volume === 0);
@@ -105,14 +113,12 @@ function PlayerNiMiah() {
   }, [volume]);
 
   useEffect(() => {
-    // Load the song when currentlyPlaying changes
     if (currentlyPlaying) {
       loadSong();
     }
   }, [currentlyPlaying]);
 
   useEffect(() => {
-    // Show the player when a song starts playing
     if (currentlyPlaying && !isPlayerVisible) {
       dispatch(togglePlayerVisibility(true));
     }
@@ -121,7 +127,6 @@ function PlayerNiMiah() {
   const [sliderValue, setSliderValue] = useState(0);
 
   useEffect(() => {
-    // Update the slider value based on the current time of the audio
     const intervalId = setInterval(() => {
       if (audioRef.current && !audioRef.current.paused) {
         const currentTime = audioRef.current.currentTime;
@@ -130,13 +135,48 @@ function PlayerNiMiah() {
         setSliderValue(progress);
       }
     }, 100);
-  
+
     return () => clearInterval(intervalId);
   }, [currentlyPlaying, sliderValue]);
 
-
-  const songs = []; // Define songs array
-  const playSong = (index) => {}; // Define playSong function
+  const visibilityNiMiah = useSelector((state) => state.player.isVisible);
+  useEffect(() => {
+    if (!visibilityNiMiah) {
+      return; // If visibilityNiMiah is falsy, exit early
+    }
+  
+    console.log("Current track index:", currentTrackIndex);
+    console.log("Current track:", tracks[currentTrackIndex]);
+    console.log("Track length", tracks.length);
+    // If the current track is the last in the playlist or the first and there are playlists available
+    if ((currentTrackIndex === tracks.length - 1 || currentTrackIndex === 0) && playlists) {
+      console.log("Current track is the last in the playlist or the first");
+      const playlistsWithSongs = playlists.filter(playlist => playlist.songs.length > 0);
+      if (playlistsWithSongs.length === 0) {
+        console.log("No playlists with songs available");
+        // Handle the case when there are no playlists with songs
+        return;
+      }
+      const currentPlaylistIndex = playlistsWithSongs.findIndex(playlist => playlist.songs.some(song => song.id === (currentlyPlaying ? currentlyPlaying.id : null)));
+      console.log("error", currentPlaylistIndex);
+      console.log("Current playlist index:", currentPlaylistIndex);
+      if (currentPlaylistIndex !== -1 && currentPlaylistIndex < playlistsWithSongs.length - 1) {
+        console.log("Switching to the next playlist");
+        const nextPlaylistIndex = currentPlaylistIndex + Math.floor(Math.random() * (playlistsWithSongs.length - currentPlaylistIndex));
+        const nextPlaylist = playlistsWithSongs[nextPlaylistIndex];
+        console.log("Next playlist:", nextPlaylist);
+        setTracks(nextPlaylist.songs);
+        setCurrentTrackIndex(0); // Start playing from the first song of the next playlist
+      } else {
+        console.log("Reverting to the original songs list");
+        setTracks(songs); // Revert to the original songs list
+        setCurrentTrackIndex(songs.findIndex(song => song.id === currentlyPlaying.id));
+      }
+    }
+  }, [currentTrackIndex, tracks, currentlyPlaying, playlists, songs, visibilityNiMiah]);
+  const playSong = (index) => {
+    dispatch(setCurrentlyPlayingSong());
+   }; // Define playSong function
 
   const skipTrack = (forward = true, songList) => {
     let newIndex = currentSongIndex + (forward ? 1 : -1);
@@ -146,10 +186,10 @@ function PlayerNiMiah() {
       newIndex = 0;
     }
     setCurrentSongIndex(newIndex);
-    playSong(newIndex);
+    setCurrentlyPlayingSong(newIndex);
   };
-  
-  
+
+
 
   const handleAdFinish = () => {
     console.log("Ad finished. Resuming playback...");
@@ -253,7 +293,7 @@ function PlayerNiMiah() {
       skipTrack(false);
     }
   };
-  
+
   const handleForward = () => {
     if (isRepeat) {
       audioRef.current.currentTime = 0;
@@ -262,6 +302,26 @@ function PlayerNiMiah() {
       skipTrack(true);
     }
   };
+
+
+  const playPreviousSong= () => {
+    const prevIndex = currentTrackIndex - 1;
+    if (prevIndex >= 0) {
+      setCurrentTrackIndex(prevIndex);
+      dispatch(setCurrentlyPlayingSong(tracks[prevIndex]));
+      loadSong(tracks[prevIndex]);
+    }
+  };
+  
+  const playNextSong = () => {
+    const nextIndex = currentTrackIndex + 1;
+    if (nextIndex < tracks.length) {
+      setCurrentTrackIndex(nextIndex);
+      dispatch(setCurrentlyPlayingSong(tracks[nextIndex]));
+      loadSong(tracks[nextIndex]);
+    }
+  };
+
 
   const handleTimeBarChange = (event, newValue) => {
     // Check if the slider change is due to user interaction
@@ -273,7 +333,7 @@ function PlayerNiMiah() {
       setSliderValue(newValue);
     }
   };
-  
+
 
   const formatTime = (time) => {
     // Implement time formatting logic here
@@ -283,61 +343,66 @@ function PlayerNiMiah() {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
-  if (!user) {
+  const visibility = localStorage.getItem('visibilityNiMiah');
+
+  
+
+  if (!user || !visibility || visibility === "false") {
     return null;
   }
-
-  return (
-    <div
-      style={{
-        position: "fixed",
-        bottom: 0,
-        left: 0,
-        width: "100%",
-        backgroundColor: "#282828",
-        color: "#fff",
-        boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
-      }}
-    >
-      {currentAd && currentAd.audio ? (
-        <div style={{ textAlign: "center", marginTop: "10px" }}>
-          <img
-            src={currentAd.image}
-            alt="img"
-            style={{ width: "100%", maxHeight: "150px", borderRadius: "4px" }}
-          />
-          <audio
-            key={currentAd.audio}
-            controls
-            autoPlay
-            className="ad-audio"
-            onEnded={handleAdFinish}
+  else{
+    return (
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          backgroundColor: "#282828",
+          color: "#fff",
+          boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        {currentAd && currentAd.audio ? (
+          <div style={{ textAlign: "center", marginTop: "10px" }}>
+            <img
+              src={currentAd.image}
+              alt="img"
+              style={{ width: "10%", maxHeight: "150px", borderRadius: "4px" }}
+            />
+            <audio
+  key={currentAd.audio}
+  controls
+  autoPlay
+  className="ad-audio"
+  onEnded={handleAdFinish}
+  style={{ display: 'none' }}
+>
+  <source src={currentAd.audio} type="audio/mp3" />
+  Your browser does not support the audio tag.
+</audio>
+            <p style={{ color: "#b3b3b3", fontSize: "14px", marginTop: "5px" }}>
+              Advertisement{" "}
+              {/* {(
+                (audio.current.currentTime /
+                  audio.current.duration) *
+                100
+              ).toFixed(2)} */}
+              
+            </p>
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "20px",
+              borderTop: "1px solid #535353",
+            }}
           >
-            <source src={currentAd.audio} type="audio/mp3" />
-            Your browser does not support the audio tag.
-          </audio>
-          <p style={{ color: "#b3b3b3", fontSize: "14px", marginTop: "5px" }}>
-            Ad Progress:{" "}
-            {/* {(
-              (audio.current.currentTime /
-                audio.current.duration) *
-              100
-            ).toFixed(2)} */}
-            %
-          </p>
-        </div>
-      ) : (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "20px",
-            borderTop: "1px solid #535353",
-          }}
-        >
-          {currentlyPlaying && (
-            <div style={{ display: "flex", alignItems: "center" }}>
+            {currentlyPlaying && (
+          <div style={{ display: "flex", alignItems: "center" }}>
             <img
               src={currentlyPlaying.picture}
               alt="Album Art"
@@ -350,205 +415,199 @@ function PlayerNiMiah() {
                 borderRadius: "4px",
               }}
             />
-              <div>
-                <p
-                  style={{
-                    margin:  0,
-                    marginLeft: "-10px",
-                    fontWeight: "bold",
-                    fontSize: "2vw", // Adjusted to be 2% of the viewport width
-                    maxWidth: "200px",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {currentlyPlaying.name}
-                </p>
-                <p
-                  style={{
-                    margin: 0,
-                    marginLeft: "-10px",
-                    fontSize: "1.2vw", // Adjusted to be 1.2% of the viewport width
-                    color: "#b3b3b3",
-                  }}
-                >
-                  {currentlyPlaying.artist}
-                </p>
-              </div>
+            <div>
+              <p
+                style={{
+                  margin: 0,
+                  marginLeft: "-10px",
+                  fontWeight: "bold",
+                  fontSize: "2vw", // Adjusted to be 2% of the viewport width
+                  maxWidth: "200px",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {currentlyPlaying.name}
+              </p>
+              <p
+                style={{
+                  margin: 0,
+                  marginLeft: "-10px",
+                  fontSize: "1.2vw", // Adjusted to be 1.2% of the viewport width
+                  color: "#b3b3b3",
+                }}
+              >
+                {currentlyPlaying.artist}
+              </p>
             </div>
-          )}
-          <div
-  style={{
-    position: "fixed",
-    left: "50%",
-    transform: "translateX(-50%)",
-    display: "flex",
-    alignItems: "center",
-  }}
->
-            <button
-              onClick={toggleRepeat}
-              style={{
-                backgroundColor: "transparent",
-                marginBottom: "20px",
-                border: "none",
-                fontSize: "max(2vw, 18px)", // Adjust the font size to be 2% of the viewport width or 18px (whichever is larger)
-                color: "#fff",
-              }}
-            >
-            {isRepeat ? (
-              <BiRepeat style={{ color: "#8a63d2" }} />
-            ) : (
-              <BiRepeat style={{ color: "#fff" }} />
-            )}
-          </button>
-            <button
-              
-              style={{
-                opacity: "0",
-                backgroundColor: "transparent",
-                marginBottom: "20px",
-                border: "none",
-                fontSize: "max(2vw, 18px)",
-                color: "#fff",
-              }}
-            >
-              <FaStepBackward />
-            </button>
-            <button
-              onClick={togglePlayPause}
-              style={{
-                marginBottom: "35px",
-                backgroundColor: "transparent",
-                border: "none",
-                fontSize: "max(2vw, 18px)",
-                color: "#fff",
-                zIndex: '10'
-              }}
-            >
-              {isPlaying ? <FaPause /> : <FaPlay />}
-            </button>
-            <button
-              style={{
-                opacity: "0",
-                marginBottom: "20px",
-                backgroundColor: "transparent",
-                border: "none",
-                fontSize: "max(2vw, 18px)",
-                color: "#fff",
-              }}
-            >
-              <FaStepForward />
-            </button>
-            <button
-              onClick={toggleShuffle}
-              style={{
-                marginBottom: "20px",
-                backgroundColor: "transparent",
-                border: "none",
-                fontSize: "max(2vw, 18px)",
-                color: "#fff",
-              }}
-            >
-              <FaRandom style={{ color: isShuffle ? "#8a63d2" : "#fff" }} />
-            </button>
           </div>
+        )}
+            <div
+              style={{
+                position: "fixed",
+                left: "50%",
+                transform: "translateX(-50%)",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <button
+                onClick={toggleRepeat}
+                style={{
+                  backgroundColor: "transparent",
+                  marginBottom: "20px",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)", // Adjust the font size to be 2% of the viewport width or 18px (whichever is larger)
+                  color: "#fff",
+                }}
+              >
+                {isRepeat ? (
+                  <BiRepeat style={{ color: "#8a63d2" }} />
+                ) : (
+                  <BiRepeat style={{ color: "#fff" }} />
+                )}
+              </button>
+              <button
+                onClick={playPreviousSong}
+                style={{
+                  backgroundColor: "transparent",
+                  marginBottom: "20px",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)", // Adjust the font size to be 2% of the viewport width or 18px (whichever is larger)
+                  color: "#fff",
+                }}
+              >
+                <FaStepBackward />
+              </button>
+              <button
+                onClick={togglePlayPause}
+                style={{
+                  marginBottom: "35px",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                  zIndex: '10'
+                }}
+              >
+                {isPlaying ? <FaPause /> : <FaPlay />}
+              </button>
+              {/* <button
+                style={{
+                  opacity: "0",
+                  marginBottom: "20px",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                }}
+              >
+                <FaStepForward /> */}
+              {/* </button> */}
+              <button
+                onClick={playNextSong}
+                style={{
+                  backgroundColor: "transparent",
+                  marginBottom: "20px",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)", // Adjust the font size to be 2% of the viewport width or 18px (whichever is larger)
+                  color: "#fff",
+                }}
+              >
+                <FaStepForward style={{ color: "#fff" }}/>
+              </button>
+              <button
+                onClick={toggleShuffle}
+                style={{
+                  marginBottom: "20px",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                }}
+              >
+                <FaRandom style={{ color: isShuffle ? "#8a63d2" : "#fff" }} />
+              </button>
+              
+            
+          
+            </div>
+            <div
+              style={{
+                position: "fixed",
+                right: "20px",
+                bottom: "20px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <button
+                onClick={toggleMute}
+                style={{
+                  marginBottom: "5px",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontSize: "max(2vw, 18px)",
+                  color: "#fff",
+                }}
+              >
+                {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+              </button>
+              <Slider
+                value={volume}
+                onChange={handleVolumeChange}
+                aria-labelledby="continuous-slider"
+                style={{
+                  marginBottom: "5px",
+                  color: "#fff",
+                  width: "max(5vw, 60px)", // Adjusted to be 5% of the viewport width or 60px (whichever is larger)
+                  "& .MuiSlider-thumb": { width: "max(1.5vw, 15px)", height: "max(1.5vw, 15px)" }, // Adjusted to be 1.5% of the viewport width or 15px (whichever is larger)
+                }}
+              />
+            </div>
+          </div>
+        )}
+        {audioRef.current && audioRef.current.duration > 0 && (
           <div
             style={{
-              position: "fixed",
-              right: "20px",
-              bottom: "20px",
-              display: "flex",
-              alignItems: "center",
+              position: 'absolute',
+              bottom: '0px', // Adjusted bottom position
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 'max(30%, 200px)', // Adjusted to be 30% of the viewport width or 200px (whichever is larger)
+              cursor: 'pointer',
+              // Adjusted margin to bring it closer to the slider
             }}
           >
-            <button
-              onClick={toggleMute}
-              style={{
-                marginBottom: "5px",
-                backgroundColor: "transparent",
-                border: "none",
-                fontSize: "max(2vw, 18px)",
-                color: "#fff",
-              }}
-            >
-              {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-            </button>
-              <Slider
-              value={volume}
-              onChange={handleVolumeChange}
+            <Slider
+              value={sliderValue}
+              onChange={handleTimeBarChange}
               aria-labelledby="continuous-slider"
+              className="slider-container"
               style={{
-                marginBottom: "5px",
-                color: "#fff",
-                width: "max(5vw, 60px)", // Adjusted to be 5% of the viewport width or 60px (whichever is larger)
-                "& .MuiSlider-thumb": { width: "max(1.5vw, 15px)", height: "max(1.5vw, 15px)" }, // Adjusted to be 1.5% of the viewport width or 15px (whichever is larger)
+                color: '#fff',
+                width: '100%',
+                height: '0.2rem', // Adjusted height for more precise control
               }}
             />
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: 'max(0.8vw, 10px)', // Adjusted to be 0.8% of the viewport width or 10px (whichever is larger)
+                marginTop: '0.4rem', // Adjusted margin to bring it closer to the slider
+              }}
+            >
+              <span>{formatTime(audioRef.current.currentTime)}</span>
+              <span>{formatTime(audioRef.current.duration)}</span>
+            </div>
+            
           </div>
-        </div>
-      )}
-      {audioRef.current && audioRef.current.duration > 0 && (
-  <div
-    style={{
-      position: 'absolute',
-      bottom: '0px', // Adjusted bottom position
-      left: '50%',
-      transform: 'translateX(-50%)',
-      width: 'max(30%, 200px)', // Adjusted to be 30% of the viewport width or 200px (whichever is larger)
-      cursor: 'pointer',
-       // Adjusted margin to bring it closer to the slider
-    }}
-  >
-          <Slider
-  value={sliderValue}
-  onChange={handleTimeBarChange}
-  aria-labelledby="continuous-slider"
-  className="slider-container"
-  style={{ 
-    color: '#fff', 
-    width: '100%', 
-    height: '0.2rem', // Adjusted height for more precise clicking
-    marginTop: '0.5vh', // Adjusted marginTop for more space between elements
-    position: 'relative', 
-    zIndex: '0' 
-  }}
-/>
+        )}
+      </div>
+    );
+  }
+  }
 
-<div>
-  {!isMobileResolution && (
-    <div
-      style={{
-        color: '#b3b3b3',
-        fontSize: 'calc(0.8vw + 10px)',
-        textAlign: 'left',
-        position: 'absolute',
-        left: '0',
-        top: '-10px',
-      }}
-    >
-      {formatTime(audioRef.current.currentTime)}
-    </div>
-  )}
-  {!isMobileResolution && (
-    <div
-      style={{
-        color: '#b3b3b3',
-        fontSize: 'calc(0.8vw + 10px)',
-        textAlign: 'right',
-        position: 'absolute',
-        right: '0',
-        top: '-10px',
-      }}
-    >
-      {formatTime(audioRef.current.duration)}
-    </div>
-  )}
-</div>
-        </div>
-      )}
-    </div>
-  );
-}
-export default PlayerNiMiah;
+  export default PlayerNiMiah;

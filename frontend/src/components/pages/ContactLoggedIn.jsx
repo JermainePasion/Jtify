@@ -170,31 +170,7 @@ const ContactLoggedIn = () => {
           </p>
         )}
       </div>
-      <div style={{ position: 'fixed', top: '95%', left: '48%', transform: 'translate(-100%, -105%)', zIndex: '9999', display: 'flex' }}>
-          <button
-            style={{
-              backgroundColor: "transparent",
-              border: "none",
-              fontSize: "max(2vw, 18px)",
-              color: "#9d9fa3",
-            }}
-          >
-            <FaStepBackward />
-          </button>
-        </div>
-        <div style={{ position: 'fixed', top: '92.5%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
-          <button
-            style={{
-              marginBottom: "20px",
-              backgroundColor: "transparent",
-              border: "none",
-              fontSize: "max(2vw, 18px)",
-              color: "#9d9fa3",
-            }}
-          >
-            <FaStepForward />
-          </button>
-        </div>
+     
     </div>
   );
 };

@@ -193,33 +193,7 @@ const UserProfile = () => {
                                         ))}
                                     </ListGroup>
                                 </div>
-                                <div style={{ position: 'fixed', top: '91.8%', left: '46.4%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
-              <button
-                onClick={playPreviousSong}
-                style={{
-                  backgroundColor: "transparent",
-                  border: "none",
-                  fontSize: "max(2vw, 18px)",
-                  color: "#fff",
-                }}
-              >
-                <FaStepBackward />
-              </button>
-            </div>
-            <div style={{ position: 'fixed', top: '93%', left: '53.5%', transform: 'translate(-50%, -50%)', zIndex: '9999' }}>
-              <button
-                onClick={playNextSong}
-                style={{
-                  marginBottom: "20px",
-                  backgroundColor: "transparent",
-                  border: "none",
-                  fontSize: "max(2vw, 18px)",
-                  color: "#fff",
-                }}
-              >
-                <FaStepForward />
-              </button>
-            </div>
+                                
                                 <h3 style={{ color: 'white', fontFamily: selectedFont, fontSize: '24px', marginBottom: '10px' }}>Created Playlists</h3>
                                 <div style={{ display: 'flex', flexDirection: 'row', overflowX: 'auto' }}>
                                     {createdPlaylists.map(playlist => (

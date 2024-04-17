@@ -93,14 +93,14 @@ function AdPlayer({ currentAd, handleAdFinish, selectedFont, currentlyPlaying })
           </button>
         </div>
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column' }}>
-          <audio id="ad-audio" src={currentAd.audio} type="audio/mp3" controls autoPlay onEnded={handleAdFinish} style={{ display: 'none' }}>
-            Your browser does not support the audio tag.
-          </audio>
+        <audio id="ad-audio" src={currentAd.audio} type="audio/mp3" controls autoPlay onEnded={handleAdFinish} style={{ display: 'none' }}>
+  Your browser does not support the audio tag.
+</audio>
           <Slider
             value={progress || 0}
             onChange={handleSeek}
             aria-labelledby="continuous-slider"
-            style={{ width: '40%', position: 'fixed', left: '50%', transform: 'translateX(-50%)', bottom: '20px', color: '#fff' }} // Changed width and color
+          
             disabled // Set the Slider to disabled
           />
           <div style={{ position: 'fixed', right: '20px', bottom: '20px', display: 'flex', alignItems: 'center' }}>
