@@ -75,7 +75,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, '..', 'frontend', 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -186,7 +186,8 @@ AUTH_USER_MODEL = 'account.User' # new
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'static_my_project'
+    BASE_DIR / 'static_my_project',
+    os.path.join(BASE_DIR, '../frontend/build/static')
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static', 'static_root')
@@ -209,3 +210,9 @@ AWS_STORAGE_BUCKET_NAME = 'jtify-bucket'
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+
+
+
+
+print("BASE_DIR: ", BASE_DIR)

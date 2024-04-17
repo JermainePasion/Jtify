@@ -27,7 +27,7 @@ const Playlist = ({ playlist }) => {
             Number of songs: {playlist.numberOfSongs || 0}
           </Card.Text>
           <Card.Text as="div" style={{ fontSize: '16px', color: '#d8d4d9' }}>
-            Created by: {user?.data?.user_data?.name}
+          
           </Card.Text>
         </Card.Body>
       </Link>

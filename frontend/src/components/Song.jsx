@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Card } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -6,7 +6,8 @@ import { likeSong, unlikeSong } from '../actions/songActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
-
+import { fetchLikedSongs} from '../actions/songActions';
+import { getUserDetails } from '../actions/userActions';
 
 function Song({ song, playSong }) {
   const { id, picture, name, artist, } = song;
@@ -18,6 +19,16 @@ function Song({ song, playSong }) {
   const dispatch = useDispatch();
   
   const [liked, setLiked] = useState(isLiked);
+
+  useEffect(() => {
+    dispatch(getUserDetails());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (user && user.data && user.data.user_data && user.data.user_data.id) {
+      dispatch(fetchLikedSongs(user.data.user_data.id));
+    }
+  }, [dispatch, user?.data?.user_data?.id]);
 
   const cardStyle = {
     display: 'flex',

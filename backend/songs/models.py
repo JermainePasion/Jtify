@@ -12,6 +12,10 @@ class Playlist(models.Model):
 
     def __str__(self):
         return self.name
+    
+    @property
+    def user_name(self):
+        return self.user.name
 
     def add_songs(self, song_ids):
         """

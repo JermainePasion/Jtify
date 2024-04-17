@@ -7,6 +7,7 @@ import { logout } from '../actions/userActions';
 import { BsDoorOpenFill,BsFire,BsList, BsPersonSquare, BsFillHeartFill, BsFillTelephoneFill, BsBrowserSafari, BsMusicNoteList } from "react-icons/bs";
 import { useSelector } from 'react-redux';
 import '../App.css';
+import Jlogo from './img/Jlogo.png'
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -86,7 +87,7 @@ const Navbar = () => {
   }}
 >
   <img
-    src="/Jlogo.png"
+    src={Jlogo}
     alt="background"
     width={window.innerWidth <= 768 ? '180px' : '180px'} // Adjusted image width for smaller screens
     height={window.innerWidth <= 768 ? '90px' : '90px'}

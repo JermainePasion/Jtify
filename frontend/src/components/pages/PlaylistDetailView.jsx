@@ -17,6 +17,8 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { likeSong, unlikeSong } from '../../actions/songActions';
 import { faHeart as solidHeart } from '@fortawesome/free-solid-svg-icons';
 import { faHeart as regularHeart } from '@fortawesome/free-regular-svg-icons';
+import { fetchLikedSongs} from '../../actions/songActions';
+
 
 
 const PlaylistDetails = () => {
@@ -41,11 +43,19 @@ const PlaylistDetails = () => {
   const audioRef = useRef(new Audio());
   const progressBarRef = useRef(null);
 
+  
+
   useEffect(() => {
     console.log('Fetching playlist details...');
     dispatch(getUserDetails());
     dispatch(playlistDetailView(id));
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (user && user.data && user.data.user_data && user.data.user_data.id) {
+      dispatch(fetchLikedSongs(user.data.user_data.id));
+    }
+  }, [dispatch, user?.data?.user_data?.id]);
 
   useEffect(() => {
     audioRef.current.addEventListener('timeupdate', () => {
@@ -104,14 +114,15 @@ const PlaylistDetails = () => {
     setShowNavbar(!showNavbar);
   };
 
-  const handleLike = () => {
+  const handleLike = (songId) => {
     if (liked) {
-      dispatch(unlikeSong(id));
+        dispatch(unlikeSong(songId));
     } else {
-      dispatch(likeSong(id));
+        dispatch(likeSong(songId));
     }
     setLiked(!liked);
-  };
+};
+
 
 
 
@@ -167,7 +178,6 @@ const PlaylistDetails = () => {
                   <div style={{ marginLeft: '5px' }}>
                     {/* <p style={{ color: 'white', fontFamily: selectedFont }}>Playlist</p> */}
                     <h2 className="mt-3 mb-3" style={{ color: 'white', fontSize: '100px', marginBottom: '10px', marginTop:'5px' ,fontFamily: selectedFont }}>{playlist.name}</h2>
-                    <p style={{ color: 'white', fontSize: '20px', fontFamily: selectedFont, marginBottom: '5px', marginTop:'5px' }}>Created by: {user?.data?.user_data?.name}</p>
                     <p style={{ color: 'white', fontSize: '20px', fontFamily: selectedFont, marginBottom: '5px', marginTop:'5px' }}>Number of Songs: {playlist.songs.length}</p>
                   </div>
                 </div>
@@ -182,17 +192,22 @@ const PlaylistDetails = () => {
 
                 </div>
                 {playlist.songs.map((song, index) => (
-                <div key={song.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px', cursor: 'pointer' }} onClick={() => playSong(song)}>
-                  <span style={{ marginRight: '10px', fontWeight: 'bold' }}>{index + 1}</span>
-                  <Image src={song.picture} alt={song.name} rounded style={{ marginRight: '15px', width: '64px', height: '63px' }} />
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <div style={{ fontSize: '16px', fontWeight: 'bold' }}>{song.name}</div>
-                    <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center' }}>
-                      <span style={{ marginRight: '10px', fontWeight: 'normal' }}>{song.name}</span>
-                      <FontAwesomeIcon icon={liked ? solidHeart : regularHeart} onClick={handleLike} style={{ cursor: 'pointer', color: liked ? '#fff' : '#fff', marginLeft: '1000px', position: 'absolute' }} />
-                    </div>
-                  </div>
-                </div>
+    <div key={song.id} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px', cursor: 'pointer' }} onClick={() => playSong(song)}>
+        <span style={{ marginRight: '10px', fontWeight: 'bold' }}>{index + 1}</span>
+        <Image src={song.picture} alt={song.name} rounded style={{ marginRight: '15px', width: '64px', height: '63px' }} />
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ fontSize: '16px', fontWeight: 'bold' }}>{song.name}</div>
+            <div style={{ fontSize: '14px', display: 'flex', alignItems: 'center' }}>
+                <span style={{ marginRight: '10px', fontWeight: 'normal' }}>{song.name}</span>
+                {/* Pass song.id to handleLike function */}
+                <FontAwesomeIcon 
+    icon={liked ? solidHeart : regularHeart} 
+    onClick={() => handleLike(song.id)}  
+    style={{ cursor: 'pointer', color: liked ? '#fff' : '#fff', marginLeft: '1000px', position: 'absolute' }} 
+/>
+            </div>
+        </div>
+    </div>
               ))}
               </div>
             )

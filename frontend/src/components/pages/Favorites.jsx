@@ -117,17 +117,7 @@ const Favorites = () => {
     // Do not set currentTime when pausing
   };
 
-  const togglePlayPause = () => {
-    if (!currentlyPlaying || audioRef.current.paused) {
-      if (!currentlyPlaying) {
-        playSong(0); // Play the first song in the liked songs list
-      } else {
-        playSong(currentSongIndex);
-      }
-    } else {
-      pauseSong();
-    }
-  };
+
 
   const skipTrack = (forward = true) => {
     let newIndex = currentSongIndex + (forward ? 1 : -1);
@@ -140,35 +130,8 @@ const Favorites = () => {
     playSong(newIndex);
   };
 
-  const formatTime = (timeInSeconds) => {
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
 
-  const handleTimeBarClick = (e) => {
-    const clickedPosition = e.clientX - progressBarRef.current.getBoundingClientRect().left;
-    const timePerPixel = duration / progressBarRef.current.offsetWidth;
-    const newCurrentTime = clickedPosition * timePerPixel;
-    audioRef.current.currentTime = newCurrentTime;
-    setCurrentTime(newCurrentTime);
-  };
 
-  const handleTimeBarMouseDown = () => {
-    setIsDragging(true);
-  };
-
-  const handleTimeBarMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const calculateTimeBarWidth = () => {
-    if (duration) {
-      return (currentTime / duration) * 100 + '%';
-    } else {
-      return '0%';
-    }
-  };
 
   const toggleNavbar = () => {
     setShowNavbar(!showNavbar);

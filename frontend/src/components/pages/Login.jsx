@@ -5,6 +5,7 @@ import { login } from '../../actions/userActions';
 import { useNavigate, Link } from 'react-router-dom';
 import FormContainer from '../FormContainer';
 import Footer from '../Footer';
+import Jlogo from '../img/Jlogo.png'
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -86,7 +87,7 @@ function Login() {
 
       <div className="background">
         <div className="logo-image">
-          <img src="Jlogo.png" alt="background" width={200} />
+          <img src={Jlogo} alt="background" width={200} />
         </div>
       </div>
     </div>
